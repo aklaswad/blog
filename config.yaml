@@ -2,6 +2,8 @@ baseURL: http://example.org/
 languageCode: ja-jp
 title: blog.aklaswad.com
 theme: hugo-theme-tokiwa
+publishDir: docs
+canonifyurls: true
 UglyURLs: true
 permalinks:
   blog: /:year/:filename
