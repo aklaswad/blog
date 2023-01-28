@@ -1,0 +1,33 @@
++++
+mt_entry_id = 210
+date = "2007-08-23T01:53:54+09:00"
+title = "StyleCatcher2.0の覚え書きpart2"
+categories = []
+
++++
+
+引き続きStyleCatcherについて。以下の三本立てです。
+
+<ul>
+	<li>StyleCatcherのスタイルを取得不可にする方法</li>
+	<li>複数ドメインでブログを公開する場合のmt-staticの設定に関する問題点</li>
+	<li>StyleCatcherがレイアウトを変更できるからくり</li>
+</ul><!--more--><h3>cssを公開してもStyleCatcherでは取得不可能にする方法</h3>
+
+前回のエントリー<a href="http://blog.aklaswad.com/2007/000207.html">スタイルの変更とStyleCatcher2.0についての覚え書き - blog.aklaswad.com</a>で、cssファイルのurlを指定して取得可能、と書きましたが、実はこれは公開や配布を意図していない場合にも簡単に取得が可能となってしまう、という問題を含んでいます。(ファイル構成がStyleCatcherの仕様から外れている場合は大丈夫です。あくまでStyleCatcherで適用可能な構成でスタイルを作成した場合です。)
+
+また、StyleCatcherはスタイルの取得の際には、配布元と同じディレクトリ構成で、サムネイル画像を含む画像ファイルまでのオリジナルの完全なコピーを作成します。またこれらのファイルは、当然のことながらwebに公開されています。つまり、取得したスタイルはそのままにして再配布を行っている状態となっている、ということです。
+
+webに公開する以上、cssや画像ファイルのコピーを防ぐ事が出来ないのは、そもそも仕方のないことですが、それにしても半径1クリックで完コピされるというのは抑止力なさ過ぎです。
+そこまで気にするケースもあまり無いとは思いますが、例えば、「内部での再利用のためにStyleCatcherに準拠した構成でcss周りを作成、サイトを公開したが、外部向けの再利用、再配布は意図しない」、というような状況の場合、何かしらの防御策をとる必要があるでしょう。
+とりあえずStyleCatcherは「MovableType/4.0」というUser-Agentでアクセスしてくるので、これを弾くのが手っ取り早いかと思われます。themesディレクトリに次の内容の.htaccessファイルを作成しておくと、とりあえずStyleCatcherからの取得を防止できます。
+
+<pre>
+SetEnvIf User-Agent ^MovableType no_style_catcher
+Order Allow,Deny
+Allow from all
+Deny from env=no_style_catcher
+</pre>
+
+
+<h3>StyleCatcherがレイアウトを変更できるからくり</h3>

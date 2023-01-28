@@ -1,0 +1,138 @@
++++
+mt_entry_id = 60
+date = "2006-07-29T17:33:02+09:00"
+title = "TagCloudPlus"
+categories = []
+
++++
+
+mt3.3標準のプラグイン、WidgetManager用のWidgetを作ってみました。<br />
+といっても標準のタグクラウドに毛が生えたようなものですが。<br />
+sizeとcolorの「+」「-」をクリックすると、それぞれフォントサイズと色の濃淡を動的に変更できます。<br />
+もうちょっと使い勝手を良くしたいですね。<br />
+また、少しアニメーションを入れてみたら面白いかもしれません。
+<!--more-->使い方<br />
+・使いたいブログのテンプレート編集画面で「テンプレート・モジュール」を開く<br />
+・「モジュールを新規作成」をクリック<br />
+・テンプレート名に「Widget: タグ クラウド プラス」を入力(名前は何でも良いのですが、「Widget: 」の部分を変えると動きません)<br />
+・モジュールの内容に以下のコードを貼り付けて「保存」<br />
+
+<pre class="code">
+&lt;!-- 
+name: TagCloudPlus
+author: Akira Sawada
+version: 0.3
+--&gt;
+
+&lt;div class="module-tagcloud module"&gt;
+    &lt;h2 class="module-header"&gt;Tag cloud Plus&lt;/h2&gt;
+    &lt;div class="module-content" id="tag_cloud_plus_info"&gt;
+    &lt;/div&gt;
+    &lt;div class="module-content"&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeDown()"&gt; &lt;&lt; &lt;/a&gt;
+        size : &lt;span id="tag_cloud_plus_size_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeUp()"&gt; &gt;&gt; &lt;/a&gt;&lt;br /&gt;
+
+        &lt;a href="javascript:void(0)" onclick="sizeBaseDown()"&gt; &lt;&lt; &lt;/a&gt;
+        basesize : &lt;span id="tag_cloud_plus_size_base_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeBaseUp()"&gt; &gt;&gt; &lt;/a&gt;&lt;br /&gt;
+
+        &lt;a href="javascript:void(0)" onclick="colorDown()"&gt; &lt;&lt; &lt;/a&gt;
+        color : &lt;span id="tag_cloud_plus_color_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="colorUp()"&gt; &gt;&gt; &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="module-content"&gt;
+        &lt;ul class="module-list" id="tag_cloud_plus_list"&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+
+var sizeWeight = 8;
+var sizeBase = 12;
+var colorWeight = 8;
+var rankMax = 64;
+
+var tcpTags =
+[
+&lt;MTTags&gt;
+    {
+        "name" : "&lt;$MTTagName$&gt;",
+        "rank" : "&lt;$MTTagRank max="64"$&gt;",
+        "link" : "&lt;$MTTagSearchLink$&gt;",
+    },
+&lt;/MTTags&gt;
+];
+
+function buildCloud(){
+    document.getElementById('tag_cloud_plus_list').innerHTML = "";
+    for(var i in tcpTags){
+        var tag = String();
+        tag = '&lt;li class="module-list-item" style=" font-size : '
+            + rank2FontSize(tcpTags[i].rank) + ';"&gt;&lt;a href="'
+            + tcpTags[i].link + '" style=" color : '
+            + rank2Color(tcpTags[i].rank) + ';"&gt;'
+            + tcpTags[i].name + '&lt;/a&gt;&lt;/li&gt;\n'; /*need this \n but i don't know why.*/
+        document.getElementById('tag_cloud_plus_list').innerHTML += tag;
+
+    }
+    document.getElementById('tag_cloud_plus_size_info').innerHTML = sizeWeight;
+    document.getElementById('tag_cloud_plus_size_base_info').innerHTML = sizeBase;
+    document.getElementById('tag_cloud_plus_color_info').innerHTML = colorWeight;
+}
+
+function rank2Color(rank)
+{
+    var col = Math.round((rank - rankMax / 2) * colorWeight / 4 + 128);
+    col = col &gt; 255 ? 255 : col;
+    col = col &lt; 0 ? 0 : col;
+    return 'rgb(' + col + ',' + col + ',' + col + ')';
+}
+
+function rank2FontSize(rank)
+{
+    return Math.round((1 - rank / rankMax ) * sizeWeight + sizeBase) + "px";
+}
+
+function sizeUp()
+{
+    sizeWeight += 1;
+    buildCloud();
+}
+
+function sizeDown()
+{
+    sizeWeight -= 1;
+    buildCloud();
+}
+function sizeBaseUp()
+{
+    sizeBase += 1;
+    buildCloud();
+}
+
+function sizeBaseDown()
+{
+    sizeBase -= 1;
+    buildCloud();
+}
+function colorUp()
+{
+    colorWeight += 1;
+    buildCloud();
+}
+
+function colorDown()
+{
+    colorWeight -= 1;
+    buildCloud();
+}
+
+/*at first we must build tag cloud*/
+buildCloud();
+
+&lt;/script&gt;
+</pre>
+
+IEでは動かないみたいなので、そのうち直します。

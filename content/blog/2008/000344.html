@@ -1,0 +1,53 @@
++++
+mt_entry_id = 344
+date = "2008-01-08T13:37:45+09:00"
+title = "entries動作メモ"
+categories = []
+
++++
+
+MT4.01のentries
+
+sort_by="score"でかつnamespaceが無ければエラー終了
+
+stash{entries}があっても
+    期待したクラスと一致しなければentriesを削除
+    以下のモディファイアが指定されていればentriesを削除
+        'category', 'categories', 'tag', 'tags', 'author', 'id', 'days', 'recently_commented_on', 'include_subcategories'
+
+limit,offsetのautoを処理
+
+stash(entries)が無い場合、カテゴリーコンテキストの中にいて、モディファイア「category」が指定されていない場合、コンテキストからカテゴリーを持ってくる。
+カテゴリフィルタをコンパイルしてフィルタリストにpush
+(カテゴリフィルタのソースの優先順位は モディファイア「category」 > コンテキスト > モディファイア「categories」かな)
+モディファイアを元にtagフィルタをコンパイルしてpush
+モディファイアを元にauthorフィルタをコンパイルしてpush
+モディファイアidが有効ならidフィルタをコンパイルしてpush
+モディファイアuniqueが有効ならuniqueフィルタをコンパイルしてpush
+
+stash(entries)が無い場合
+    モディファイア「days」があれば
+        日付を設定
+    無ければ
+        他に有効な設定が無い場合、ブログの設定から日付の設定を行う
+
+    フィルタ設定が無い場合
+        limit設定をしてロード
+    フィルタ設定がある場合
+        load_iter
+        フィルタリングに引っかかったら無視
+        フィルタリングを通ったエントリーがオフセット数に達するまでは無視
+        @entriesにpush
+        pushしたエントリー数がlastnに達したらたら終了
+    recentrly_commented_onがあったらソート
+stash(entries)がある場合
+    モディファイアやブログ設定を元にソート
+    フィルタ設定がある場合
+        load_iter
+        フィルタリングに引っかかったら無視
+        フィルタリングを通ったエントリーがオフセット数に達するまでは無視
+        @entriesにpush
+        pushしたエントリー数がlastnに達したらたら終了
+    フィルタ設定が無い場合
+        offsetを適用
+        lastnを適用

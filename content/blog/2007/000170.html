@@ -1,0 +1,57 @@
++++
+mt_entry_id = 170
+date = "2007-07-11T02:10:00+09:00"
+title = "MT4Beta : DashboardWidgetを作ってみた。はてブの新着を表示するよ。"
+categories = []
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">
+このプラグインは、MT4.0での新機能のサンプルとして作成したものです。機能/性能的に実用に耐えるものではありません。あらかじめご了承下さい。
+</ins>
+
+mt4をインストールして、一番最初に目に飛び込んでくる新機能といえば、ダッシュボード上に並んだウィジェットではないでしょうか。
+これももちろんプラグインで追加出来ます。出来るはずです。作りました。作ってみました。
+
+<span mt:asset-id="11" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/release/HatenaBookmarkWidget0.1.zip">HatenaBookmarkWidget0.1.zip</a></span>
+
+<span mt:asset-id="9" class="mt-enclosure mt-enclosure-image"><a href="http://blog.aklaswad.com/images/HatenaBookmarkWidgetScreen01.png"><img alt="" src="http://blog.aklaswad.com/assets_c/9.5115f590dd5d87e9621ec6b8334b940c5ffc39a3.png" width="160" height="120" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;"/></a></span>今回の題材は、はてなブックマークでの、該当のブログ全体での被ブックマークを、タグやコメントも含めて最新20件(かな?）管理画面のダッシュボードにウィジェットとして表示するプラグインです。なんだかはてブのプラグインばかり作っているような気もしますが、気のせいでしょう。
+
+<br clear="all" />
+やっぱり肝はレジストリでしょうか。諸情報をレジストリに追加することで動作します。
+
+<pre class="code">
+sub init_registry { 
+    my $plugin = shift;
+    $plugin-&gt;registry({
+        applications =&gt; {
+            'cms' =&gt; {
+                widgets =&gt; {
+                    'HatenaBookmark' =&gt; {
+                        label =&gt; 'HatenaBookmark',
+                        template =&gt; 'tmpl/widget.tmpl',
+                        handler =&gt; \&amp;_widget_handler,
+                        set =&gt; 'sidebar',
+                        singular =&gt; 1,
+                        condition =&gt; sub {
+                            my ($page, $scope) = @_;
+                            return $page eq 'dashboard' &amp;&amp; $scope !~ /system/;
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+</pre>
+
+大体、見たままで分かるかと思います。
+setは、「main」「sidebar」が指定できるようです。画面の右側に表示するか左側に表示するか、ですね。
+singularは、複数同時に表示可能とするか否か、です。
+conditionには、現在のページでwidgetを利用可能とするかを判定するサブルーチンのリファレンスを指定します。サブルーチンは、引数として与えられた条件を元に、現在の画面でwidgetを表示するか否か、をブール値で返却します。
+
+今回は、無駄に張り切ってややこしい処理をするものを作りましたが、簡単なメッセージ表示などのプラグインなら<a href="http://blog.aklaswad.com/2007/000113.html">config.yaml</a>一発で出来そうです。
+
+このプラグインはとりあえずの実験用なので、当面ベータ版扱いとしてください。そのうちキャッシュ機能や新着判定機能などをつけてきちんとしたものにするかもしれません。
+
+<ins datetime="2007-07-11T16:37:40+09:00">追記: 公開からわずか半日後、はてなの障害?の巻き添えで管理画面が開けなくなる事態が発生。これは、このプラグインのテストにはてなが全力で協力してくれたと考える。</ins>

@@ -1,0 +1,45 @@
++++
+mt_entry_id = 408
+date = "2008-04-09T18:25:46+09:00"
+title = "mt.jsでタブを作る"
+categories = []
+
++++
+
+<html>
+<head>
+    <script type="text/javascript" src="http://grublo.rz/~asawada/cgi-bin/415b/working_copy/mt-static/js/mt_core_compact.js?v=4.15b1-en"></script>
+    <script type="text/javascript" src="http://grublo.rz/~asawada/cgi-bin/415b/working_copy/mt-static/js/tc.js"></script>
+    <script type="text/javascript" src="http://grublo.rz/~asawada/cgi-bin/415b/working_copy/mt-static/mt.js"></script>
+
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        CMSScriptURI = '/~asawada/cgi-bin/415b/working_copy/mt.cgi';
+        ScriptURI = '/~asawada/cgi-bin/415b/working_copy/mt.cgi';
+        ScriptBaseURI = '';
+        StaticURI = '/~asawada/cgi-bin/415b/working_copy/mt-static/';
+        HelpBaseURI = 'http://www.movabletype.org/documentation/';
+        /* ]]> */
+    </script>
+</head>
+<body>
+
+<div mt:delegate="tab-container">
+    <ul>
+        <li class="tab selected-tab"" mt:tab="aaaa" mt:command="select-tab"><a href="javascript:void(0)"><span>aaaa</span></a></li>
+        <li class="tab" mt:tab="bbbb" mt:command="select-tab"><a href="javascript:void(0)"><span>bbbb</span></a></li>
+    </ul>
+    <div id="aaaa-panel" class="control-panel" mt:tab-content="aaaa">
+        aoiuaoiuaoiua
+    </div>
+    <div id="bbbb-panel" class="control-panel hidden" mt:tab-content="bbbb">
+        boubuoiuboiub
+    </div>
+</div>
+<script type="text/javascript">
+    /* <![CDATA[ */
+        App.bootstrapInline( false );
+    /* ]]> */
+</script>
+</body>
+</html>

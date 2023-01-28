@@ -1,0 +1,12 @@
+baseURL: http://example.org/
+languageCode: ja-jp
+title: blog.aklaswad.com
+theme: hugo-theme-tokiwa
+UglyURLs: true
+permalinks:
+  blog: /:year/:filename
+params:
+  description: A website built through Hugo
+  footer: |
+    &copy; aklaswad [Github](https://github.com/aklaswad) | [Twitter](https://twitter.com/aklaswad)
+

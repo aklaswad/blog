@@ -1,0 +1,29 @@
++++
+mt_entry_id = 212
+date = "2007-08-26T23:00:00+09:00"
+title = "プラグインの作成を手助けするプラグイン「Movabug」開発中"
+categories = []
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">4.1以降に未対応です。手が回らないため、一時開発を停止しています。ご了承下さい。
+</ins>
+
+<form mt:asset-id="26" class="mt-enclosure mt-enclosure-image"><img alt="movabug_screen.png" src="http://blog.aklaswad.com/images/movabug_screen.png" width="480" height="183" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;"/></form>
+
+粗製濫造と言われかねないですね。また新しいプラグインです。今回は超マニアック、プラグインを自分で作る人以外は何のことだか分からない代物です。その名も「Movabug」!
+
+<a href="http://blog.aklaswad.com/mtplugins/movabug.html">Movabug</a>
+<form mt:asset-id="27" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/download/Movabug0.1.zip">Movabug0.1.zip</a></form>
+
+昨日のMTHack-a-thonで少し手をつけていたのですが、とりあえず動くようになったので公開してみます。
+将来的に、もういくつか使いやすい機能を付け加えられたら、と考えてます。<!--more-->気負った名前を付けてみたものの、現在のところ、以下の二つの機能しかありません。すべて上部メニューからアクセスするようになっています。
+
+<ul>
+	<li>transformerで利用可能な、管理画面のテンプレートに含まれるid,classを実際の管理画面に表示する</li>
+	<li>スケジュールタスクを管理画面から実行する</li>
+</ul>
+
+スケジュールタスクの実行については、事前にタスクのセッションレコードを削除することで、設定されているintervalを無視して強制的に実行させることが出来るようになっています。
+
+後は何があると便利になりますかね。管理画面からTheSchwartz実行とか、かなあ。

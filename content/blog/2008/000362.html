@@ -1,0 +1,72 @@
++++
+mt_entry_id = 362
+date = "2008-01-20T15:50:00+09:00"
+title = "MTのテンプレートタグで素数判定をやってみた。"
+categories = []
+
++++
+
+MT4.1ではopモディファイアが導入されて、かなりプログラムチックなことが出来るようになっています。
+そこで、なにかMTでやる意味のまったくない作業をテンプレートで作ってみたくなり、とりあえず素数判定を行うテンプレートを書いてみました。
+
+現在のMTのテンプレートエンジンでは、MTForなどのループから任意のタイミングで抜け出すことが出来ないため、MTSetVarTemplateを再帰的に呼び出すことでループの代用をしています。
+そのため、大きな数の判定を行うと馬鹿みたいにメモリを喰いまくります・・・
+速度を度外視してアルゴリズムを簡潔にした事もあいまって、実用には耐えられない出来になってしまいました。
+家のローカル環境では、大体1000くらいの数までなら耐えられますが、それ以上の素数を判定しようとすると戻ってこなくなります。
+まあ、こんなことも出来る、というサンプルになればと思い公開してみます。
+
+<pre class="code">
+&lt;mt:ignore&gt; #setvartemplateを使って関数定義 &lt;/mt:ignore&gt;
+&lt;mt:setvartemplate name="is_prime"&gt;
+    &lt;mt:if name="num" op="%" value="$check"&gt;
+        &lt;mt:ignore&gt; #試し割りで余りが出た場合&lt;/mt:ignore&gt;
+        &lt;mt:setvar name="check" op="++"&gt;
+        &lt;mt:if name="num" eq="$check"&gt;
+            &lt;mt:getvar name="num"&gt; は素数だった!
+        &lt;mt:else&gt;
+            &lt;mt:ignore&gt; #再帰!!&lt;/mt:ignore&gt;
+            &lt;mt:getvar name="is_prime"&gt;
+        &lt;/mt:if&gt;
+    &lt;mt:else&gt;
+        &lt;mt:ignore&gt; #試し割りで割り切れた場合&lt;/mt:ignore&gt;
+        &lt;mt:getvar name="num"&gt; は &lt;mt:getvar name="check"&gt; で割り切れたので素数じゃなかった!
+    &lt;/mt:if&gt;
+&lt;/mt:setvartemplate&gt;
+ 
+&lt;mt:ignore&gt; #ここに判定したい数字を指定 &lt;/mt:ignore&gt;
+&lt;mt:setvar name="num" value="71"&gt;
+ 
+&lt;mt:ignore&gt; #チェック用変数の初期化。変更不可!&lt;/mt:ignore&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+ 
+&lt;mt:ignore&gt;
+    #setvartemplateで設定したテンプレートを呼び出す。
+    #ついでに余分な空白を削除。 
+&lt;/mt:ignore&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:ignore&gt; #続けていくつか試してみる。 &lt;/mt:ignore&gt;
+ 
+&lt;mt:setvar name="num" value="109"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:setvar name="num" value="111"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:setvar name="num" value="113"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+</pre>
+
+実行結果は以下のようになりました。
+
+<blockquote>
+
+71 は素数だった!
+109 は素数だった!
+111 は 3 で割り切れたので素数じゃなかった!
+113 は素数だった!
+
+</blockquote>

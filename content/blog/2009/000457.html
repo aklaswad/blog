@@ -1,0 +1,105 @@
++++
+mt_entry_id = 457
+date = "2009-06-18T04:03:50+09:00"
+title = "config.yamlで良くある$Foo::Bar::buzの謎を探る。"
+categories = []
+
++++
+
+<blockquote>「$pkg = '$Core::MT::CMS::'」と宣言されているから、
+「${pkg}Dashboard::dashboard」というのは「$Core::MT::CMS::Dashboard::dashboard」
+のことだと思う。
+
+で、この「$Core」というのが何なのかわからない。
+<ul>
+	<li><a href="http://nozawashinichi.sakura.ne.jp/usingmt/2009/06/coremtcms.html">$Core::MT::CMS...がわからない - Using MT</a></li>
+</ul></blockquote>
+
+カレントのComponentをFooにセットしてから、Bar::buzを実行してくれ、という意味になります。
+上の例で言えば、カレントのComponentとして'Core'を設定した上で、MT::CMS::Dashboardパッケージのdashboardメソッドを実行しろ、ということです。
+
+<!--more-->この書式はMT独自の機能で、基本的にregistry(プラグインのconfig.yamlなど)にメソッド名を書くような場面でのみ有効となります。一見、Perlの名前空間のようにも見えますが、頭の「$Foo::」の部分は全くの別物です。<a href="http://code.sixapart.com/svn/movabletype/trunk/lib/MT.pm">(MT_HOME)/lib/MT.pm</a>のhandler_to_coderefというルーチンでパースされていますので、詳しい内容についてはコード見てください;-)
+
+MT4では、Componentという概念が登場してます。Componentは、平たく言うと、作業の主体は誰か、という情報を扱うための基底クラスです。
+すべてのプラグインはそれぞれ、独立したComponentです。各種addonもComponentです。また、MT本体も、Coreという名前のComponentです。
+すべてのComponentはそれぞれに、テンプレートのサーチパスや、L10Nのhandler、registryなどを、固有の情報として保持しています。そのおかげで、必要な時に文脈にあわせて適切な翻訳を行ったり、プラグインが自分のディレクトリ以下のtmplディレクトリからテンプレートファイルを取り出したりする、といったことが実現されています。
+そんな、縁の下のComponentさんがたくさんいるので、「じゃ、今回は$Fooさんに面倒見てもらおうかしら」というのが、くだんの表記法の意味する所な訳です。
+
+せっかくなので、ちょっとしたプラグインを作って実験してみます。
+
+MT::translateメソッドは、カレントのComponentがセットされていれば、そのComponentの辞書を優先的に利用して翻訳を行う、という実装になっています。
+なので、$Foo::つきで呼ばれたコールバックと、そうでない場合とで、MT::translateを実行した際の結果に違いが現れます。
+
+次のようなCompTest.pmファイルを用意し、
+
+<pre class="code">package CompTest;
+use MT;
+ 
+sub test_with_component_name {
+    printf STDERR &quot;trans with component: %s\n&quot;, MT-&gt;translate('Entry');
+}
+ 
+sub test_without_component_name {
+    printf STDERR &quot;trans without component: %s\n&quot;, MT-&gt;translate('Entry');
+}
+ 
+1;
+</pre>
+
+config.yamlで以下のようにコールバックに登録します。
+
+<pre class="code">id: CompTest
+callbacks:
+    init_app:
+        -
+            handler: $CompTest::CompTest::test_with_component_name
+        -
+            handler: CompTest::test_without_component_name
+l10n_class: CompTest::L10N</pre>
+
+で、このプラグインのL10Nファイルに
+
+<pre class="code">Entry =&gt; 'Suntory',</pre>
+
+などと書いておくと、mt.cgiの実行の度に以下のようなエラー出力が得られる筈です。
+
+<pre class="code">trans with component: Suntory
+trans without component: Entry</pre>
+
+<form mt:asset-id="107" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/CompTest.zip">CompTest.zip</a></form>
+
+<ins datetime="2009-06-22T02:06:06+09:00">
+<h4>追記: レジストリでのダラー付きメソッド名のみ特権的に実行されるケース</h4>
+大事な機能を見落としてました。
+レジストリ内にダラー付きで記述されているメソッド名は、registryメソッド経由で値を参照する場合に、（たとえそれが途中のpathにあったとしても）自動的に実行されます。
+これにより、使用頻度が低くかつロードするコストの大きいハッシュテーブルを、必要な時にのみ実行されるサブルーチンの戻り値としてレジストリに組み込むことが出来ます。
+これは、現在のMTの実装ではダラーありのメソッド名指定のみに適用されます。
+
+たとえば、以下のようなレジストリエントリとメソッドの実装があった場合
+
+<pre class="code">#plugins/Hoge/config.yaml...
+id: Hoge
+foo:
+    bar: $Hoge::Hoge::Fuga::heavy_calcuration</pre>
+
+<pre class="code"># Hoge/Fuga.pm in plugins/Hoge/lib/...
+package Hoge::Fuga;
+ 
+sub heavy_calcuration {
+　　　　wait_for_godot()
+        or die;
+　　　　return { answer =&gt; 42 };
+}
+ 
+1;</pre>
+
+このルーチンは、値が要求されるまでは実行されず、かつ、
+
+<pre class="code">my $ans = $plugin-&gt;registry('foo', 'bar', 'answer');</pre>
+
+このようにコールされた時には、最初からそこにハッシュがあったかのように扱う事が出来ます。</ins>
+
+<del datetime="2009-06-22T02:23:42+09:00">で、まあ、このComponent指定接頭辞は、実際書かなくてもそれなりに動作はします。ので、本題である$Coreって必ず書く必要があるかと言うと、どうなのか良く分かりません。微妙。
+それでも、書いたら損をするという物でもないですし、とりあえずおまじないとして書いておくと良いのではないでしょうか。
+そしてもし、プラグイン作ってて、なんか期待したテンプレートをロードしてくれない、なんて事があったら、こんな話もあったよねと思い出してみてください。</del>
+<ins datetime="2009-06-22T02:32:50+09:00">callbackのメソッド名のような、実行する事が主目的となるレジストリ値の場合には、最初に書いたようにダラーありと無しで違いは少ないのですが、上記追記分のように、ハッシュを遅延ローディングする目的の場合、必ずメソッド名をダラー付きで指定する必要があります。$Core::Foo::methodのように宣言されている部分は、ほとんどはその遅延ローディング目的ですね。すごく意味のある事です。奥が深いですね。まいりました。</ins>

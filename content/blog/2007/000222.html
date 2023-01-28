@@ -1,0 +1,92 @@
++++
+mt_entry_id = 222
+date = "2007-09-20T23:50:22+09:00"
+title = "DayLog"
+categories = ["JotLine"]
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">手が回らないため、一時開発を停止しています。ご了承下さい。
+同様の、より完成度の高いプラグインとして、SixApartのMark Paschalが開発した<a href="http://plugins.movabletype.org/action-streams/">Action Streams</a>が公開されていますので、そちらをお使いいただくことをお勧めします。
+</ins>
+
+ユーザーが各種ショートメッセージサービスに投稿したメッセージ等を定期的に巡回して収集し、一日分をまとめてMTのエントリーとして投稿します。
+JotLineプラグインと組み合わせて使います。<!--more--><h2>インストール</h2>
+
+JotLine プラグインに同梱されています。<a href="http://blog.aklaswad.com/mtplugins/jotline/">JotLine プラグイン</a>のインストール手順に従ってください。
+
+プラグインのインストールが終了したら、まず、自動収集を行うためにMovable Typeがスケジュールタスクを実行できているか、cronの設定などを確認してください。詳細はMTのマニュアルなどを参考にしてください。
+
+次に、システムメニュー > プラグインから、DayLogプラグイン以下の設定項目の内、必須項目の設定を行ってください。
+また、JotLineプラグインの各サービスの設定も、必要な箇所を埋めておく必要があります。
+
+最後に、設定項目のbody templateをデフォルトのまま使う場合、このページ内の「エントリーの設定」の節を参考にして、スタイルシートを設定して下さい。
+
+<h2>設定</h2>
+
+<dl>
+    <dt>blog id</dt>
+    <dd>収集したメッセージを投稿するブログのIDを数字で指定してください。この設定は必須です。</dd>
+    <dt>author id</dt>
+    <dd>収集したメッセージを投稿する際のユーザーのIDを数字で指定してください。この設定は必須です。</dd>
+    <dt>remove posted jot</dt>
+    <dd>ブログ記事の投稿後に、収集したデータを破棄するかが選択できます。開発用途などの特別な理由が無い限りチェックを外さないでください。</dd>
+    <dt>clone base entry id</dt>
+    <dd>この項目に既存のブログ記事のIDを指定すると、新規に投稿されるブログ記事のカテゴリー付けなどの設定を、指定したブログ記事からコピーします。</dd>
+    <dt>title template</dt>
+    <dd>新規に投稿するブログ記事のタイトルを指定します。Jot関連のテンプレートタグが利用できます。(その日の一番古いJotのコンテキストが指定されています。)</dd>
+    <dt>body template </dt>
+    <dd>新規に投稿するブログ記事の本文の表示形式を指定します。Jot関連のテンプレートタグが利用できます。Jotの表示部分は、MTJotsタグで囲む必要があります。この際にはアトリビュートは指定しないでください。</dd>
+</dl>
+
+<h2>エントリーの設定</h2>
+
+body_templateの設定では、MTJot関連のテンプレートタグを利用して、まとめログの表示形式を自由にカスタマイズできます。各テンプレートタグの詳細については、<a href="http://blog.aklaswad.com/mtplugins/jotline/">JotLineプラグイン</a>の説明を参照してください。
+デフォルトのbody_templateの設定では、いくつかの独自のCSSセレクタが指定されています。対応するCSSを、「スタイルシート(メイン)」の末尾などに追加してください。以下、指定するスタイルの一例です。(このサイトで使用しているものです。)
+
+<pre>
+.jot-container {
+    width: 100%;
+    float: left;
+}
+p.jot-item {
+    float: left;
+    margin: 0.1em;
+    padding-left: 2.4em;
+}
+p.jot-item-with-embed {
+    width: 320px;
+}
+h4.jot-date {
+    border-bottom: 1px dotted #99bbbb;
+    color: #aaaaaa;
+    margin: 0;
+    font-size: 0.7em;
+}
+h4.jot-date a {
+    color: #0000ff;
+    text-decoration: none;
+}
+.jot-text {
+    margin: 0px;
+}
+.jot-link {
+}
+.jot-tag {
+    margin: 0 0.1em;
+    font-size: 0.8em;
+}
+.jot-tag a {
+    margin: 0 0.2em;
+    text-decoration: none;
+    color: #0000ff;
+}
+.jot-embed {
+    display: block;
+    float: right;
+}
+</pre>
+
+<h2>その他</h2>
+
+ショートメッセージの言及先リンクがtinyurlだった場合、自動的にオリジナルのURLに変換します。

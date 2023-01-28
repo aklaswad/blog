@@ -1,0 +1,26 @@
++++
+mt_entry_id = 432
+date = "2008-08-01T18:18:18+09:00"
+title = "mt:ifStaticとmt:ifDynamicは似て非なる物。"
+categories = []
+
++++
+
+自分は、今見ているテストページがスタティックパブリッシングとダイナミックパブリッシングのどちらによる出力なのか、一目で分かるように、以下のような表示をさせておくことがあります。
+
+<pre class="code">このテンプレートは&lt;mt:ifDynamic&gt;ダイナミック&lt;mt:else&gt;スタティック&lt;/mt:ifDynamic&gt;で構築されました。</pre>
+
+いくらPerl弄っても動作が直らないと思ったらPHPのほうに問題があった。何を言ってい(ry等と言うことにならないためですね。
+
+さて、ここでちょっとした罠があります。<a href="http://www.movabletype.jp/documentation/appendices/tags/ifdynamic.html">mt:ifDynamic</a>と対になるようなテンプレートタグ<a href="http://www.movabletype.jp/documentation/appendices/tags/ifstatic.html">mt:ifStatic</a>では、このような書き方は出来ません。
+
+<pre class="code">このテンプレートは&lt;mt:ifStatic&gt;スタティック&lt;mt:else&gt;ダイナミック&lt;/mt:ifStatic&gt;で構築されました。</pre>
+
+上記テンプレートは、スタティックでは期待通りに動きますが、ダイナミックでは以下のような出力になってしまいます。
+
+<blockquote>このテンプレートはで構築されました。</blockquote>
+
+原因は、mt:ifStaticタグのPHPでの実装が、テンプレートタグとしてではなく、コメント(のような)扱いになっているためです。
+&lt;mt:ifStatic&gt;・・・&lt;/mt:ifStatic&gt;の部分が、再構築より前に強制的にテンプレートから削除されてしまうんですね。なので、その中に何個mt:elseを書こうが、全部消えてしまうわけです。mt:ignoreと同じですね。
+
+これはおそらくダイナミックパブリッシングでは、ページビューごとに構築が行われるため、より細部の高速化を重視しているものかと思われます。mt:ifStaticとmt:ifDynamicで非対称な動作となっているのでちょっと違和感がありますが、上手く使い分けると良いと思います。

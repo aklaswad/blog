@@ -1,0 +1,25 @@
++++
+mt_entry_id = 424
+date = "2008-05-29T22:38:00+09:00"
+title = "TaggingHelperお試し版"
+categories = []
+
++++
+
+Firefox限定ですが、プラグインをインストールせずに動作確認が出来るお試し版を用意してみました。
+Movable Type のブログ記事を書く画面が開いている状態で、以下のコードを全選択コピーして、ブラウザのアドレスバーに直接貼り付けEnter、として実行してみてください。
+
+MT4用。
+<textarea cols="80">javascript:(function(){var th = document.createElement('div');th.id = 'tagging_helper_container';th.innerHTML = '<link rel="stylesheet" href="http://blog.aklaswad.com/tagginghelper.css" type="text/css" /><script type="text/javascript" src="http://blog.aklaswad.com/tagginghelper.js"></script><span id="taghelper_abc" onclick="TaggingHelper.open(\'abc\')" class="taghelper_command">ABC</span><span id="taghelper_count" onclick="TaggingHelper.open(\'count\')" class="taghelper_command">freq</span><span id="taghelper_match" onclick="TaggingHelper.open(\'match\')" class="taghelper_command">match</span><span id="taghelper_close" onclick="TaggingHelper.close()" class="taghelper_command">close</span><div id="tagging_helper_block" style="display: none;"></div>';document.getElementById('tags-field').appendChild(th);})();</textarea>
+
+こちらはMT3用。
+<textarea cols="80">javascript:(function(){var th = document.createElement('div');th.id = 'tagging_helper_container';th.innerHTML = '<link rel="stylesheet" href="http://blog.aklaswad.com/tagginghelper.css" type="text/css" /><script type="text/javascript" src="http://blog.aklaswad.com/tagginghelper3.js"></script><span id="taghelper_abc" onclick="TaggingHelper.open(\'abc\')" class="taghelper_command">ABC</span><span id="taghelper_count" onclick="TaggingHelper.open(\'count\')" class="taghelper_command">freq</span><span id="taghelper_match" onclick="TaggingHelper.open(\'match\')" class="taghelper_command">match</span><span id="taghelper_close" onclick="TaggingHelper.close()" class="taghelper_command">close</span><div id="tagging_helper_block" style="display: none;"></div>';document.getElementById('tag-field').appendChild(th);})();</textarea>
+
+動作が気に入ったら、是非プラグインをインストールして使ってみてください。
+
+<ul>
+	<li><a href="http://blog.aklaswad.com/mtplugins/tagginghelper.html">プラグインのページ</a></li>
+</ul>
+
+ちなみに、IEでは上手く動きませんでした。残念。
+というか、Firefoxはbody中にscript経由で突っ込まれたlinkタグも読み込んでしまうんですね。試してみたら動いたのでびっくりしました。

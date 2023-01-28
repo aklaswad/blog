@@ -1,0 +1,35 @@
++++
+mt_entry_id = 505
+date = "2011-06-16T11:36:47+09:00"
+title = "MTのワンライナーを素早く書く"
+categories = []
+
++++
+
+通常、MTのパッケージはシステムレベルにインストールされません。そのため、lib/ とextlib/ へのパスを実行時に追加する必要があります。
+例えば、EntryオブジェクトをDumpするワンライナーは以下のようになります。
+
+<pre class="code">$ perl -Ilib -Iextlib -MMT -MData::Dumper -e 'MT-&gt;new; print Dumper(MT-&gt;model(&quot;entry&quot;)-&gt;load(42))'</pre>
+
+また、プラグインごとのlibディレクトリへのパスは、MTのインスタンス作成時に動的に追加されます。そのため、MTのプラグインを開発中、コンパイルチェックをしたい時などに直接実行する事ができません。
+
+<pre class="code">$ perl -Ilib -Iextlib -Iplugins/MyPlugin/lib -c plugins/MyPlugin/lib/MyPlugin.pm</pre>
+
+長いですね。
+
+そこで、以下のようなモジュールを、perlのパスの通った場所に設置します。
+
+<pre class="code">package T;
+use strict;
+use warnings;
+use lib qw( lib extlib );
+use MT;
+BEGIN { MT-&gt;new };
+1;</pre>
+
+名前は、T.pmです。これで
+
+<pre class="code">$ perl -MT -MData::Dumper -e 'print Dumper(MT-&gt;model(&quot;entry&quot;)-&gt;load(42))'
+$ perl -MT -c plugins/MyPlugin/lib/MyPlugin.pm</pre>
+
+などと、perlにMT専用オプションが追加されたような錯覚を覚える事が出来ます。

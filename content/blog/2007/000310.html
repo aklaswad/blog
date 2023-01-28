@@ -1,0 +1,100 @@
++++
+mt_entry_id = 310
+date = "2007-12-13T14:30:00+09:00"
+title = "MTOS4.1Boomerで追加されたテンプレートタグ調べました。"
+categories = []
+
++++
+
+<p>ついに公開されたMTOS。本家MTから削られる機能は無いどころか、機能追加された最新版がオープンソースとして公開される模様です。<br />あちこち機能追加があるようですね。色々<strike>仕事そっちのけで</strike>触ってみていますがおもしろいです。</p>
+
+<p>テンプレートタグも、結構な数が追加されているようです。以下、特に気になったいくつかのタグを、実際に試してみました。</p>
+<!--more--><dl>
+    <dt>MTFor</dt>
+    <dd><p>指定した回数繰り返すブロックです。あると間違いなく便利なタグですねー。</p>
+        <p>次のようなモディファイアが利用できるようです。「|」で区切ったものは、同じ動作と思われる物です。</p>
+        <ul>
+	<li>        from | start</li>
+	<li>        to | end</li>
+	<li>        increment | step</li>
+	<li>        glue</li>
+	<li>        var </li>
+        </ul>
+    </dd>
+
+以下のようなテンプレートの出力は、
+<pre class="code">
+&lt;mt:for start="2" end="10" step="2" var="loopnumber"&gt;
+&lt;mt:getvar name="__counter__"&gt;番目のループ、数字は&lt;mt:getvar name="loopnumber"&gt;です。&lt;/mt:for&gt;
+</pre>
+このようになります。
+<blockquote>1 番目のループ、数字は2です。<br />
+2 番目のループ、数字は4です。<br />
+3 番目のループ、数字は6です。<br />
+4 番目のループ、数字は8です。<br />
+5 番目のループ、数字は10です。</blockquote>
+    <dt>MTIncludeBlock</dt>
+    <dd><p>ちょっと難しそうなブロックタグ。どうやらブロックの内側のテンプレートをビルドした結果を、contentsという変数に設定した上で、モジュールやファイルのインクルードを実行するようです。</p>
+<p>たとえば、以下の内容で、「staybold」という名前のモジュールテンプレートを作成します。
+<pre class="code">&lt;b&gt;&lt;mt:getvar name="contents"&gt;&lt;/b&gt;</pre>
+
+で、テンプレート中で以下のように利用すると
+<pre class="code">
+&lt;mt:includeblock module="staybold"&gt;
+    &lt;mt:blogname&gt;
+&lt;/mt:includeblock&gt;
+</pre>
+こう出力されます。
+<blockquote>
+&lt;b&gt;
+    My First Blog
+&lt;/b&gt;
+</blockquote>
+これまた新機能のグローバルテンプレートと組み合わせると便利かもしれません。</p>
+<p>右側のインクルードモジュールへのショートカットにリストされないですね。フィードバックしまっせ。</p>
+
+    <dt>MTSetVars</dt>
+    <dd>複数の変数を一括で設定できるブロックタグです。一行に一つずつ、「変数名」=「値」と言う形で記述します。ブロックの中に書かれたMTタグも展開される模様です。
+
+<pre class="code">
+&lt;mt:setvars&gt;
+blogname=&lt;mt:blogname&gt;
+version=&lt;mt:version&gt;
+&lt;/mt:setvars&gt;
+&lt;mt:getvar name="blogname"&gt;は&lt;mt:getvar name="version"&gt;で作成されています。
+</pre>
+上記テンプレートの出力は次のようになります。
+<blockquote>My First Blogはboomerで作成されています。</blockquote>
+
+    </dd>
+    <dt>MTBlogTemplateSetID</dt>
+    <dd><a href="http://www.sixapart.jp/news/2007/07/11-1350.html">MT4.0リリース時の開発者向けカンファレンス</a>でも触れられていた、テンプレートの一括操作に関するタグでしょうか。詳細不明。いまのところ、管理画面からテンプレートセットを操作できる箇所は見あたりません。coreのレジストリにもTemplateSetについての記載があるのですが、登録されているのはデフォルトのテンプレートセットひとつのみでした。これから機能が追加されていくのでしょう。夢がひろがりんぐですね。</dd>
+</dl>
+
+<p>以下、その他追加されたと思われるテンプレートタグの一覧です。適当にdiffをとっただけなので間違ってたらごめんなさい。</p>
+
+<ul>
+	<li>MTIfBlog?</li>
+	<li>MTIfAuthor?</li>
+	<li>MTAuthorHasEntry?</li>
+	<li>MTAuthorHasPage?</li>
+	<li>MTAuthorUserpicAsset</li>
+	<li>MTEntryAuthorUserpicAsset</li>
+	<li>MTCommenterUserpicAsset</li>
+	<li>MTNotifyScript</li>
+	<li>MTCommenterUsername</li>
+	<li>MTCommenterUserpic</li>
+	<li>MTCommenterUserpicURL</li>
+	<li>MTCommenterID</li>
+	<li>MTCommenterURL</li>
+	<li>MTAuthorUserpic</li>
+	<li>MTAuthorUserpicURL</li>
+	<li>MTEntryClassLabel</li>
+	<li>MTEntryAuthorUserpic</li>
+	<li>MTEntryAuthorUserpicURL</li>
+	<li>MTCommentLink</li>
+	<li>MTCategoryCommentCount</li>
+	<li>wrap_text</li>
+</ul>
+
+<p><strong>記事中の記述については、執筆時点の開発版に基づいています。将来的には色々変更があると思います。</strong></p>

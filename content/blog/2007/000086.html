@@ -1,0 +1,32 @@
++++
+mt_entry_id = 86
+date = "2007-02-26T22:44:48+09:00"
+title = "CustomEditorButton、約0.23"
+categories = []
+
++++
+
+<ins datetime="2008-03-02T15:34:59+09:00">MT4に対応した<a href="http://blog.aklaswad.com/mtplugins/customeditorbutton2.html">CustomEditorButton2</a>を公開しました!</ins>
+
+<a href="http://blog.aklaswad.com/CustomEditorButton_20070227.tar.gz">CustomEditorButton_20070227.tar.gz</a>
+<a href="http://blog.aklaswad.com/CustomEditorButton_20070227.zip">CustomEditorButton_20070227.zip</a>
+
+主な変更点は
+
+<ul><li>ユーザー記述のコードの仕様の一部変更(後述)</li>
+<li>システム管理者以外でも頑張ればボタンを編集できていた点を修正</li>
+<li>IEで動作がおかしかった点を修正(副作用で、マウスオーバーした際の説明が表示されなくなった)</li></ul>
+
+ユーザー記述コード部分の変更点
+
+<ul><li>選択範囲が無い場合でもcodeが実行されるようになった</li>
+<li>変数「txt」に値が代入されていると、textareaの全体をtxtで置き換えるようにした。</li></ul>
+
+うーん、どうもjavascriptの知識不足を露呈してしまいまして、ユーザー記述コードの実行については弄れど弄れど理想の動作をしてくれません。まあ、手軽に任意のコードを挿入したり出来れば充分という気もするので、あまり張り切りすぎず、このままシンプルな仕様にしておこうと思います。
+
+今後追加したい機能としては
+
+<ul><li>ボタンのトグル機能のサポート</li>
+<li>キーボードショートカット対応</li></ul>
+
+等を考えてます。あれをやれとかこれはするなとか、フィードバック何でもください。

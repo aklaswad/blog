@@ -1,0 +1,32 @@
++++
+mt_entry_id = 112
+date = "2007-06-06T13:36:45+09:00"
+title = "mt4beta1でBLOG STATSを動かす方法"
+categories = []
+
++++
+
+<a href="http://blog.aklaswad.com/mt4beta1blogstat.png"><img alt="mt4beta1blogstat.png" src="http://blog.aklaswad.com/mt4beta1blogstat-thumb.png" width="240" height="176" /></a>
+
+MT4betaが出ましたね！早速お試しー。
+
+しばらく、betaの動きや気づいたことなど、こまめにメモしていこうと思います。
+まず、管理画面のダッシュボードに表示される「BlogStats」について。
+上手く行けば、最近のコメント数などについて上のキャプチャ画面のような表示が出ます。
+上手く行かないという場合は、以下のあたりを確認してみると良いかも。
+
+1. ActivityLogに以下のエラーが出ている場合
+<blockquote>Failed to create 'support' directory. (IP:xxx.xxx.xxx.xxx)</blockquote>
+mt-staticディレクトリにsupportというディレクトリを作って、mtが書き込み出来るようにする
+
+2.なにやら動いたが、小さく次のようなエラーが出る
+<blockquote>Error: Can't get file name /support/...</blockquote>
+mt-config.cgiの「StaticWebPath」をきちんと設定する。単に「mt-static」でも良いかも。
+なぜかStaticWebPathを省略した場合は動かなかったので、デフォルトの値が変わっているのかもしれません。というか初期値の書き忘れのようにも見えます;-)
+出来ればフルパスで指定したほうが良さそうです。
+
+また、mt-staticディレクトリを移動する場合、「StaticWebPath」の変更に加えて、「StaticFilePath」という設定を追加して、以下のような形でサーバー内でのフルパスを指定する必要がありそうです。
+
+<pre class="code">StaticFilePath    /home/hogehoge/public_html/moved_static_dir</pre>
+
+ちょっとよくわからない部分も多いので、もう少し調べてみよっとー

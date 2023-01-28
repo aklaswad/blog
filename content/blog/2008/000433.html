@@ -1,0 +1,32 @@
++++
+mt_entry_id = 433
+date = "2008-08-05T15:00:00+09:00"
+title = "iPhone用テンプレートを導入してみました。"
+categories = []
+
++++
+
+cremaさん作成の iPhoneテンプレート for MT を、このブログに導入してみました。iPod TouchやiPhoneをお持ちの方は、アクセスしてみてください。
+
+<form mt:asset-id="85" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="blogaklaswadcomimage.png" src="http://blog.aklaswad.com/images/blogaklaswadcomimage.png" width="320" height="480" class="mt-image-none" style="" /></form>
+
+テンプレートは以下のページで配布されています。すばらしいです。
+<a href="http://cremadesign.jp/blog/iphone/iphone_template_for_mt.html">「iPhoneテンプレートfor MT」を公開いたします。｜iPhone｜東京Webデザイナー日記リターンズ｜crema design</a>
+
+なお、 iPhoneテンプレートはブログURL内の「i」ディレクトリに出力する仕組みになっていますので、iPhoneでアクセスする時に専用のURLにアクセスする必要があります。
+このブログでは、インストールの際に以下のようなカスタマイズを行って、PCでの閲覧時と同じURLになるようにしてみました。
+
+<ul>
+	<li>追加したiPhoneテンプレート内のトップページとブログ記事アーカイブへのリンクを、通常のものに書き直す。
+	<ul><li>画像やcssファイルなどへのリンクは変更しない</li>
+	<li>アーカイブマッピングは、「i」ディレクトリ内へ出力する設定のままにする</li></ul>
+        </li>
+	<li>ブログトップの.htaccessに以下を追加。</li>
+</ul>
+<pre class="code">
+  RewriteCond %{HTTP_USER_AGENT} (iPhone|iPod)
+  RewriteCond %{REQUEST_URI} !^/i/
+  RewriteRule ^(.*)\.html$ /i/$1.html [L]
+</pre>
+
+.htaccessの記述は、利用しているサーバーによっては上手く動かないかもしれません。またその場合、即座にサイト全体が500エラーになってしまうような事態も考えられます。.十分注意して作業を行ってください。

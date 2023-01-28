@@ -1,0 +1,33 @@
++++
+mt_entry_id = 477
+date = "2010-05-28T13:32:26+09:00"
+title = "テンプレートの依存関係を表示するプラグインを作ってみました。"
+categories = []
+
++++
+
+Include Map という名前のプラグインです。
+
+<h3>なにが起こるの？</h3>
+
+<ul>
+	<li>テンプレートの編集画面に、<strong>そのテンプレートをインクルードしている</strong>テンプレートの一覧を表示します。</li>
+	<li>以下のような依存関係の一覧画面を追加します。</li>
+</ul>
+
+<a href="http://blog.aklaswad.com/images/include_map.png"><img alt="include_map.png" src="http://blog.aklaswad.com/assets_c/2010/05/include_map-thumb-500x175-112.png" width="500" height="175" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></a>
+
+<h3>どこでダウンロードするの？</h3>
+
+ダウンロードは<a href="http://github.com/aklaswad/mt-plugin-include-map">github</a>からお願いします。画面右上、上から3段目の「Download Source」ボタンから、最新のパッケージをダウンロードできます。
+
+<h3>使い方は？</h3>
+
+IncludeMapプラグインは、テンプレートの編集を監視し、内部的に依存関係の記録を行います。ですが、現在のところプラグインのインストール時にはこの記録は作成されません。
+運用中のMovable Typeにこのプラグインを追加して利用する場合、事前にブログ/ウェブサイトの一覧画面からPlugin Action > Rebuild Include Mapを実行してください。
+
+インストールに成功すると、メニューの「デザイン > Include Map」から、各ブログごとのテンプレートの依存関係表を開くことが出来ます。この画面はIEでは動作しないかもしれません。
+
+<h3>ご利用は計画的に</h3>
+
+<strong>このプラグインはMTのデータベースに変更を加えます。また、開発途中のため、今後大きな変更が加わる可能性もあります。実運用中の環境へのインストールはお勧めしません。テスト用途でのご利用をご検討ください。</strong>

@@ -1,0 +1,38 @@
++++
+mt_entry_id = 84
+date = "2007-02-15T16:37:33+09:00"
+title = "「MTプラグイン作成」独自ページをmt.cgiから出力させる"
+categories = []
+
++++
+
+「MTプラグイン作成」独自ページをmt.cgiから出力させる
+
+Movable Type のプラグインを作成する際に、プラグイン独自のページを出力させたい場合、そのために独自のcgiを用意する事が多いようです。
+標準バンドルの「StyleCatcher」「WidgetManager」もそうですね。
+ただし、独自cgiを用意する場合、ユーザーがプラグインのインストール時にパーミッションの設定を行う必要があるなど、少しスマートさを欠くように思えます。
+
+実は、Movable Typeの機能でプラグインの登録時に、現在実行中のアプリケーションに機能(メソッド)を追加し、独自のページを作成させることが可能です。
+<!--more-->add_methodsパラメータの設定
+メソッドを追加する場合は、プラグインの登録時にapp_methodsパラメータを追加します。
+
+my $plugin = new MT::Plugin::CustomEditorButton({
+  name => '<MT_TRANS phrase=\'_PLUGIN_NAME\'>',
+  version => $VERSION,
+  description => '<MT_TRANS phrase=\'_PLUGIN_DESCRIPTION\'>',
+  author_name => '<MT_TRANS phrase=\'_PLUGIN_AUTHOR\'>',
+  author_link => 'http://blog.aklaswad.com/',
+  doc_link => 'http://blog.aklaswad.com/',
+  app_methods => {
+    'MT::App::CMS' => {
+      'ceb_save_button' => \&ceb_save_button,
+      'ceb_edit_button' => \&ceb_edit_button,
+      'ceb_list_button' => \&ceb_list_button,
+      'ceb_delete_button' => \&ceb_delete_button,
+      'ceb_install_default' => \&ceb_install_default,
+      'ceb_edit_profile' => \&ceb_edit_profile,
+      'ceb_save_profile' => \&ceb_save_profile,
+    },
+  },
+  l10n_class => 'CustomEditorButton::L10N',
+});

@@ -1,0 +1,25 @@
++++
+mt_entry_id = 323
+date = "2007-12-21T13:26:27+09:00"
+title = "GregPacker'sPublishingを試してみた。"
+categories = []
+
++++
+
+<a href="http://junnama.alfasado.net/online/2007/12/post_153.html">再構築なんてこわくない! (Junnama Online (Mirror))</a>でRebuildAt1stViewプラグインの最新版が公開されていたので、インストールしてみた。
+
+<a href="http://japanese.engadget.com/2007/06/29/iphone-iloser/"><form mt:asset-id="41" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="waiting_for_iphone.png" src="http://blog.aklaswad.com/images/waiting_for_iphone.png" width="300" height="484" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /></form></a>
+
+実は記事中の「GregPacker'sPublishing」という名称は<a href="http://blog.aklaswad.com/2007/000166.html">自分が考えた</a>のだが、そのくせこれまでプラグインを使ったことは無かった。すみません。
+
+で、今回インストールしてみた感想。すっげえ良い。ここまで快適だとは思っていなかった。
+このブログはSQLiteで運用しているのだが、MT標準のダイナミックパブリッシングはSQLite環境では利用できない。(PHPの標準ライブラリが非対応のため。SQLite2では利用可能。詳しくは<a href="http://as-is.net/blog/archives/001270.html">MT 4.0をpdo_sqliteに対応 (ただし非公開) - Ogawa::Memoranda</a>を参照。)
+そのため、これまでずっと長時間の再構築に耐えてきたわけですが、その呪縛からも開放されました。再構築に要する時間が10秒以下とはどういうことか。今までの苦難の日々はなんだったのか、と言いたいです。
+そのうえ、Perlで再構築されるので、プラグインのphp対応を考慮する必要も無い。
+良い事ずくめですねー。
+
+ただ、インストールがちと難しいので、手順について後でまとめてみるつもりです。
+
+新しく追加されたというタスクでの物理再構築については、ちょっと疑問。製作現場的な視点での機能追加との事ですが、一般ユーザーはむしろサイトを最新の状態に保つために、定期的にファイルを削除したいんじゃないかしら。その辺は選択できるようになると良いですね。
+
+何はともあれすばらしいプラグインをありがとうございます。

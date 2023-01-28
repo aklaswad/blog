@@ -1,0 +1,46 @@
++++
+mt_entry_id = 351
+date = "2008-01-12T02:26:09+09:00"
+title = "MTのテンプレートタグでFizzBuzz、SetVarTemplateを使ってやってみた。"
+categories = []
+
++++
+
+<p><a href="http://junnama.alfasado.net/online/2008/01/_mtse.html">junnamaさんが面白いことやってた</a>ので脊髄反射で反応。MT4.01が前提で。</p>
+
+<p>カウントをインクリメントするルーチンをSetVarTemplateを使って外に出してみました。<br />
+まっすぐにやると出来ないのでちょっとかっこ悪い書き方になってしまいました・・・<br />
+この辺は<a href="http://www.movabletype.jp/documentation/designer/enhanced_templatetags.html#op_modifier">MT4.1 で追加される op モディファイア</a>を使えばよりスマートに書けるようになるでしょう。</p>
+
+<pre class="code">
+&lt;mt:setvartemplate name="count_up"&gt;
+    &lt;mt:setvar name="count_3_original" value="$count_3"&gt;
+    &lt;mt:setvar name="count_5_original" value="$count_5"&gt;
+
+    &lt;mt:if name="count_3" eq="2"&gt;&lt;mt:setvar name="count_3" value="0"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_3" eq="1"&gt;&lt;mt:setvar name="count_3" value="2"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_3_original" eq="0"&gt;&lt;mt:setvar name="count_3" value="1"&gt;&lt;/mt:if&gt;
+
+    &lt;mt:if name="count_5" eq="4"&gt;&lt;mt:setvar name="count_5" value="0"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_5" eq="3"&gt;&lt;mt:setvar name="count_5" value="4"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_5" eq="2"&gt;&lt;mt:setvar name="count_5" value="3"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_5" eq="1"&gt;&lt;mt:setvar name="count_5" value="2"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_5_original" eq="0"&gt;&lt;mt:setvar name="count_5" value="1"&gt;&lt;/mt:if&gt;
+&lt;/mt:setvartemplate&gt;
+
+&lt;mt:setvar name="count_3" value="1"&gt;
+&lt;mt:setvar name="count_5" value="1"&gt;
+
+&lt;mt:entries lastn="100"&gt;
+    &lt;mt:setvar name="output_line" value="$__counter__"&gt;
+    &lt;mt:if name="count_3" eq="0"&gt;&lt;mt:setvar name="output_line" value="fizz"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_5" eq="0"&gt;&lt;mt:setvar name="output_line" value="buzz"&gt;&lt;/mt:if&gt;
+    &lt;mt:if name="count_3" eq="0"&gt;
+        &lt;mt:if name="count_5" eq="0"&gt;
+            &lt;mt:setvar name="output_line" value="fizzbuzz"&gt;
+        &lt;/mt:if&gt;
+    &lt;/mt:if&gt;
+    &lt;mt:getvar name="output_line"&gt;
+    &lt;mt:getvar name="count_up"&gt;
+&lt;/mt:entries&gt;
+</pre>

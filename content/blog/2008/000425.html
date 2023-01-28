@@ -1,0 +1,95 @@
++++
+mt_entry_id = 425
+date = "2008-06-19T17:16:53+09:00"
+title = "[mt.js]mt:tabを使ってみる"
+categories = []
+
++++
+
+MT4の管理画面では、かなりしっかりした独自のJavaScriptライブラリ(mt.js)が用意されています。Transformerやalt-tmplでの管理画面のカスタマイズに応用できると良いのですが、残念ながら、今のところまとまったドキュメントも無く、応用するのが難しい状況です。
+
+でもやっぱり、そんな使えるライブラリを放置するともったいないお化けが出るぞ、ということで、mt.jsの機能の中で一番簡単そうな、タブ機能の使い方を調べてみました。
+
+<!--more-->以下、Movable Type の管理画面内でタブ(同ウィンドウ内での一部画面の切り替え)を実現する場合のサンプルコードです。
+以下コードを、ファイルに保存してalt-tmplディレクトリに「dashboard.tmpl」とかの名前で置くと動くと思います。
+
+<pre class="code">&lt;mt:setvarblock name=&quot;page_title&quot;&gt;mt:tab test&lt;/mt:setvarblock&gt;
+&lt;mt:include name=&quot;include/header.tmpl&quot;&gt;
+ 
+&lt;h2&gt;サンプル1 : tab-container の骨格部分&lt;/h2&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+#sample1 .hidden {
+    display: inline !important;
+    color: #aaa;
+}
+&lt;/style&gt;
+&lt;span id=&quot;sample1&quot; mt:delegate=&quot;tab-container&quot;&gt;
+    &lt;span mt:tab=&quot;foo&quot; mt:command=&quot;select-tab&quot;&gt;foo&lt;/span&gt;
+    &lt;span mt:tab=&quot;bar&quot; mt:command=&quot;select-tab&quot;&gt;bar&lt;/span&gt;
+    &lt;span mt:tab=&quot;buz&quot; mt:command=&quot;select-tab&quot;&gt;buz&lt;/span&gt;
+    &lt;span mt:tab-content=&quot;foo&quot;&gt;
+        foofoofoo
+    &lt;/span&gt;
+    &lt;span mt:tab-content=&quot;bar&quot;&gt;
+        barbarbar
+    &lt;/span&gt;
+    &lt;span mt:tab-content=&quot;buz&quot;&gt;
+        buzbuzbuz
+    &lt;/span&gt;
+&lt;/span&gt;
+&lt;mt:include name=&quot;include/footer.tmpl&quot;&gt;</pre>
+
+このサンプルは敢えてタブらしくない動きにしてます。見ての通り、JavaScriptは一切書かずに動きます。
+
+<form mt:asset-id="83" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="mttab.png" src="http://blog.aklaswad.com/images/mttab.png" width="354" height="108" class="mt-image-none" style="" /></form>
+
+先頭の「foo bar buz」の部分をクリックすると、それに応じて後続の部分のstyle属性が変化し、見た目も変わると思います。firebugなどで各要素のclass属性の変化を追ってみてください。
+
+大雑把な動作プロセスとしては、
+
+<ul>
+	<li>mt:delegate="tab-container"が指定された要素の内側では</li>
+	<li>属性「mt:command="select-tab"」が指定された要素がクリックされたら</li>
+	<li>その要素のmt:tab属性で指定されたタブのID(foo)を表示するように</li>
+	<li>mt:tab-content属性を持ち、そこに同じタブID(foo)が指定されている要素のclassから「hidden」を取り除き</li>
+	<li>mt:tab-content属性にタブID(foo)が指定されていない要素にはclass「hidden」を追加する</li>
+</ul>
+
+という動作になります。
+MTの管理画面では事前に設定されているcssにより、「hidden」クラスは非表示となるので、タブらしい動作が実現できるというわけです。
+
+以下、ちょっとだけcssを追加してみたバージョンです。お試し下さい。
+
+<pre class="code">&lt;mt:setvarblock name=&quot;page_title&quot;&gt;mt:tab test&lt;/mt:setvarblock&gt;
+&lt;mt:include name=&quot;include/header.tmpl&quot;&gt;
+ 
+&lt;h2&gt;サンプル2 : css を加えてみる&lt;/h2&gt;
+ 
+&lt;style type=&quot;text/css&quot;&gt;
+#sample2 .tab {
+    border: 1px solid #abc;
+    cursor: pointer;
+}
+ 
+#sample2 .selected-tab {
+    text-decoration: underline;
+    color: #f00;
+}
+ 
+#sample2 .tab-container {
+    border: 1px solid #678;
+}
+ 
+&lt;/style&gt;
+&lt;div id=&quot;sample2&quot; mt:delegate=&quot;tab-container&quot;&gt;
+    &lt;span mt:tab=&quot;foo&quot; mt:command=&quot;select-tab&quot; class=&quot;tab selected-tab&quot;&gt;foo&lt;/span&gt;
+    &lt;span mt:tab=&quot;bar&quot; mt:command=&quot;select-tab&quot; class=&quot;tab&quot;&gt;bar&lt;/span&gt;
+    &lt;div class=&quot;tab-container&quot; mt:tab-content=&quot;foo&quot;&gt;
+        foofoofoo
+    &lt;/div&gt;
+    &lt;div class=&quot;tab-container hidden&quot; mt:tab-content=&quot;bar&quot;&gt;
+        barbarbar
+    &lt;/div&gt;
+&lt;/div&gt;
+ 
+&lt;mt:include name=&quot;include/footer.tmpl&quot;&gt;</pre>

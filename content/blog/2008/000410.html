@@ -1,0 +1,22 @@
++++
+mt_entry_id = 410
+date = "2008-05-02T22:30:00+09:00"
+title = "CustomEditorButton2用の追加プラグイン「EntryUtilButtons」作りました。"
+categories = []
+
++++
+
+HTMLのマークアップ補助ではない系統のボタンもあれば便利だよな、と作ってみました。CustomEditorButton2プラグインと併用することで、ブログ記事編集画面に以下の3 つのボタンを追加します。
+
+<dl>
+<dt><form mt:asset-id="76" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="tag.png" src="http://blog.aklaswad.com/images/tag.png" width="22" height="22" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /></form>タギングボタン</dt>
+<dd>本文中から単語を選択した状態でこのボタンを使うと、選択部分をタグ欄に追加します。普段タグ入力補完ばかりに頼っていたら、タグクラウドの成長が止まってしまった、という症状に効きます。</dd>
+<dt><form mt:asset-id="77" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="now.png" src="http://blog.aklaswad.com/images/now.png" width="22" height="22" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /></form>時間あわせボタン</dt>
+<dd>エントリーの公開日欄を、現在の時刻に合わせます。エントリーを書いていたら日付が変わってしまった。しかし昨日の日付が公開日となるのは納得できない!という場合に便利です。</dd>
+<dt><form mt:asset-id="78" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="kill_tags.png" src="http://blog.aklaswad.com/images/kill_tags.png" width="22" height="22" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;" /></form>タグ削除ボタン</dt>
+<dd>選択範囲に含まれるHTMLタグっぽいもの(<strong>&lt;</strong>と<strong>&gt;</strong>で挟まれた部分)をごっそり削除します。MTデフォルトのリストボタンでリストを作成中、後から追加を行いたいが自分でliとか書きたくない、でもアンドゥも出来ない、なんて場合、このボタンを使って一度マークアップ無しの状態に戻し、行を追加した後に再度リストボタンを適用する、なんて使い道が考えられます。リッチテキストフォーマットでも各種の文字装飾の削除に利用できますが、改行まで消し飛んでしまうので諸刃の剣。</dd>
+</dl>
+
+
+このプラグインを利用するためには、同じ環境に<a href="http://blog.aklaswad.com/mtplugins/customeditorbutton2.html">CustomEditorButton2</a>がインストールされている必要があります。
+ダウンロードする: <form mt:asset-id="79" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/EntryUtilButtons0.1.zip">EntryUtilButtons0.1.zip</a></form>

@@ -1,0 +1,48 @@
++++
+mt_entry_id = 382
+date = "2008-02-02T14:37:33+09:00"
+title = "ActionStreamsではてなブックマーク"
+categories = []
+
++++
+
+アイコンの設置とcssでのli要素への表示が上手くいかずごり押しした。追加サービスの配布を考えるとこれから、て感じかしら。
+
+あと、タグの取得もまだです。
+ちょっとお出かけするのでパッケージングともども、あとで考えます。
+
+config.yamlは大体こんな感じ。
+あちこち変なので、もう少し手を入れる予定。
+
+<pre class="code">
+name: Hatena Bookmark
+id: hatenabookmark
+key: Hatebu
+author_link: http://blog.aklaswad.com/
+author_name: aklaswad
+description: Adds profile service and activity stream for Hatena Bookmark.
+version: 1.0
+plugin_link: http://blog.aklaswad.com/
+profile_services:
+    hatenabookmark:
+        name: Hatena Bookmark
+        url: http://b.hatena.ne.jp/%s
+        icon: images/b.png
+action_streams:
+    hatenabookmark:
+        bookmarks:
+            name: Bookmarks
+            description: Hatena Bookmark
+            fields:
+                - note
+            html_form: '[_1] bookmarked &lt;a href="[_2]"&gt;[_3]&lt;/a&gt; [_4]'
+            html_params:
+                - url
+                - title
+                - note
+            url: 'http://b.hatena.ne.jp/{{ident}}/atomfeed'
+            identifier: url
+            atom:
+                note: summary/child::text()
+                created_on: issued/child::text()
+</pre>

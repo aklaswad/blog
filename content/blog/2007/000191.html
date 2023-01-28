@@ -1,0 +1,151 @@
++++
+mt_entry_id = 191
+date = "2007-08-06T00:20:00+09:00"
+title = "MovableTypeプラグインのコードを書く準備を40秒で済ませる"
+categories = []
+
++++
+
+Movable Type のプラグイン作りはそれはそれは楽しいのです。
+しかし、作り始める時には中々腰が上がらないもの。
+ディレクトリ作ってL10Nの雛形をコピペして。svnにimportしたらテスト用にMTインストールしてプラグインディレクトリに突っ込んで。
+そうです。自分のコードを書き始めるその前の準備が面倒くさいんです。
+
+そんなところに現れた救世主こそ、われらがCheebowさん作、MTPlugin-Starterスクリプトです。
+
+<ul>
+    <li><a href="http://cheebow.info/chemt/archives/2007/07/mt_3.html">ヒビノアワ: MTプラグインを簡単に作る方法</a></li>
+    <li><a href="http://labs.m-logic.jp/2007/07/mt.html">MTプラグインの雛形を作るスクリプト MTPlugin-Starter (エムロジック放課後プロジェクト)</a></li>
+
+</ul>
+
+これは素晴らしいです。雛形があっという間に出来るので、いきなりコードを書き始められます。This is good!
+
+さて、残る大きな手間は、テスト用のMovable Type環境の用意と、作成したプラグインのテスト環境へのインストールです。ココの作業を簡略化できれば、もう怖いもの無しではないでしょうか。そこで、ちょっと工夫してみました。<!--more-->最終的な目標は、次の通りです。
+
+<ul>
+	<li>Movable Typeのアプリのディレクトリにプラグインをインストールする手間を省きたい</li>
+	<li>svnでのバージョン管理を容易にしたい</li>
+</ul>
+
+この二つは表裏一体ですね。折角MTPlugin-Starterを使ってプラグインの雛形をさくさく作ったとしても、動作確認をするためにいったんsvn commitしてからテスト環境のMTディレクトリにexportして・・・などとやっていたのでは能率が悪いです。逆にプラグインの作業ディレクトリにMTのパッケージをまんま展開する方法も考えられますが、今度はsvn addしたりするのが面倒になりますし、結局MTを一つ新しくインストールしているわけですから、それだけでも結構な手間がかかります。
+
+<h3>プラグインを読み込めるようにする</h3>
+
+つまり、プラグインのパッケージを展開したままの状態で、既存のMTがそのプラグインを認識すればよいわけです。
+
+これを実現するために、mt-config.cgiに以下のように追記してみます。
+
+<pre class="code">
+PluginPath /home/melody/public_html/cgi-bin/mtdev/mt/plugins
+PluginPath /home/melody/public_html/cgi-bin/mtdev/MyPlugin/plugins/
+</pre>
+
+上の例では、ユーザー「melody」が自分のホームディレクトリ以下のpublic_html/cgi-bin内に「mtdev」ディレクトリを作り、その中で作業を行おうとしていることを想定しています。以下、この「mtdev」ディレクトリを作業の中心にします。
+mtdev/mtがMTのアプリのインストールディレクトリで、MyPluginディレクトリがプラグインのパッケージです。
+この状態でmtdev/mt/mt-config.cgiに上の二行を追加すると、なんと、mtのアプリにプラグインを突っ込まなくてもプラグインを認識してくれます。既存のプラグインもきちんと読み込みます。ちなみに下の行だけだと既存のプラグインが読み込まれなくなってしまいますのでご注意ください。
+
+<h3>mt-staticも実行時にマージされるようにする</h3>
+
+話はこれでは終わりません。プラグインのパッケージには、plugins(主にPerlで書かれたプラグインのコア部分がはいってます)ディレクトリの他にも、様々なディレクトリが含まれています(無い場合もある)。
+「mt-static」や「php」等ですね。
+
+「mt-static」ディレクトリには、プラグインが使用する画像やcssなどの静的ファイルが入っています。実際にプラグインをインストールする際には、「MyPlugin/mt-static/plugins/MyPlugin」というディレクトリを、mtの同名のディレクトリにコピーすれば動くよ、という意味で、pluginsディレクトリの外に置かれています。(という慣習になっています。)
+では早速こいつも実際にインストールはせずに利用可能にしてみましょう。
+とりあえずmt-config.cgiにプラグインのmt-staticディレクトリを利用するように書いてみます。
+
+<pre class="code">StaticWebPath http://example.com/cgi-bin/mtdev/MyPlugin/mt-static/</pre>
+
+しかし、これだけでは駄目です。これではMTの管理画面が普段読んでいるcssやらjavascriptにアクセスできなくなります。StaticWebPathの性質上、複数指定することもできません。
+mt-staticディレクトリの中身は普通にユーザーがブラウザから閲覧する際にアクセスが行われるので、apacheの設定で何とかします。apacheの黒魔術ことmod_rewriteを利用します。
+
+<pre class="code">
+&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^MyPlugin/mt-static/(.*)$ /~melody/cgi-bin/mtdev/mt-static/$1 [L,QSA]
+&lt;/IfModule&gt;
+</pre>
+
+mtdevディレクトリに.htaccessを作成し、上記の内容を仕込みます。これで、プラグインのmt-staticにアクセスしてファイルが無かった場合には、apacheが自動的に本来のmt-staticディレクトリに探しに行ってくれます。(mt-staticディレクトリは一階層上に移動してます。)
+
+<h3>mt-config.cgiが自動的に切り替わるようにする</h3>
+
+まだまだ終わりません。mt-config.cgiにプラグイン固有の情報が入ってしまったことで、新しいプラグインを作成するときには、mt-confg.cgiを書き換えなくてはならなくなってしまいました。新規プラグインの作成時にmt-config.cgiを修正するだけなら構わないのですが、以前のプラグインの動作を確認するような場合に毎回書き換える必要があるとなると、ちょっと、いや、かなり嫌ですね。
+
+そこで、各プラグイン毎に一つずつのmt-config.cgiを用意して、動作確認をしたいプラグインに応じて自動的に、MTが読み込むmt-config.cgiが切り替わるようにします。
+
+MTが構成ファイルとして読み込むファイルは、デフォルトではMTディレクトリの「mt-config.cgi」ファイルとなっていますが、実はシステムの環境変数に「MT_CONFIG」として指定することで変更が可能です。
+再びapacheの十徳ナイフことmod_rewriteの出番です。mod_setenvifもあわせて利用します。
+
+<pre class="code">
+&lt;IfModule mod_rewrite.c&gt;
+    RewriteRule ^x/([^/]+?)/(.*)$ /~melody/cgi-bin/mtdev/mt/$2 [L,QSA,E=MT_CONFIG:$1-config.cgi]
+&lt;/IfModule&gt;
+&lt;IfModule mod_setenvif.c&gt;
+    SetEnvIf REDIRECT_MT_CONFIG &quot;^(.*)$&quot; MT_CONFIG=$1
+&lt;/IfModule&gt;
+</pre>
+
+これまでの例に倣って言えば、「/~melody/cgi-bin/mtdev/x/MyPlugin/mt.cgi」というURLへのアクセスに対して、環境変数MT_CONFIGに「MyPlugin-config.cgi」をセットして「/~melody/cgi-bin/mtdev/mt/mt.cgi」にアクセスした場合の結果が返却されます。「x」ディレクトリは実在する必要はありません。
+
+ちょっとmod_rewriteの動作が良く分からず、なぜかMT_CONFIGにセットしたはずの値がREDIRECT_MT_CONFIGにセットされてしまうため、mod_setenvifで再設定して回避しています。もっとスマートなやり方があったら誰か教えてください。
+
+また、構成ファイルの設置場所は、MTディレクトリから移動は出来ないようで、他の場所に置くといろいろ不具合が出ます。回避することも出来そうですが手間が増えるので止めておきます。
+
+<h3>最後にphpも・・・</h3>
+
+残るはphpです。phpはテンプレートタグをダイナミックパブリッシングで動作させるために必要となりますね。テンプレートタグの動作を記述したphpファイルを「MTディレクトリ/php/plugins」というディレクトリに放り込むことで動作します。
+これは・・・実は、どうにも出来ませんでした!作戦失敗です!
+ここまで長々読んでそれかよ!と憤慨された方どーもすみません。
+
+ただし、それはMT3.3までの話。MT4からはプラグインのディレクトリにphpという名前のディレクトリを作ってファイルをおいて置くと、phpプラグインとして読み込んでくれるように拡張されています。今回の例では「MyPlugin/plugins/MyPlugin/php」以下に。WidgetManagerなどのデフォルトプラグインもこの構成に変更になっています。ですから、MT4上で開発する場合には、同じ構成にしておけば最初のPluginPathの設定の段階でphpファイルについても自動的に読み込まれています。
+というところでお茶を濁してください。
+
+<h3>まとめ</h3>
+
+今回作成した環境で新規にプラグインを作成する場合、以下の手順になります。
+
+<ol>
+	<li>mtdevディレクトリに移動</li>
+	<li>mt-plugin-start.plでプラグインの雛形を作る</li>
+	<li>(プラグイン名)-config.cgiファイルを作成し、中身も名前にあわせて書き換える</li>
+	<li>(プラグイン名)-configファイルをmtディレクトリに放り込む</li>
+</ol>
+
+これだけで、ブラウザからmtdev/x/(プラグイン名)にアクセスすれば即座に動作確認が出来るようになりました。
+プラグインディレクトリは完全にMTディレクトリから切り離され、ファイルを移動したりする必要はありません。(MT3のphpファイル以外)。
+また、プラグインディレクトリが独立しているので、svn add --force *なんてしても余計なファイルが混じったりもしません。
+今回作成したMyPlugin-config.cgiはこうなりました。
+
+<pre class="code">
+CGIPath http://example.com/~melody/cgi-bin/mtdev/x/MyPlugin/
+ObjectDriver DBI::mysql
+Database     mtdev
+DBUser       melody
+DBPassword   nelson
+PluginPath   /home/melody/public_html/cgi-bin/mtdev/mt/plugins
+PluginPath   /home/melody/public_html/cgi-bin/mtdev/MyPlugin/plugins/
+StaticWebPath  /~melody/cgi-bin/mtdev/MyPlugin/mt-static/
+StaticFilePath /home/melody/public_html/cgi-bin/mtdev/mt-static/
+</pre>
+
+データベース設定は、共通にしてもプラグイン毎に変えてもどっちでも良いかなと思います。
+mtdevディレクトリに設置した.htaccessはこんな感じ。
+
+<pre class="code">
+Options -Indexes
+&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([^/]+?)/mt-static/(.*)$ /~melody/cgi-bin/mtdev/mt-static/$2 [L,QSA]
+    RewriteRule ^x/([^/]+?)/(.*)$ /~melody/cgi-bin/mtdev/mt/$2 [L,QSA,E=MT_CONFIG:$1-config.cgi]
+&lt;/IfModule&gt;
+&lt;IfModule mod_setenvif.c&gt;
+    SetEnvIf REDIRECT_MT_CONFIG &quot;^(.*)$&quot; MT_CONFIG=$1
+&lt;/IfModule&gt;
+</pre>
+
+後はconfig.cgiの自動生成を行うスクリプトを組んでしまえば、完璧かな〜と思います。おしまい。

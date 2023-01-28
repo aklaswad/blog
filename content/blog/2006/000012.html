@@ -1,0 +1,87 @@
++++
+mt_entry_id = 12
+date = "2006-02-26T13:17:07+09:00"
+title = "MTCalc0.7"
+categories = []
+
++++
+
+とりあえず、昨日考えていた機能を実装したものができた。
+
+しかし、現在のところエラーチェックが殆どされていない。これはまずい。
+そして、式の中の変数が評価できない場合の対応が難しい。
+MTタグに関しては、文字列が帰ってきた場合、コンテナタグなどを呼んだ場合、そもそも存在しないタグを呼んだ場合など。
+VAR変数でも、文字列の場合と、存在しない場合がある。
+
+現状では、すべて 0 扱いして無理やり評価させているのだが、実運用においては再構築時にエラーを出したほうがよいように思える。
+これもアトリビュートで指定して、処理を選択できるようにするのがいいだろうか。<!--more-->とりあえず現在のコード。
+
+<blockquote>
+
+<span class="com">#Calc&nbsp;Plugin&nbsp;of&nbsp;Movable&nbsp;Type&nbsp;3.2&nbsp;#aklaswad&nbsp;2006&nbsp;feb</span>
+
+
+package&nbsp;MT::Plugin::Calc;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">#このソースコードのモジュール名を宣言</span>
+use&nbsp;strict;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">#紳士的に定義を行うことをコードに対して強制する</span>
+use&nbsp;base&nbsp;'MT::Plugin';&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">#謎</span>
+use&nbsp;vars&nbsp;qw($VERSION);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">#バージョン</span>
+$VERSION&nbsp;=&nbsp;'0.7';
+
+use&nbsp;MT;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">#MTのモジュールを使用</span>
+use&nbsp;MT::Template::Context;&nbsp;&nbsp;&nbsp;<span class="com">#タグを追加するときに必要？</span>
+
+<span class="com">#プラグインのコンストラクタ</span>
+my&nbsp;$plugin&nbsp;=&nbsp;MT::Plugin::Calc-&gt;new({
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&gt;&nbsp;'MT&nbsp;Calculator',
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;=&gt;&nbsp;"calculator",
+&nbsp;&nbsp;&nbsp;&nbsp;doc_link&nbsp;=&gt;&nbsp;'http://www.sixapart.jp',
+&nbsp;&nbsp;&nbsp;&nbsp;author_name&nbsp;=&gt;&nbsp;'aklaswad',
+&nbsp;&nbsp;&nbsp;&nbsp;author_link&nbsp;=&gt;&nbsp;'http://www.aklaswad.com/',
+&nbsp;&nbsp;&nbsp;&nbsp;version&nbsp;=&gt;&nbsp;$VERSION,
+});
+
+<span class="com">#プラグインのクラスを&nbsp;Movable&nbsp;Type&nbsp;に渡す</span>
+MT-&gt;add_plugin($plugin);&nbsp;&nbsp;&nbsp;&nbsp;
+
+<span class="com">#追加するタグの名前とメソッドのアドレスを渡す</span>
+MT::Template::Context-&gt;add_tag(Calc&nbsp;=&gt;&nbsp;\&tag_calc);&nbsp;&nbsp;&nbsp;
+
+<span class="com">#タグを処理するメソッド</span>
+<span class="com">#戻り値がそのままドキュメントに書き出される</span>
+sub&nbsp;tag_calc&nbsp;{
+&nbsp;&nbsp;<span class="com">#引数を取り出す</span>
+&nbsp;&nbsp;my&nbsp;($ctx,&nbsp;$args)&nbsp;=&nbsp;@_;
+&nbsp;&nbsp;my&nbsp;$exoriginal&nbsp;=&nbsp;$args-&gt;{"expr"};
+&nbsp;&nbsp;my&nbsp;$ex&nbsp;=&nbsp;$args-&gt;{"expr"};
+
+&nbsp;&nbsp;<span class="com">#MTタグを検索・置換</span>
+&nbsp;&nbsp;while(&nbsp;$ex&nbsp;=~&nbsp;/MT([A-Za-z]+)/&nbsp;){
+&nbsp;&nbsp;&nbsp;&nbsp;my&nbsp;$handler&nbsp;=&nbsp;$ctx-&gt;handler_for($1);
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(defined($handler))&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my&nbsp;$tagvalue&nbsp;=&nbsp;$handler-&gt;($ctx,&nbsp;{&nbsp;%$args&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ex&nbsp;=~&nbsp;s/MT$1/$tagvalue/;
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ex&nbsp;=~&nbsp;s/MT$1/0/;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span class="com">#MTGetVar変数を検索・置換</span>
+&nbsp;&nbsp;while(&nbsp;$ex&nbsp;=~&nbsp;/VAR([A-Za-z0-9]+)/&nbsp;){
+&nbsp;&nbsp;&nbsp;&nbsp;my&nbsp;$varvalue&nbsp;=&nbsp;$ctx-&gt;{__stash}{vars}{$1};
+&nbsp;&nbsp;&nbsp;&nbsp;$ex&nbsp;=~&nbsp;s/VAR$1/$varvalue/;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;
+&nbsp;&nbsp;<span class="com">#式を評価</span>
+&nbsp;&nbsp;my&nbsp;$ret&nbsp;=&nbsp;eval($ex);
+&nbsp;&nbsp;die&nbsp;"MTCalc&nbsp;can't&nbsp;evaluate&nbsp;this&nbsp;line:$ex:"&nbsp;if&nbsp;$@;
+&nbsp;&nbsp;if&nbsp;($args-&gt;{"setvar"}){
+&nbsp;&nbsp;&nbsp;&nbsp;$ctx-&gt;{__stash}{vars}{$args-&gt;{"setvar"}}&nbsp;=&nbsp;$ret;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;$ret;
+
+&nbsp;&nbsp;<span class="com">#デバッグ用の戻り値</span>
+&nbsp;&nbsp;<span class="com">#"$exoriginal&nbsp;==&nbsp;$ex&nbsp;=&nbsp;$ret";</span>
+}
+
+1;
+
+</blockquote>

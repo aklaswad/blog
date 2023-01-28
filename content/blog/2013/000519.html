@@ -1,0 +1,28 @@
++++
+mt_entry_id = 519
+date = "2013-04-19T13:31:47+09:00"
+title = "[git] コミットメッセージの最初の空行までがsubjectです。"
+categories = []
+
++++
+
+コミットメッセージの最初の空行までがsubjectです。最初の一行、ではありません。
+
+subjectは、<code>git log --oneline</code>とか<code>git log --format="%s"</code>とかした時に使われます。なので、
+
+<pre>Clean up my room
+* Wash whole dishes
+* Mop the bathtub
+* Throw away magazines
+</pre>
+
+このようなコミットメッセージの書き方をすると、自分の中ではsubjectと本文がわかれていても、
+
+<pre>
+$ git log --oneline
+988f5e7 Clean up my room * Wash whole dishes * Mop the bathtub * Throw away magazines
+</pre>
+
+こんな風につながって一行になってしまいとても読みにくいです。
+
+今度から気をつけましょう > 自分

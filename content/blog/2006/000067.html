@@ -1,0 +1,18 @@
++++
+mt_entry_id = 67
+date = "2006-12-19T16:59:02+09:00"
+title = "Filter::EntryFullText　WorldSoccerPlus"
+categories = []
+
++++
+
+これは待っていても誰も作らないだろうということで、見よう見まねで作ってみた。
+
+<pre class="code">
+author: aklaswad
+handle: http://wsp\.sponichi\.co\.jp/.*
+extract: &lt;div id="etbody"&gt;(.*?)&lt;/div&gt;\n&lt;div id="etmore"&gt;(.*?)&lt;/div&gt;
+extract_capture: body_1 body_2
+extract_after_hook: |
+  $data-&gt;{body} = "&lt;p&gt;".$data-&gt;{body_1}."&lt;/p&gt;&lt;p&gt;".$data-&gt;{body_2}."&lt;/p&gt;";
+</pre>

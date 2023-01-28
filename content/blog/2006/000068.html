@@ -1,0 +1,18 @@
++++
+mt_entry_id = 68
+date = "2006-12-23T17:12:04+09:00"
+title = "EntryFullText - SoccerUndergroundBlog"
+categories = []
+
++++
+
+サッカー関連サイト用EFT第二弾。こんな雑なつくりで良いのかしらん。
+
+assets/plugins/Filter-EntryFullText/soccer_UG_blog.yaml
+
+<pre class="code">
+author: aklaswad
+handle: http://soccerunderground\.com/blog/.*
+extract: &lt;div class="blogbody"&gt;.*?&lt;/div&gt;&lt;/h3&gt;(.*?)&lt;div class="posted"&gt;
+extract_capture: body
+</pre>

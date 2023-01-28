@@ -1,0 +1,60 @@
++++
+mt_entry_id = 475
+date = "2010-05-05T01:17:43+09:00"
+title = "アーカイブ一覧をAjaxでツリー展開するカスタマイズ"
+categories = []
+
++++
+
+今回のアップグレード/リニューアル作業で、Archive Indexページにちょっとしたカスタマイズをしてみました。
+<a href="http://blog.aklaswad.com/archives.html">見ていただければ</a>わかると思うのですが、月別アーカイブ一覧のリストの項目をクリックする事で、その月のエントリー一覧を展開する事が出来るようになっています。
+予告通り、カスタマイズの詳細を公開しておきます。<!--more-->基本的な考え方としては、MT側であらかじめ、ツリー展開する中身の部分だけを出力するためのアーカイブを作成し、静的なHTMLファイル群として出力しておき、リストの項目のクリック時に出力されたファイルを動的にロードして表示する、という仕組みです。
+以下のような手順で作業を行いました。
+
+<h3>ボックスの内側を表示する軽量なテンプレートを作る</h3>
+簡素なブログ記事一覧をHTMLとして表示するようなテンプレートを、ブログ記事リストのアーカイブテンプレートとして作成します。この部分が、ツリー展開時に中身として表示されます。
+
+<pre class="code">&lt;mt:entries&gt;
+    &lt;mt:if __first__&gt;&lt;ul&gt;&lt;/mt:if&gt;
+        &lt;li&gt;&lt;a href=&quot;&lt;mt:entryPermalink&gt;&quot;&gt;&lt;mt:entryTitle&gt;&lt;/a&gt;&lt;p&gt;&lt;mt:entryBody remove_html=&quot;1&quot; trim_to=&quot;40&quot;&gt;...&lt;/p&gt;&lt;/li&gt;
+    &lt;mt:if __last__&gt;&lt;/ul&gt;&lt;/mt:if&gt;
+&lt;/mt:entries&gt;</pre>
+これだけを、テンプレートの内容として保存します。
+
+<h3>アーカイブマッピングを設定する</h3>
+
+作成したアーカイブテンプレートに、以下のようにマッピングを作成します。「skelton」の部分は何でも構いません。
+<pre class="code">%y/%m/skelton.html</pre>
+これで、ツリー表示の内側部分を、月ごとに独立したHTMLファイルとして出力できます。マッピングの保存後、再構築しておきましょう。
+
+<h3>アーカイブページでAjaxでの読み込みを行う</h3>
+
+まず、jQueryをロードするためのコードを、Archive Indexテンプレートのhead部分に追加します。
+<pre class="code">&lt;script src=&quot;&lt;mt:StaticWebPath&gt;jquery/jquery.js&quot;&gt;&lt;/script&gt;
+</pre>
+今回は手抜きをしてMT5に同梱されているjQueryをロードしましたが、テーマに同梱する場合等を考えて、jQueryライブラリはブログディレクトリにアップロードし、それを読み込むようにした方がベターだと思います。
+
+次に、リストの項目表示部分に「load-skelton」というクラスの指定を追加します。
+<pre class="code">&lt;li class=&quot;load-skelton&quot; url=&quot;&lt;$mt:ArchiveLink$&gt;skelton.html&quot;&gt;&lt;$mt:ArchiveTitle$&gt;&lt;/li&gt;
+</pre>
+
+そして、load-skeltonクラスの要素をclickした時に、先ほど作成した展開用テンプレートを読み込む動作を指定するためのjQueryのイベントを設定します。今回は、以下のようなコードを&lt;/body&gt;タグの直前に追加しました。
+
+<pre class="code">&lt;script type=&quot;text/javascript&quot;&gt;
+$('.load-skelton').click(function(){
+    var toggle = $(this).attr('opened');
+    if ( toggle &gt; 0 ) {
+        $(this).find('.preview-box').remove();
+        $(this).removeAttr('opened');
+    }
+    else {
+        var url = $(this).attr('url');
+        $(this).append($('&lt;div&gt;').addClass('preview-box').load(url));
+        $(this).attr('opened', 1);
+    }
+});
+&lt;/script&gt;</pre>
+
+<h3>まとめ</h3>
+カスタマイズは以上です。
+肝は、MTのアーカイブを利用して事前に短い静的HTMLファイルを出力しておく事によって、ツリーの展開を動的に、かつ軽快に動作させることが簡単に実現できるという点だと思います。いやあ、MTって本当に便利ですね。enjoy!

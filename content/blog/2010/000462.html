@@ -1,0 +1,104 @@
++++
+mt_entry_id = 462
+date = "2010-01-05T21:49:19+09:00"
+title = "MTMLからTwitterにアクセスするプラグイン書いた。"
+categories = []
+
++++
+
+簡単なTwitterのbotを作ってみようと思ったのですが、普通にperlとかで書くのもつまらないので、MTMLでボットを書けるようなプラグインを作ってみました。
+
+<ul>
+	<li><a href="http://github.com/aklaswad/mt-plugin-mtml-twitter-api">aklaswad's mt-plugin-mtml-twitter-api at master - GitHub</a></li>
+</ul>
+
+右上の「Download Source」ボタンからダウンロードできます。なかなかサックリ書けたと思います。
+
+そして、早速、占いをするボットを作ってみました。
+
+<ul>
+	<li><a href="http://twitter.com/mturanai">MT占い (mturanai) on Twitter</a></li>
+</ul>
+
+Twitterで@mturanaiあてに投稿すると、占いらしき返事を返します。お暇な方は遊んでみてください。
+
+以下プラグインの説明。
+<!--more-->MTMLTwitterAPIプラグインをインストールすると、以下の二つのブロックタグが利用可能になります。
+
+<ul>
+	<li>mt:TwitterMentions</li>
+	<li>mt:TwitterStatusUpdate</li>
+</ul>
+
+<h4>使用上の注意</h4>
+
+これらのタグが動作するたび(=これらのタグが書かれたテンプレートが再構築されるたび)に、ネット経由でのAPIアクセスが発生します。そのため、通常の更新を行うサイトのテンプレートで利用する目的には向きません。最悪、致命的なパフォーマンス低下を起こし更新不能となる場合も考えられますので、十分ご理解いただいた上でご利用ください。
+
+<h4>mt:TwitterMentions</h4>
+
+特定ユーザーに対しての@付き発言を取得し、取得した発言の分だけ繰り返しを行うブロックタグです。
+ブロック内では、各発言についての情報が以下の変数に設定されます。
+
+<ul>
+	<li>id</li>
+	<li>text</li>
+	<li>name</li>
+	<li>screen_name</li>
+</ul>
+
+以下のモディファイアを指定できます。
+
+<dl>
+<dt>endpoint</dt>
+<dd>エンドポイントのURLを指定します。通常は指定する必要はありません。
+twitterのAPI仕様が変更になった場合や、twitter互換の別サービスを利用する場合に指定すると良いと思います。</dd>
+<dt>username</dt>
+<dd>twitterAPIを利用するユーザーのログインネームを指定します。必須です。</dd>
+<dt>password</dt>
+<dd>twitterAPIを利用するユーザーのパスワードを指定します。必須です。</dd>
+<dt>timeout</dt>
+<dd>リクエストのタイムアウトまでの時間を設定します。デフォルトでは10秒になっています。</dd>
+<dt>fatal_error</dt>
+<dd>何らかの理由でリクエストが失敗した場合に再構築を終了したい場合には1を指定してください。デフォルトでは、リクエストに失敗しても致命的エラーとはならず、再構築が続行されます(エラーの記録はMTのログから確認できます。)</dd>
+<dt>new_mentions_only</dt>
+<dd>twitterAPIから取得したデータには、最近の(２０?)件のデータが含まれています。デフォルトでは、一度でも取得した事のあるデータに関しては処理をスキップする仕様になっています。もし何らかの理由で常に(20?)件のデータの処理を行いたい場合、<em>new_mentions_only=0</em>を指定してください。</dd>
+<dt>namespace</dt>
+<dd>同一MT上で複数のTwitterMentionsタグを運用しており、上記所得済みデータの判定を使い分けたい場合に指定します。</dd>
+</dl>
+
+
+<h4>mt:TwitterStatusUpdate</h4>
+
+Twitterに対して発言を行うブロックタグです。mt:TwitterStatusUpdateタグで囲まれた内容の再構築結果をTwitterにポストします。
+
+<dl>
+<dt>endpoint</dt>
+<dd>エンドポイントのURLを指定します。通常は指定する必要はありません。
+twitterのAPI仕様が変更になった場合や、twitter互換の別サービスを利用する場合に指定すると良いと思います。</dd>
+<dt>username</dt>
+<dd>twitterAPIを利用するユーザーのログインネームを指定します。必須です。</dd>
+<dt>password</dt>
+<dd>twitterAPIを利用するユーザーのパスワードを指定します。必須です。</dd>
+<dt>timeout</dt>
+<dd>リクエストのタイムアウトまでの時間を設定します。デフォルトでは10秒になっています。</dd>
+<dt>fatal_error</dt>
+<dd>何らかの理由でリクエストが失敗した場合に再構築を終了したい場合には1を指定してください。デフォルトでは、リクエストに失敗しても致命的エラーとはならず、再構築が続行されます(エラーの記録はMTのログから確認できます。)</dd>
+</dl>
+
+<h4>使い方</h4>
+
+ブログのメインページにTwitterStatusUpdateを設置して再構築頻度を観察するという使い方もあるかと思いますが、やっぱりボットを作るのが一番の醍醐味かと思います。
+
+以下は、実際に@mturanaiを運用しているテンプレートです。
+
+<script src="http://gist.github.com/269265.js"></script>
+
+どっさりと配列を用意した上で、ランダムに配列の中身を取り出して返信しています。
+(MTのデフォルトでは乱数を所得するタグはありませんが、twitterの更新速度が充分速いので、twitterの発言idを乱数として利用しています。)
+
+実際にボットとして運用するために、ローカルマシン上で動作しているMTにテンプレートを作成しておき、cronで定期的に再構築を行っています。
+
+<pre class="code">*/2 * * * * cd /Users/aklaswad/Sites/cgi-bin/greyhound; ./tools/mt-tmpl-test -b=2 -t=186
+</pre>
+
+enjoy!

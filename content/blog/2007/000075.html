@@ -1,0 +1,35 @@
++++
+mt_entry_id = 75
+date = "2007-01-26T00:12:28+09:00"
+title = "FastCGI"
+categories = []
+
++++
+
+Movable Type が3.34でFastCGIに対応したということで、自宅Ubuntuで試してみた。
+結果。
+
+滅茶苦茶はええええくなった。なんだこりゃ。
+SQLiteで試したのだが、エントリーの投稿とか全然違う。
+なんにせよ、導入が楽な上効果抜群のようなので、超おすすめです。
+
+以下、Ubuntu Serverでの導入で苦労した点の個人メモ。
+
+・FastCGIのインストール
+aptitude searchで見つかる「fcgid」は別物。MTは対応していないようだ。
+aptで入れる場合のパッケージ名は「libapache2-mod-fastcgi」です。
+見つからない場合は、適当に/etc/apt/source.listにリポジトリを追加すること。
+
+で、
+sudo a2enmod fastcgi
+sudo /etc/init.d/apache2 restart
+とすればFastCGIが有効な状態でApach2が起動する。
+
+・MT実行時のapacheの設定
+以下参考。
+<a href="http://www.lifewiki.net/sixapart/HostingMTUnderFastCGI">Running Movable Type Under FastCGI</a>
+要するに、.htaccessか、/etc/apache2/sites-available/defaultなどのhttpd.conf系ファイルで、cgiファイルをfastcgiで実行するように指定してやればよい。それだけで問題なく動くみたい。
+
+#AddHandler cgi-script .cgi
+AddHandler fastcgi-script .cgi
+

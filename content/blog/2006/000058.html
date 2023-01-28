@@ -1,0 +1,38 @@
++++
+mt_entry_id = 58
+date = "2006-07-26T00:34:40+09:00"
+title = "StyleRepositoryToolKit"
+categories = []
+
++++
+
+現在、StyleCatcher用の、リポジトリ公開ツールキットを作成中です。
+上手く行けば、リポジトリ公開をmt上で行えるので、手間が大分削減されるはずです。
+
+<a href="http://trac.aklaswad.com/trac.cgi/file/mtplugins/StyleRepositoryToolKit.pl?rev=19&format=raw">ダウンロード</a><!--more--><h3>概要</h3>
+StyleRepositoryToolKitプラグインは、StyleCatcherのスタイルリポジトリの公開を簡便化することを目的としたMovableType用プラグインです。
+このプラグインを使用することにより、サーバー上に設置されたスタイルリポジトリのスタイルの一覧や、スタイルの詳細な情報ページを、MovableTypeのテンプレートとして設計することが出来ます。
+
+スタイルリポジトリの作成方法については、以下のsixapartサイトのページに説明があります。
+<a title="http://www.sixapart.jp/pronet/developers/movabletype/stylelib.html" href="http://www.sixapart.jp/pronet/developers/movabletype/stylelib.html">http://www.sixapart.jp/pronet/developers/movabletype/stylelib.html</a>
+<h3>コンテナタグ</h3>
+<h4>MTSrtkStyles</h4>
+指定されたディレクトリでcssファイルを検索して、見つかった数だけループするコンテナタグです。
+<ul><li>localpath<br />リポジトリのサーバー内でのパスを指定します。
+</li><li>webpath<br />リポジトリが公開されるURLを指定します。
+</li></ul><h3>変数タグ</h3>
+以下のタグは、コンテナタグ「MTSrtkStyles」の内部でのみ使用できます。
+<h4>MTSrtkStyleURL</h4>
+cssファイルへのurlを表示します。
+<h4>MTSrtkFileName</h4>
+cssのファイル名を表示します。
+<h4>MTSrtkLinkTag</h4>
+リポジトリ作成用のlinkタグを表示します。
+<h4>MTSrtkLargeImageURL</h4>
+サムネイル大へのurlを表示します。
+<h4>MTSrtkSmallImageURL</h4>
+サムネイル小へのurlを表示します。
+<h4>MTSrtkMetadata</h4>
+cssに埋め込まれたメタデータを表示します。
+<ul><li>name<br />メタデータのキーを指定します。
+</li></ul>

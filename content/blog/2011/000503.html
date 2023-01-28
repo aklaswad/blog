@@ -1,0 +1,27 @@
++++
+mt_entry_id = 503
+date = "2011-04-27T22:50:35+09:00"
+title = "Code Mirror 2 を触ってみた。"
+categories = []
+
++++
+
+JavaScriptで動作するエディタCodeMirrorが、フルスクラッチで書き直された新しいバージョンCodeMirror2をリリースしていたので試してみました。
+
+	<li><a href="http://codemirror.net/">http://codemirror.net/</a></li>
+
+<h3>CodeMirrorって何？</h3>
+
+CodeMirrorは、JavaScriptで書かれたエディタです。通常のブラウザネイティブのTextAreaを置き換え、プログラムやテンプレートなどのコンピュータ言語の入力をシンタックスハイライトや補完機能等で補助します。MT5のテンプレート編集画面でも使われています。
+
+<h3>CodeMirror2は何が新しいの？</h3>
+
+CodeMirror1は、iFrameのdesignModeを利用していました。designModeの詳細はここでは触れませんが、動作が各ブラウザの実装に強く依存しているため、JavaScriptからコントロールするのはかなり難しい代物でした。
+
+CodeMirror2では、designModeを捨て、編集領域の描画を自前で行っています。これによって、以下のようなメリットが得られます。
+
+
+
+
+
+

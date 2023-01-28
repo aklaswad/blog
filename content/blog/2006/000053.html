@@ -1,0 +1,28 @@
++++
+mt_entry_id = 53
+date = "2006-07-15T14:30:46+09:00"
+title = "MTIfSearchIncludeBlogs 1.0"
+categories = []
+
++++
+
+Movable Type で検索を行う場合に、あるブログが検索対象となっているかで処理を変更する条件タグ「MTIｆSearchIncludeBlogs」を追加するpluginです。
+
+<a href="http://blog.aklaswad.com/files/MTIfSearchIncludeBlogs.zip">MTIfSearchIncludeBlogs.zip</a>
+
+考えられる主な使い方は以下の二つ。
+・複数ブログの検索フォームで、値を引き継ぐ
+・特定のブログでの検索をされたくないときに、ごっそりテンプレートを切り替える。
+
+使い方はこんな感じ。
+
+<pre class="code">
+&lt;MTIfSearchIncludeBlogs value="1"&gt;
+  hogehoge
+&lt;/MTIfSearchIncludeBlogs&gt;
+</pre>
+
+アトリビュート:valueに判定したいブログのIDを入れる。複数のブログIDをカンマ区切りで指定できる。
+
+追記 16,jul 06: 最新版はこの辺から。
+<a href="http://trac.aklaswad.com/trac.cgi/file/mtplugins/MTIfSearchIncludeBlogs.pl">http://trac.aklaswad.com/trac.cgi/file/mtplugins/MTIfSearchIncludeBlogs.pl</a>

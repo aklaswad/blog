@@ -1,0 +1,64 @@
++++
+mt_entry_id = 173
+date = "2007-07-14T00:23:30+09:00"
+title = "MT4Beta : ページ一覧を作成してみた"
+categories = []
+
++++
+
+<blockquote>
+
+ここに『会社概要』というページが増えた場合、自動でメニュー項目として追加されるのだろうか？
+“ウェブページ” 用の新しい MT タグが用意されていると思うのですが、どうなんでしょう？
+もし、このあたりのことが解決されるのであれば、かなり MT4の CMS としての評価も高くなるんですけどね。
+
+<a href="http://www.onside.com/de_blog/archives/2007/07/13/176.html">MT4（ベータ6）をちょこっと使ってみた : jungle gym</a>
+
+</blockquote>
+
+との事ですが、ページリストはデフォルトのWidgetManagerで提供されていますね。
+しかしこれがちょっと使いづらい。
+そこで少し工夫してみました。<!--more-->
+<MTSetVarTemplate name="page_list_item">
+    <MTPagesHeader><ul class="page-list"></MTPagesHeader>
+    <MTSetVarBlock name="current_page_title"><MTPageTitle></MTSetVarBlock>
+    <MTIf name="current_page_title" ne="index">
+        <li><a href="<$MTPagePermalink$>"><$MTPageTitle$></a></li>
+    </MTIf>
+    <MTPagesFooter></ul></MTPagesFooter>
+</MTSetVarTemplate>
+
+<MTSetVarTemplate name="detect_index">
+    <MTSetVar name="has_index" value="0">
+    <MTPages>
+        <MTSetVarBlock name="current_page_basename"><MTPageBasename></MTSetVarBlock>
+        <MTIf name="current_page_basename" eq="index">
+            <MTSetVar name="has_index" value="1">
+            <MTSetVarBlock name="index_link"><$MTPagePermalink$></MTSetVarBlock>
+        </MTIf>
+    </MTPages>
+</MTSetVarTemplate>
+
+<div id="folder-list">
+
+
+    <MTTopLevelFolders>
+        <MTFolderHeader><ul class="folder-list"></MTFolderHeader>
+        <li>
+        <MTGetVar name="detect_index">
+        <MTIf name="has_index">
+            <a href="<MTGetVar name="index_link">"><$MTFolderLabel$></a>
+        <MTElse>
+            <$MTFolderLabel$>
+        </MTIf>
+        <MTSubFolderRecurse>
+            <MTPages>
+                <MTGetVar name="page_list_item">
+            </MTPages>
+        </li>
+        <MTFolderFooter></ul></MTFolderFooter>
+    </MTTopLevelFolders>
+
+    <MTPages no_folder="1">
+        <MTGetVar name="page_list_item">
+    </MTPages>
