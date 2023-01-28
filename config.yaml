@@ -12,6 +12,8 @@ menu:
     name: archives
     url: /archives/
     weight: -110
+paginate: 30
+
 params:
   defaultTheme: light
   disableThemeToggle: true
