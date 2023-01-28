@@ -1,0 +1,42 @@
++++
+mt_entry_id = 62
+date = "2006-10-29T23:29:19+09:00"
+title = "色々弄った"
+categories = []
+
++++
+
+久しぶりに色々やってました。<br />
+<br />
+<h3>mt3.33にアップグレード(今更)</h3><br />
+dbのアップグレードも無いので、特に苦労なし。<br />
+<br />
+<h3>個人的な備忘録用にmtをインストール</h3><br />
+自宅鯖にインスコ。サクサク書ける様に、<a href="http://hsj.jp/works/2005/10/01/texthatenamt.html">Text::HatenaでMTプラグイン。 (ささやかなる実験場の開発室):</a>を参考にはてな記法に対応してみる。<br />
+<pre class="code">my $entry = $ctx->stash('entry');</pre>ココが上手く動かない。どうやら$ctxが渡されていないみたい。なぜぇ。<br />
+とりあえず、$ctxが空のときはpermalinkを指定しないことで回避。<br />
+これで記事の書きやすさが200%にアップした。約2倍書く計算。<br />
+まあ、はてな記法を使ったことは無いわけだが。<br />
+<br />
+<h3>Firefoxについて色々調べた</h3><br />
+自宅ノートを2.0にあぷぐれど。<br />
+アドオンの仕様についてざっと調べる。<br />
+<br />
+アドレスバーに「about:config」で設定編集が出来る。初めて知った。スゲー。<br />
+同様に「about:cache」なんてのも便利。<br />
+<br />
+<h3>ブックマークを整理</h3><br />
+普段あまり使わないブックマークって、実際問題必要ないよね。<br />
+ということで、日常的に使わないものはブックマークツールバーからすべて退避。<br />
+そして、<a href="https://addons.mozilla.org/firefox/3176/">Favicon Picker</a>を使って、日常的に使うものをアイコンのみの状態でツールバーに並べていく。ツールバーがすっきりしてかなり良い感じです。<br />
+FaviconPicker は気づいたらfirefox2.0に対応したようですが、こちらは未確認。<br />
+<br />
+アイコンの画像はbookmarks.htmlに埋め込まれているので、そのまま他のクライアントに移植可能。<br />
+bookmarkはインポート・エキスポートで移動すると却って混乱するので、直接bookmarks.htmlを挿げ替える。firefoxが起動している状態だと上手く行かないので、終了させてからファイルを入れ替えること。<br />
+<br />
+<h3>フィードを整理</h3><br />
+Bloglinesのフィードをフォルダに整理。<br />
+<br />
+<h3>Plaggerではまる</h3><br />
+<a href="http://blog.livedoor.jp/hakin/archives/50557684.html">しげふみメモ:PlaggerでBloglinesのフォルダ別にGmailへ送る:</a><br />
+を参考に、Gmailでタグ付けできるようにPlaggerを弄る。ついでに欲が出て、はてぶのカウントを表示させようと、Plagger::Plugin::Filter::HatenaBookmarkUsersCountをインスコ始めて嵌る。いくつかのモジュールがインスコできない。関係なさそうなので放置してみた。まだ新着が無いので確認できていないが、駄目かもしれないよ。

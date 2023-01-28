@@ -1,0 +1,24 @@
++++
+mt_entry_id = 108
+date = "2007-06-04T08:53:07+09:00"
+title = "ダイナミックあげるよ"
+categories = []
+
++++
+
+自サーバーのMTで久しぶりにダイナミックパブリッシングを動かしてみたら、動かなかった。<br />
+現象としては、ダイナミックを有効にしたアーカイブにアクセスすると404。<br />
+URLをスラッシュ止めでアクセスすると正常に表示される。<br />
+<br />
+NG http://example.com/blog/2007/06/post.html<br />
+OK http://example.com/blog/2007/06/<br />
+<br />
+Apacheのエラーログには次のようなメッセージが<br />
+<br />
+<blockquote>[Mon Jun 04 08:43:29 2007] [error] [client 192.168.0.1] Negotiation: discovered file(s) matching request: /home/xxxx/public_<br />
+html/blog/2007/06/post.html (None could be negotiated)., referer: http://example.com/blog/<br />
+</blockquote><br />
+<br />
+ちょっと調べたところ、Apacheの<a href="http://httpd.apache.org/docs/2.2/ja/content-negotiation.html">MultiViewsオプション</a>が悪さをしているらしい。<br />
+httpd.confを書き換えて「Options -MultiViews」としたところ正常に動作した。<br />
+今気づいたけれどMTが吐いた.htaccessに追記しても良かったかもしれない。

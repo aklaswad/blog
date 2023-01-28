@@ -1,0 +1,52 @@
++++
+mt_entry_id = 203
+date = "2007-08-13T21:57:20+09:00"
+title = "MT4: ちょっとしたレイアウト技を思いついた"
+categories = []
+
++++
+
+MT4のStyleCatcherでは、カラム数などのレイアウトを指定できるようになっています。テンプレートを編集せずにレイアウトを変更することが出来、非常に楽でよいです。<br />
+<br />
+しかし、レイアウトが簡単に変更できる反面、メインページだけ3カラム、他は2カラム、といった使い分けが出来なくなっています。<br />
+そこで、StyleCatcherからレイアウトを変更でき、しかも必要なテンプレートでは別個にレイアウトを指定できるようなカスタマイズを行ってみました。まず、"ヘッダー”テンプレートの編集を行います。ヘッダーはテンプレートモジュールの一覧の中にあります。<br />
+7行目、今ちょっと話題のこの行<br />
+<br />
+<pre class="code"><br />
+    &lt;$MTInclude identifier=&quot;styles&quot; trim_to=&quot;0&quot;$&gt;<br />
+</pre><br />
+<br />
+この直後に、以下の内容を追加します。<br />
+<br />
+<pre class="code"><br />
+    &lt;mt:if name=&quot;page_layout_override&quot;&gt;<br />
+        &lt;mt:setvar name=&quot;page_layout&quot; value=&quot;$page_layout_override&quot;&gt;<br />
+    &lt;/mt:if&gt;<br />
+</pre><br />
+<br />
+仕込みは以上です。早速メインページのレイアウトを変更してみます。<br />
+メインページのテンプレート編集画面を開き、最初の方で延々続くMTSetVarの嵐の中に、以下の行を追加します。<br />
+<br />
+<pre class="code"><br />
+&lt;mt:setvar name=&quot;page_layout_override&quot; value=&quot;layout-wtt&quot;&gt;<br />
+</pre><br />
+<br />
+追記する場所は、&lt;$MTInclude module=&quot;ヘッダー&quot;$&gt;の行より前ならどこでもOKだと思います。<br />
+layout-wttの部分が、レイアウトの指定になります。指定可能なレイアウトは以下の通りです。<br />
+<br />
+<table><br />
+<tr><th>指定子</th><th>レイアウト</th></tr><br />
+<tr><td>layout-wtt</td><td>3カラム大小小</td></tr><br />
+<tr><td>layout-twt</td><td>3カラム小大小</td></tr><br />
+<tr><td>layout-tw</td><td>2カラム小大</td></tr><br />
+<tr><td>layout-wt</td><td>2カラム大小</td></tr><br />
+</table><br />
+<br />
+この指定は、メインページ、アーカイブインデックスと、各アーカイブテンプレートで利用できます。<br />
+サイドバーをまったく使わない設定(1カラム)としたい場合、&lt;MTSetVar name=&quot;sidebar&quot; value=&quot;1&quot;&gt;という指定をvalue="0"とすればサイドバーが消えます。レイアウトによっては妙に左に寄ったりしてしまいますので、layout-twtを指定しておきましょう。<br />
+<br />
+今回、実験としてとりあえずこのブログの<a href="http://blog.aklaswad.com/">メインページ</a>を3カラム大小小、<a href="http://blog.aklaswad.com/archives.html">アーカイブインデックス</a>を3カラム小大小、<a href="http://blog.aklaswad.com/2007/000203.html">ブログ記事アーカイブ</a>はサイドバー無し、<a href="http://blog.aklaswad.com/2007/08/">月別アーカイブページ</a>は2カラム大小、としてみました。<br />
+でも、自分でぶち上げておいてなんですが、自分は全ページ同じレイアウトのほうが好きなので多分3日くらいで元に戻します。。。<br />
+終わりです。<br />
+<br />
+<ins>追記: レイアウトを戻しました。(20070820)</ins>

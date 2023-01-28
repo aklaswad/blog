@@ -1,0 +1,60 @@
++++
+mt_entry_id = 80
+date = "2007-02-12T12:51:29+09:00"
+title = "Movable Type のエントリー編集画面に自由に機能追加できるプラグイン"
+categories = []
+
++++
+
+<ins datetime="2008-03-02T15:34:59+09:00">MT4に対応した<a href="http://blog.aklaswad.com/mtplugins/customeditorbutton2.html">CustomEditorButton2</a>を公開しました!</ins><br />
+<br />
+<img alt="CustomEditorButton_fig2.png" src="http://blog.aklaswad.com/CustomEditorButton_fig2.png" width="122" height="95" /><br />
+数行のjavascriptを記述するだけで、エントリー画面のボタンを自作できるプラグインです。<br />
+<a href="http://blog.aklaswad.com/movable_type/plugins/customeditorbutton/newbuttontutorial.html">簡単なボタンを作成する様子をムービーにしてみました。</a><br />
+<br />
+<a href="http://blog.aklaswad.com/2007/000073.html">前回</a>こっそりとアップロードした際より、かなりの(余計な)機能強化をして、見てくれだけは人様に見せられるものになったということで、きちんとドキュメント類の作成を始めてみました。一部仕様が固まっていない部分があるので、ベータ版としての公開になります。お使いになられた方、感想などをいただければ幸いです。<br />
+<br />
+0.1から0.2へのバージョンアップの主な内容は、各ユーザーごとにボタンの並びを変更できるようになったことと、ボタントップに文字を使用できるようになり、必ずしも画像を用意する必要がなくなったことです。<br />
+<br />
+ダウンロードはこちらから。<br />
+<ul><li><a href="http://blog.aklaswad.com/CustomEditorButton0.2.tar.gz">CustomEditorButton0.2.tar.gz</a></li><li><a href="http://blog.aklaswad.com/CustomEditorButton0.2.zip">CustomEditorButton0.2.zip</a></li></ul><br />
+<h3>マニュアル</h3><br />
+<br />
+<dl><dt>インストール</dt><dd><br />
+<br />
+ファイルをダウンロード、解凍したら、お使いのMovable Typeのディレクトリに上書きする形でアップロードしてください。「mt-static」を移動している場合や、上書きが不安な場合は、以下の2箇所にファイルをアップロードしてください。<br />
+<ul><li>解凍したディレクトリの「plugins/CustomEditorButton」を、お使いのMovable Typeの「plugins」ディレクトリに</li><li>解凍したディレクトリの「mt-static/plugins/CustomEditorButton」を、お使いのMovable Typeの「mt-static/plugins」ディレクトリに</li></ul><br />
+<br />
+</dd><dt>ボタンの管理</dt><dd><br />
+<br />
+プラグインの性質上、変なことをやろうと思えば出来る構造となっているので、誰でもボタンを作成できる、という事には出来ません。ボタンの作成やインストールを行う場合、システム管理者でログインする必要があります。<br />
+システム・メニューの中から「ボタン」を選択して、ボタンの管理画面に進んでください。ボタンの追加、削除ができます。<br />
+<br />
+</dd><dt>ボタンの作成</dt><dd><br />
+<br />
+新規にボタンを追加する場合、以下の項目を設定します。<br />
+<br />
+<ul><li>name: ボタンの名前です。</li><li>表示文字: ボタンの表示に使用される文字を指定します。ボタンの表示用の画像が設定されている場合は、この項目は使用されません。</li><li>画像へのURL: ボタンのイメージに画像を使用する場合、アップロードした画像のurlをここに指定してください。現在の仕様では、ボタン外側の枠は自動的に提供されます。ボタンの中身だけの画像を用意してください。</li><li>説明: ボタンの説明を入力します。</li><li>コード: 後述のように、ボタンの動作をjavascriptで記述してください。</li></ul><br />
+<br />
+</dd><dt>コード</dt><dd><br />
+<br />
+javascriptでボタンの動作を定義します。<br />
+<b>近いうちに仕様は変更される予定です。</b><br />
+ここに書かれたjavascriptのコードは、関数の中に自動的に展開されるので、必要な動作の内容だけを記述するだけですみます。<br />
+現在の仕様では、エディター画面で範囲選択がされている場合にのみ、選択範囲が「str」という変数に代入されて、このコードが実行されます。<br />
+str変数に処理結果を代入することで、選択範囲に処理が反映されます。<br />
+例えば、選択範囲を「div」タグで囲む場合は、以下の一行をコード欄に入力します。<br />
+<pre class="code">str = '&lt;div&gt;' + str + '&lt;/div&gt;';</pre><br />
+<br />
+</dd><dt>個人用の設定</dt><dd><br />
+<br />
+<img alt="CustomEditorButton_fig3.png" src="http://blog.aklaswad.com/CustomEditorButton_fig3.png" width="263" height="60" />各投稿者は、システムにインストールされているボタンの中から、好きなものを選択して使用できます。<br />
+画面の右上のログアウトの隣に、「My Button」メニューが追加されていますので、クリックして個人のボタン設定画面にすすんでください。<br />
+画面上段が、現在利用する設定となっているボタンの一覧です。利用したいボタンが下段にある場合、ドラッグ&ドロップで上段に放り込んでください。並び順もそのまま適用されます。<br />
+<br />
+</dd><dt>今後</dt><dd><br />
+<br />
+開発にあたり、とりあえずの使い勝手を最優先して外堀から埋めていきましたが、一番肝心のボタンのスクリプト機能が置き去りになっている状態です。<br />
+これから、ボタン作成に便利な機能をいろいろ追加していく予定ですが、その代わり現在のスクリプト仕様は変更になる可能性が大です。来週末くらい迄に仕様を固めたいと思いますので、それまではベータ版ということでご容赦ください。<br />
+<br />
+</dd></dl>

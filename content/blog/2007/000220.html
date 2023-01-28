@@ -1,0 +1,87 @@
++++
+mt_entry_id = 220
+date = "2007-09-17T14:48:17+09:00"
+title = "JotLine"
+categories = ["JotLine"]
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">手が回らないため、一時開発を停止しています。ご了承下さい。<br />
+同様の、より完成度の高いプラグインとして、SixApartのMark Paschalが開発した<a href="http://plugins.movabletype.org/action-streams/">Action Streams</a>が公開されていますので、そちらをお使いいただくことをお勧めします。<br />
+</ins><br />
+<br />
+Twitterに代表されるつぶやき系や、はてなブックマークのようなソーシャルブックマーク系など、ネット上の各種ショートメッセージサービスを統合的に扱うためのプラグインです。<h2>概要</h2><br />
+<br />
+JotLineは、複数のプラグインから構成されるプラグインパックです。<br />
+現在、以下の機能を提供するサブプラグインが同梱されています。個々の機能や設定については、各プラグインのページを確認してください。<br />
+<br />
+<ul><br />
+	<li><a href="http://blog.aklaswad.com/mtplugins/jotline/daylog.html">DayLog</a></li><br />
+</ul><br />
+<br />
+中心となる「JotLine」プラグインは、ユーザーに対しては実質的にはなんの機能も提供しません。他のJotLineプラグインのために、各種ウェブサービスからのデータの取得や、データの保存、データをパブリッシュするためのMTのテンプレートタグ、などの機能を提供します。<br />
+<br />
+<h2>必要環境</h2><br />
+<br />
+Movable Type 4.0 以降でのみ動作します。Movable Type 3.x では動作しませんのでご注意ください。<br />
+<br />
+<h2>インストール</h2><br />
+<br />
+解凍したら、「plugins/JotLine」ディレクトリをまるごと、お使いのMTの「plugins」ディレクトリ内にアップロードしてください。<br />
+<br />
+<h2>最新版のダウンロード</h2><br />
+<br />
+<a href="http://blog.aklaswad.com/mtplugins/download/JotLine0.1.zip">JotLine0.1.zip</a><br />
+<br />
+<h2>詳細</h2><br />
+<br />
+JotLineは、各種ショートメッセージを、「Jot」という単位で扱います。これは内部的にはMT::Objectを継承したオブジェクトとして実装されています。各Jotは、以下の情報を持ちます。<br />
+<br />
+<ul><br />
+	<li>本文</li><br />
+	<li>パーマリンク</li><br />
+	<li>言及先のURL</li><br />
+	<li>言及先のタイトル</li><br />
+	<li>ショートメッセージを投稿した人の名前</li><br />
+	<li>ショートメッセージが投稿されたサイト</li><br />
+	<li>ショートメッセージが投稿された日時</li><br />
+</ul><br />
+<br />
+<h2>タグ</h2><br />
+<br />
+以下のテンプレートタグを使って、MTのデータベースに保存されているJotを表示することが出来ます。<br />
+<br />
+現在のところ、Jotのリストを作成する「MTJots」ブロックタグは、殆どの機能が実装されていません。そのため、現時点ではこれらのタグは、プラグインの設定項目内などの特定の箇所でしか利用出来ません。<br />
+<br />
+<h4>ブロックタグ</h4><br />
+<dl><br />
+    <dt>MTJots</dt><br />
+    <dd>Jotのリストを一覧表示するためのブロックタグです。MTJotsの内部ではJot関連のファンクションタグが利用できるようになります。</dd><br />
+    <dt>MTJotTags</dt><br />
+    <dd>Jotに関連付けられたタグのリストを一覧表示するためのブロックタグです。ブロック内部では通常のMTのタグ関連のテンプレートタグが利用できます。</dd><br />
+</dl><br />
+<br />
+<h4>ファンクションタグ</h4><br />
+<dl><br />
+    <dt>MTJotText</dt><br />
+    <dd>Jotの本文を表示します。</dd><br />
+    <dt>MTJotLinkText</dt><br />
+    <dd>Jotのリンク先ページのタイトルなど、リンク表示に利用される文字列です。</dd><br />
+    <dt>MTJotLinkURL</dt><br />
+    <dd>Jotの言及先のURLを表示します。</dd><br />
+    <dt>MTJotPermalink</dt><br />
+    <dd>Jotの元エントリーのパーマリンクを表示します。</dd><br />
+    <dt>MTJotDate</dt><br />
+    <dd>ショートメッセージが投稿された日時を表示します。MTの一般的な日時表示用モディファイアが利用できます。</dd><br />
+    <dt>MTJotSiteLabel</dt><br />
+    <dd>ショートメッセージが投稿されたサイトのサイト名を表示します。</dd><br />
+    <dt>MTJotEmbedSmall</dt><br />
+    <dd>リンク先が何らかのメディアサイトの個別ページだった場合などに、可能であれば、サムネイルに利用できるような小さめの画像やビデオのHTMLを出力します。</dd><br />
+    <dt>MTJotEmbedLarge</dt><br />
+    <dd>リンク先が何らかのメディアサイトの個別ページだった場合などに、可能であれば画像やビデオを表示するHTMLを出力します。</dd><br />
+</dl><br />
+<br />
+<h2>設定</h2><br />
+<br />
+各ウェブサービスについてのログイン情報等の設定を、「JotLine」プラグインのシステムレベル設定画面から行えます。<br />
+<br />

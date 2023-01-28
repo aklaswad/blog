@@ -1,0 +1,33 @@
++++
+mt_entry_id = 343
+date = "2008-01-08T00:56:29+09:00"
+title = "MTSetHashVarとMTSetVarsを組み合わせて使いたい。"
+categories = []
+
++++
+
+<a href="http://www.movabletype.jp/documentation/appendices/tags/sethashvar.html">MTSetHashVar | テンプレートタグリファレンス</a><br />
+<br />
+MTSetHashVarというブロックタグが追加されるらしい。<br />
+ブロックタグ内でのMTSetVarタグの振る舞いが、特定のハッシュのキーに対する代入に相当する動作になる、という便利そうなタグだ。詳しくは上のリンク先のドキュメント参照してください。<br />
+<br />
+しかし、現在のリポジトリ上の最新のコードで、<a href="http://www.movabletype.jp/documentation/appendices/tags/setvars.html">MTSetVars</a>と組み合わせて使うことが出来ない。<br />
+<br />
+これは今のところダメ↓<br />
+<br />
+<pre class="code"><br />
+&lt;mt:SetHashVar name="zep"&gt;<br />
+    &lt;mt:SetVars&gt;<br />
+        vocal=plant<br />
+        guitar=page<br />
+        bass=jones<br />
+        drums=bonzo<br />
+    &lt;/mt:SetVars&gt;<br />
+&lt;/mt:SetHashVar&gt;<br />
+...<br />
+&lt;mt:var name="zep{drums}"&gt;   #うまく代入できておらず、出力が空文字列になってしまう<br />
+</pre><br />
+<br />
+こういった書き方が出来る事を期待して、後輩の前でかっこよさげに月の表示を陰暦で書き出すというカスタマイズを「かんなづきいー」とか叫びながらやってみたところ出来なかったので色々となっかりした。<br />
+<br />
+そういえば、各種日付フォーマットも外から弄れないので、何とかしたいですなあ。

@@ -1,0 +1,29 @@
++++
+mt_entry_id = 14
+date = "2006-03-01T01:45:07+09:00"
+title = "MTCalc0.8"
+categories = []
+
++++
+
+現在のコードで、とりあえず色々出来る。例えば<a href="http://blog.aklaswad.com/entry_list.html">こんな</a>表示など。<br />
+img タグなどに組み込んで、エントリーについたコメント数をグラフ表示させたりも出来るだろう。<br />
+現在このブログにはコメントが一つもついて無いので、サンプルを示せないのが大変残念だが。<br />
+<br />
+セキュリティーの問題がある。現在のコードでは、perlで出来ることは何でも出来てしまう。<br />
+自分のように一人でテンプレート書いてエントリー書いてやっている分には問題ないが、複数の管理人がいるような場合には、ちょっと導入するのは奨められない現状だ。<br />
+<br />
+使用できる関数を決めて、それ以外の関数が混入していたらエラーとする、か。ちなみに上記リンクのページのテンプレートはこんな感じ<br />
+<blockquote>&lt;$MTSetVar&nbsp;name="cnt"&nbsp;value="0"$&gt;<br />
+&lt;MTEntries&nbsp;lastn="100"&nbsp;sort_order="ascend"&gt;<br />
+&nbsp;&nbsp;&lt;a&nbsp;style="padding-left:&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;$MTCalc&nbsp;expr="<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int(50&nbsp;*&nbsp;(1&nbsp;+&nbsp;sin(VARcnt&nbsp;/&nbsp;2)))&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"$&gt;px;"&nbsp;href="&lt;$MTEnrtyPermalink$&gt;"&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;$MTCalc&nbsp;setvar="cnt"&nbsp;expr="VARcnt&nbsp;+&nbsp;1"$&gt;&nbsp;&lt;$MTEntryTitle$&gt;<br />
+&nbsp;&nbsp;&lt;/a&gt;<br />
+&nbsp;&nbsp;&lt;br&nbsp;/&gt;<br />
+&lt;/MTEntries&gt;<br />
+</blockquote><br />
+カウントの更新用に、表示はしないモードがあったほうが良いだろうか。<br />
+<br />

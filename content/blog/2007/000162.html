@@ -1,0 +1,49 @@
++++
+mt_entry_id = 162
+date = "2007-07-05T00:05:00+09:00"
+title = "MT4Beta : Transformer プラグインを作ってみた速報"
+categories = []
+
++++
+
+<ins>7月25日追記: この記事中のコードだと現在のバージョンでは動かないようです。コメントでご指摘いただきました。ありがとうございます。</ins><br />
+<br />
+MT4での新しいtransformerに挑戦してみました。<br />
+DOMライクなインターフェイスが提供され、管理画面の特定の位置にコードを挿入することが非常に容易になりました。<br />
+<br />
+こんな感じのコードで動きます。<br />
+<br />
+<pre class="code"><br />
+package MT::Plugin::TransformerSample;<br />
+use strict;<br />
+use base qw( MT::Plugin );<br />
+our $VERSION = '1.0';<br />
+ <br />
+my $plugin = MT::Plugin::TransformerSample-&gt;new({<br />
+    name =&gt; 'TransformerSample',<br />
+});<br />
+ <br />
+MT-&gt;add_plugin($plugin);<br />
+MT-&gt;add_callback('MT::App::CMS::template_param.edit_entry', 9, $plugin, \&amp;param_transformer);<br />
+ <br />
+sub param_transformer {<br />
+    my ($eh, $app, $param, $tmpl) = @_;<br />
+    die 'something wrong...' unless UNIVERSAL::isa($tmpl, 'MT::Template');<br />
+ <br />
+    my $host_node = $tmpl-&gt;getElementById('useful-links')<br />
+        or die 'cannot get useful-links block';<br />
+ <br />
+    my $node = $tmpl-&gt;createElement( 'TEXT', '&lt;em&gt;hello &lt;b&gt;MT4&lt;/b&gt; transformer?&lt;/em&gt;' );<br />
+    $tmpl-&gt;insertBefore($host_node, $node)<br />
+        or die 'failed to insertBefore.';<br />
+}<br />
+ <br />
+1;</pre><br />
+<br />
+エントリーの投稿/編集画面の右側、クイックリンク(useful-links)の上にチラッとhelloworldするだけのプラグインですが、何かの参考になるでしょうか。<br />
+<br />
+自前でMT::Template::Nodeのインスタンスを作成する必要がある辺りが、ちょっと癖があるなと感じました。<br />
+innerHTMLメソッドなどを使うと、MTタグのコンパイルまでやってくれるっぽいので、その辺を使いこなせればよいのかな。<br />
+あと、HTMLタグはMTのテンプレートの構文解析の対象にならないので、HTMLタグのid属性などを基準には拾ってくることが出来ない見たいです。<br />
+<br />
+その他、気づいたことや、各メソッドの使い方など、後でまとめてみたいと思います。

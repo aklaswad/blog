@@ -1,0 +1,17 @@
++++
+mt_entry_id = 484
+date = "2010-10-19T02:23:28+09:00"
+title = "ActionStreams + AnyEvent"
+categories = []
+
++++
+
+ActionStreamsで更新チェックする時に、AnyEvent::HTTPを使って並列ダウンロードするようにしてみました。<a href="http://github.com/sixapart/mt-plugin-ActionStreams">sixapart / mt-plugin-ActionStreams</a>からforkして、anyeventブランチを切ってゴニョゴニョしてます。<br />
+<br />
+<ul><br />
+	<li><a href="http://github.com/aklaswad/mt-plugin-ActionStreams/tree/anyevent">http://github.com/aklaswad/mt-plugin-ActionStreams/tree/anyevent</a></li><br />
+</ul><br />
+<br />
+AnyEventが見つかれば自動的に利用するようにしてありますので、特別な設定は不要です。<br />
+<br />
+10程度のストリームの処理で、ベンチマーク(ストップウォッチで目視)では約三倍ほど速くなってます。ストリームの数が増えれば、もっと差が出るかもしれません。

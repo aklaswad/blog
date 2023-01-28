@@ -1,0 +1,80 @@
++++
+mt_entry_id = 213
+date = "2007-08-26T23:37:22+09:00"
+title = "Movabug"
+categories = ["mtplugins"]
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">4.1以降に未対応です。手が回らないため、一時開発を停止しています。ご了承下さい。<br />
+</ins><br />
+<br />
+プラグイン開発用を援助するプラグインです。transformer用の管理画面内のタグ情報の表示や、スケジュールタスクの実行などを行えます。<br />
+通常のブログ運用ではあまり役に立たないと思います。<h3>最新版のダウンロード</h3><br />
+<br />
+<ul><br />
+	<li><form mt:asset-id="28" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/download/Movabug0.2.zip">Movabug0.2.zip</a></form></li><br />
+</ul><br />
+<br />
+<h3>動作環境</h3><br />
+<br />
+このプラグインは、Movable Type 4.0 以降専用です。<br />
+<br />
+<h3>インストール</h3><br />
+<br />
+ダウンロードしたファイルを解凍したら、<em>plugins</em>ディレクトリの中の<em>Movabug</em> ディレクトリを、お使いの MovableTypeの「plugins」ディレクトリにアップロードしてください。<br />
+<br />
+<h3>機能</h3><br />
+<br />
+現在のところ、基本機能にはすべて、画面上部の「movabug」メニューバーからアクセスします。<br />
+<br />
+<form mt:asset-id="26" class="mt-enclosure mt-enclosure-image"><img alt="movabug_screen.png" src="http://blog.aklaswad.com/images/movabug_screen.png" width="480" height="183" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;"/></form><br />
+<br />
+<dl><br />
+<dt>display ids</dt><br />
+<dd><br />
+管理画面のテンプレートで使用されているid属性を実際の管理画面上に表示します。(MovableTypeのテンプレートエンジンが利用する属性で、実際に出力されるHTMLのid属性とは異なります。)transformerプラグインの作成などに役に立つかと思います。<br /><br />
+クリックする毎に非表示、その場に表示(absolute)、並べて表示(relative)3つの状態を順に遷移します。「position: absolute」としてオーバーレイっぽく表示させると、複数の要素が重なってしまって見えない場合があったので、とりあえずこんなになりました。<br />
+</dd><br />
+<dt>display classes</dt><br />
+<dd><br />
+管理画面のテンプレートで使用されているclass属性を実際の管理画面上に表示します。<br />
+クリックする毎に非表示、その場に表示(absolute)、並べて表示(relative)3つの状態を順に遷移します。<br />
+現在のテンプレートではあまり多くは使われていないようです。ダッシュボードウィジェットやインフォメーション表示などで確認できますね。<br />
+</dd><br />
+<dt>run tasks</dt><br />
+<dd><br />
+クリックするとスケジュールタスクを実行します。<br />
+</dd><br />
+<dt>force tasks</dt><br />
+<dd><br />
+スケジュールタスクは、負荷軽減のため?それぞれのタスクに実行間隔が設けられています。例えば日時指定投稿では、前回の実行から1分以内に再度実行しても、日時指定の状態となっているブログ記事があるか確認すらせずに終了します。(ちなみに、日時指定投稿の実行間隔はmt-config.cgiにFuturePostFrequencyというディレクティブを書くと変更できるっぽいです。未確認。)<br /><br />
+これが古いスパムコメントの削除等のタスクになると、12時間ごとにしか動きません。これではテストの度に徹夜作業になってしまいますね。<br /><br />
+force tasksでは、MT::Sessionに記録されているスケジュールタスク関連のレコードをいったん削除してからスケジュールタスクを実行することで、強制的にスケジュールタスクを実行させています。<br />
+</dd><br />
+<dt>run jobs</dt><br />
+<dd><br />
+TheSchwartzを利用したジョブキューを実行します。(0.2から)<br />
+</dd><br />
+</dl><br />
+<br />
+<h3>チェンジログ</h3><br />
+<dl><br />
+<dt>0.2 (20070828)</dt><br />
+<dd><br />
+<ul><br />
+	<li><form mt:asset-id="28" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/download/Movabug0.2.zip">Movabug0.2.zip</a></form></li><br />
+	<li>TheSchwartzを実行する「run jobs」モードを追加した</li><br />
+	<li>「run tasks」「force tasks」「run jobs」実行時にスプラッシュ画面にログが表示されるようにした</li><br />
+	<li>cookieを利用して画面遷移時に「display ids」「display classes」の状態が維持されるようにした</li><br />
+</ul><br />
+</dd><br />
+<dt>0.1 (20070826)</dt><br />
+<dd><br />
+<ul><br />
+	<li><form mt:asset-id="27" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/download/Movabug0.1.zip">Movabug0.1.zip</a></form></li><br />
+	<li>最初の公開</li><br />
+</ul><br />
+</dd><br />
+</dl><br />
+</dd>

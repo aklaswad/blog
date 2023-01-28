@@ -1,0 +1,58 @@
++++
+mt_entry_id = 459
+date = "2009-10-11T23:24:23+09:00"
+title = "TagOverride"
+categories = []
+
++++
+
+勢いで書きました。後悔はしてません。<br />
+MTML自身で、既存のMTタグの動作を上書きする事ができるプラグインです。使い道はちょっと未知数ですが、なんとなく役に立つ使い方も出来るのでは無いかと言う気がします。役に立つと良いなあ。。。<br />
+<br />
+現在の所、MT5.x 専用です。最新版は、以下のページからダウンロードできます。<br />
+<br />
+<ul><br />
+	<li><a href="http://github.com/aklaswad/MT-TagOverride">http://github.com/aklaswad/MT-TagOverride</a></li><br />
+</ul><br />
+<br />
+<br />
+このプラグインをインストールすると、以下の二つのテンプレートタグが利用可能になります。<br />
+<br />
+<h3>&lt;mt:TagOverride&gt;</h3><br />
+タグの動作を上書きするためのブロックタグです。<br />
+このブロックの実行後にname属性で指定したタグが呼び出された場合、元々のタグの実行結果の代わりに、このブロックの内側のテンプレートの実行結果が表示されるようになります。<br />
+<br />
+<h4>利用可能なモディファイア</h4><br />
+<br />
+<dl><dt>name</dt><br />
+<dd>上書きするタグの名前を指定します。</dd><br />
+</dl><br />
+<br />
+例: このブロックが実行されると、以降、どのエントリーでも&lt;EntryTitle&gt;タグの実行結果が「トントリー」になります。<br />
+<pre class="code">&lt;mt:TagOverride name=&quot;EntryTitle&quot;&gt;トントリー&lt;/mt:TagOverride&gt;</pre><br />
+<br />
+<h4>利用可能な変数</h4><br />
+上書き後にタグが呼び出された場合、そのタグに設定されたモディファイアの値が、変数"args"にハッシュとして設定されています。これらの値を操作/上書きする事で、タグの動作を変更できます。<br />
+<br />
+例<br />
+以下のブロックを実行すると、以降、すべての&lt;mt:Entries&gt;タグのlimitモディファイアが自動的に三倍になり、沢山のエントリーを表示できます。<br />
+<br />
+<pre class="code">&lt;mt:TagOverride name=&quot;Entries&quot;&gt;<br />
+　　　　&lt;mt:if var=&quot;args&quot; key=&quot;limit&quot;&gt;<br />
+　　　　　　　　&lt;mt:setvarblock name=&quot;args&quot; key=&quot;limit&quot;&gt;&lt;mt:var name=&quot;args&quot; key=&quot;limit&quot; op=&quot;*&quot; value=&quot;3&quot;&gt;&lt;/mt:setvarblock&gt;<br />
+　　　　&lt;/mt:if&gt;<br />
+　　　　&lt;mt:SuperTag&gt;<br />
+&lt;/mt:TagOverride&gt;</pre><br />
+<br />
+<h3>&lt;mt:SuperTag&gt;</h3><br />
+TagOverrideの内側で、上書き前のタグを呼び出すファンクションタグです。上書き前のタグの実行結果が返ってきます。<br />
+<br />
+例<br />
+以下のブロックを実行すると、以降、すべての&lt;mt:EntryTitle&gt;タグの出力の末尾にidが表示されるようになります。<br />
+<br />
+<pre class="code">&lt;mt:TagOverride name=&quot;EntryTitle&quot;&gt;&lt;mt:SuperTag&gt;(&lt;mt:EntryID&gt;)&lt;/mt:TagOverride&gt;</pre><br />
+<br />
+<h3>既知の問題</h3><br />
+<ul><br />
+	<li>多重にオーバーライドできないようです。</li><br />
+</ul><br />

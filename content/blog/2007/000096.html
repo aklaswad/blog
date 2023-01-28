@@ -1,0 +1,24 @@
++++
+mt_entry_id = 96
+date = "2007-04-06T17:53:13+09:00"
+title = "Widget-Simpleでtumblr.yaml"
+categories = []
+
++++
+
+Widget::Simple使いなさいと<a href="http://b.hatena.ne.jp/entry/http://blog.aklaswad.com/2007/000095.html#bookmark-user-otsune">つっこみをいただいた。</a>なるほど。こんな簡単に出来るのですね。<br />
+<br />
+<pre class="code"><br />
+link: http://www.tumblr.net/share<br />
+query:<br />
+  v: 2<br />
+  u: $args-&gt;{entry}-&gt;permalink<br />
+  t: $args-&gt;{entry}-&gt;title<br />
+content: Tumblr<br />
+</pre><br />
+<br />
+<pre class="code"><br />
+  - module: Widget::Simple<br />
+    config:<br />
+      widget: tumblr<br />
+</pre>

@@ -1,0 +1,63 @@
++++
+mt_entry_id = 134
+date = "2007-06-19T23:37:29+09:00"
+title = "TimeType"
+categories = ["mtplugins"]
+
++++
+
+<a href="http://timelog.jp/">Timelog</a>から一日分のログを取得して、MovableTypeに自動投稿するプラグインです。<h3>必要環境</h3><br />
+<br />
+TimeTypeの動作には以下の環境が必要です。<br />
+<br />
+<ul><br />
+	<li>Perl5.8.1以上</li><br />
+	<li>MovableType3.3以上</li><br />
+</ul><br />
+<br />
+<h3>インストール</h3><br />
+<br />
+解凍して出てきたpluginsディレクトリ内の「TimeType」ディレクトリをまるごと、インストールされているMovableTypeの「plugins」ディレクトリにアップロードしてください。<br />
+<br />
+<h3>初期設定</h3><br />
+<br />
+インストール後、システムメニュー > プラグイン から、システムレベルで設定を行う必要があります。TimeTypeを探して「設定を表示」から設定画面を開いてください。<br />
+以下の3項目は必須となります。<br />
+<br />
+<dl><br />
+<dt>Timelog BlogID</dt><br />
+<dd>Timelogの一日分のメモを投稿する先のブログのIDを数字で指定します</dd><br />
+<dt>Timelog username</dt><br />
+<dd>Timelogでのユーザー名を指定します</dd><br />
+<dt>Timelog password</dt><br />
+<dd>Timelogへのログインに利用するパスワードを指定します</dd><br />
+</dl><br />
+<br />
+なお、この設定を行った時にMovableTypeにログインしていたユーザーが、以降自動投稿を行う際のユーザーとなります。必要な場合にはログインユーザーを変更して設定を行ってください。<br />
+<br />
+<h3>スケジュールタスクの設定</h3><br />
+<br />
+TimeTypeはMovableTypeのスケジュールタスク機能を利用しているため、cronなどのosの自動実行機能を利用するか、ログフィードを取得するなどの方法で、MovableTypeのタスクが定期的に実行されるように設定する必要があります。詳しくは<a href="http://www.sixapart.jp/movabletype/manual/3.3/02_system_admin_guide/installation/schedule_task_framework.html">MovableTypeのマニュアル</a>を確認してください。<br />
+<br />
+<h3>実際の動作の概要</h3><br />
+<br />
+スケジュールタスクによってTimeTypeが起動されると、TimeTypeは前回投稿が行われた日付と現在の日付が異なっているか確認します。<br />
+異なっていた場合には、Timelogからメモを取得し、エントリーを投稿します。<br />
+そして、現在の日付を保存して終了します。<br />
+<br />
+<h3>チェンジログと最新版のダウンロード</h3><br />
+<br />
+<ul><br />
+	<li>20070619 <span mt:asset-id="1" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/release/TimeType0.2.zip">TimeType0.2.zip</a></span><br />
+	<ul><br />
+		<li>テンプレートエンジンをHTML::Templateに変更</li><br />
+	</ul><br />
+	</li><br />
+        <li>20070703 <span mt:asset-id="4" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/release/TimeType0.3.zip">TimeType0.3.zip</a></span><br />
+        <ul><br />
+            <li>自動投稿のエントリーの諸設定を、特定のエントリーの設定のクローンとして設定できるようにしてみた。設定のクローン元となる任意のエントリーのentry_idを、プラグインの設定画面から指定してください。カテゴリー、公開設定、改行設定、キーワード、コメントの許可、トラックバックの許可、の設定内容がクローン元エントリーからコピーされて、投稿されます。</li><br />
+            <li>メモ中のhttpから始まる文字列にリンクが張られるようにした。参考: <a href="http://www.din.or.jp/~ohzaki/perl.htm#URI">http://www.din.or.jp/~ohzaki/perl.htm#URI</a></li><br />
+            <li>ブックマークにコメントをつけられるようにした。Timelogのブックマークレットでは、ブックマーク元のページのタイトルがメモに追加されますが、それ以降に、連続した半角スペースか、連続したセミコロン「;」を記入すると、以降がメモとして扱われます。</li><br />
+        </ul><br />
+</ul><br />
+<br />

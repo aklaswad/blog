@@ -1,0 +1,76 @@
++++
+mt_entry_id = 115
+date = "2007-06-11T01:45:00+09:00"
+title = "TimeType - TimeLog から一日分のメモをまとめてMovableTypeに自動投稿するプラグイン"
+categories = []
+
++++
+
+毎日の<a href="http://timelog.jp/">TimeLog</a>の内容を、自動的にMovableTypeのエントリーにまとめてしまうプラグインです。<br />
+<br />
+<a href="http://blog.aklaswad.com/TimeType0.1.zip">TimeType0.1.zip</a><br />
+<br />
+<a href="http://timelog.jp/apicontest_01.asp">APIコンテスト</a>の賞金目当てに作りました;-)<br />
+実際出来てみたら、かなりいい感じなので、このままTimeLogにどっぷり嵌りそうです。メモとして気楽に使えるというTimeLogの良さを、このプラグインで引き出せたらと思います。<br />
+<br />
+実際問題、一日に一回しか動かないタスクなので、殆どテストが出来ていません。しばらくは、正真正銘のベータ版となります。お使いになられた<s>奇特な</s>方は、もし変な動きをするところがあればこのエントリーのコメントか、気楽に<a href="http://timelog.jp/home/?am=aklaswad">Timelogで自分に</a>伝えてくだされば幸いです。<br />
+<br />
+<ins datetime="2007-06-13T00:59:02+09:00">追記:<br />
+記載がおくれてごめんなさい。結構動作に必要な環境が厳しいかもしれません。インストール先の環境として、おそらく以下の条件を満たしている必要があると思います。<br />
+<ul><li>Movable Type 3.3以上</li><li>Perl5.8.1以上</li><li>TemplateToolkitがインストールされている</li></ul></ins><h3>概要</h3><br />
+投稿は一日一回。日付が変わってから最初にスケジュールタスクが実行されたときに、TimeLogの前日分のメモを一つのエントリーにまとめて投稿します。どんな感じかは、<a href="http://blog.aklaswad.com/2007/000116.html">いっこ前のエントリー</a>を見てください。メモの内容は殆どテストなので、あまり気にしないでくださいな。<br />
+<br />
+<h3>インストール</h3><br />
+解凍して出てきた中のpluginsの中に入っている「TimeType」ディレクトリを、お使いのMovableTypeのpluginsディレクトリの中にアップロードしてください。<br />
+<br />
+<h3>初期設定</h3><br />
+システム・メニューのプラグインから、TimeTypeの設定画面を開いてください。TimeLogのIDとパスワード、それと自動投稿を行うブログのblog_idを指定します。いずれも必須です。<br />
+<br />
+なお、この設定を行った時にMovableTypeにログインしていたユーザーが、以降自動投稿を行う際のユーザーとなります。必要な場合にはログインユーザーを変更して設定を行ってください。<br />
+<br />
+現在の所、他には設定項目などはありません。<br />
+<br />
+<h3>スタイル</h3><br />
+あと、いくつか独自のスタイル指定をしています。お好みでスタイルシートを設定してください。<br />
+自分のところではこんな感じのものを、スタイルシートテンプレートの最後に追加しています。<br />
+<br />
+<pre class="code"><br />
+.timelog_section_header {<br />
+    border-width: 0 0 1px 0;<br />
+    border-style: solid ;<br />
+    border-color: #004444;  <br />
+}<br />
+ <br />
+.timelog_memo {<br />
+    border-width: 0 0 1px 0;<br />
+    border-style: dotted;<br />
+    border-color: #99bbbb;<br />
+    margin-left: 2em;<br />
+}<br />
+ <br />
+.memo_date {<br />
+    color: #aaaaaa;<br />
+    margin: 0;<br />
+    font-size: 0.7em;<br />
+}<br />
+ <br />
+.memo_date a {<br />
+    color: #0000ff;<br />
+    text-decoration: none;<br />
+}<br />
+ <br />
+.memo_body {<br />
+    margin: 0px;<br />
+}<br />
+ <br />
+.memo_tag {<br />
+    margin: 0 0.1em;<br />
+    font-size: 0.8em;<br />
+}<br />
+ <br />
+.memo_tag a {<br />
+    margin: 0 0.2em;<br />
+    text-decoration: none;<br />
+    color: #0000ff;<br />
+}</pre><br />
+<br />

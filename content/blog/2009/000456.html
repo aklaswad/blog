@@ -1,0 +1,46 @@
++++
+mt_entry_id = 456
+date = "2009-06-10T01:15:58+09:00"
+title = "ActionStreamのlinkフィールドからサムネイルをでっちあげる。"
+categories = []
+
++++
+
+久しぶりの更新。テンプレート系のコネタです。<br />
+ActionStreamsのいくつかのプラグインでは、別途ThumbnailのURLを取得して専用のフィールドに保存してくれますが、そうではない場合もあります。<br />
+特にソーシャルブックマーク等のサービスの場合には、そもそもコンテンツとそのサムネイルの関係が事前に分からないため、何もしてくれません。<br />
+でもまあ、自分の行動範囲で、URLからサムネイル画像のURLが推測できる範囲なら何とかなるんじゃないか。<br />
+そこで、MTMLで無理矢理やっつけてみました。<br />
+<br />
+まず、以下のようなテンプレートを、モジュールテンプレートとして作成します。<br />
+前半のmt:setHashVarタグのなかに適当に正規表現をつっこむと対応サイトが増やせます。とりあえずyoutubeとniconico、amazonだけ作りました。検証してないので、取りこぼしや誤作動があるかもしれません。<br />
+<br />
+<pre class="code">&lt;mt:setHashVar urls&gt;<br />
+&lt;mt:setvar youtube  value=&quot;http\://[^\.\/]+\.youtube\.(jp|com)/watch\?v=([0-9a-zA-Z\-]{11})&quot;,&quot;http://img.youtube.com/vi/$2/default.jpg&quot; /&gt;<br />
+&lt;mt:setvar niconico value=&quot;^http\://www\.nicovideo\.jp/watch/[sn]m([0-9]{1,9})&quot;,&quot;http://tn-skr2.smilevideo.jp/smile?i=$1&quot; /&gt;<br />
+&lt;mt:setvar amazon   value=&quot;^http\://www\.amazon\.(?:co\.jp|com)/.*(?:ASIN|product-description|product|dp)/([^/]+)(?:/.*)*&quot;,&quot;http://images.amazon.com/images/P/$1.09._THUMBZZZ_.jpg&quot; /&gt;<br />
+&lt;/mt:setHashVar&gt;<br />
+&lt;mt:loop urls&gt;<br />
+&lt;mt:setVarBlock check&gt;&lt;mt:getVar var=&quot;__value__[0]&quot;&gt;&lt;/mt:setVarBlock&gt;<br />
+&lt;mt:setVarBlock pattern&gt;/&lt;mt:getVar var=&quot;__value__[0]&quot;&gt;/&lt;/mt:setVarBlock&gt;<br />
+&lt;mt:setVarBlock replace&gt;&lt;mt:getVar var=&quot;__value__[1]&quot;&gt;&lt;/mt:setVarBlock&gt;<br />
+&lt;mt:if url like=&quot;$check&quot;&gt;&lt;mt:var url regex_replace=&quot;$pattern&quot;,&quot;$replace&quot;&gt;&lt;/mt:if&gt;<br />
+&lt;/mt:loop&gt;</pre><br />
+<br />
+上のを保存したら(仮に「URL2Image」という名前で保存したとします)、ActionStreamsの表示側で、次のようにインクルードします。<br />
+変換対象となるURLを、モディファイアのように渡してください。<br />
+<br />
+<pre class="code">&lt;mt:if tag=&quot;StreamActionThumbnailURL&quot;&gt;<br />
+    &lt;mt:StreamActionThumbnailURL /&gt;<br />
+&lt;mt:else&gt;<br />
+    &lt;mt:setvarblock name=&quot;link&quot;&gt;&lt;mt:StreamActionURL /&gt;&lt;/mt:setvarblock&gt;<br />
+    &lt;mt:setvarblock name=&quot;thumb&quot;&gt;&lt;mt:include module=&quot;URL2Image&quot; url=&quot;$link&quot; trim=&quot;1&quot; /&gt;&lt;/mt:setvarblock&gt;<br />
+    &lt;mt:if thumb&gt;&lt;img src=&quot;&lt;mt:var name=&quot;thumb&quot; /&gt;&quot; /&gt;&lt;/mt:if&gt;<br />
+&lt;/mt:if&gt;</pre><br />
+<br />
+<br />
+このブログのメインページに表示しているライフログでも、Youtubeのビデオのブックマークなんかで画像が表示されるようにしてあるので、参考にしてみてください。<br />
+<br />
+今回は、画像のみに絞ったカスタマイズにしましたが、やり方によってはembedタグにしたりアフィリエイトリンクにしたり色々出来ると思います。もちろんActionStreams以外の色々にも利用できると思います。お好みで工夫してみてください。<br />
+<br />
+<ins datetime="2009-06-18T00:26:30+09:00"><div>変換後のURLの前後に半角スペースが混じるとの指摘をいただきましたので、呼び出し側で<a href="http://www.movabletype.jp/documentation/appendices/modifiers/trim.html">trim</a>モディファイアを追加する形で対応しました。<pre class="code">&lt;mt:include module=&quot;URL2Image&quot; url=&quot;$link&quot; trim=&quot;1&quot; /&gt;</pre>また、<a href="http://www.hvc-001.com/mt/2009/06/15061330.html">hvc-001さんにご指摘いただき</a>、ニコニコ動画用の正規表現を一部修正しました。トラックバックありがとうございました!</div></ins>

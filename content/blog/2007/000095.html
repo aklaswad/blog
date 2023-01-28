@@ -1,0 +1,47 @@
++++
+mt_entry_id = 95
+date = "2007-04-05T00:34:57+09:00"
+title = "Plagger::Plugin::Widget::Tumblr"
+categories = []
+
++++
+
+とりあえず作ってみました。<br />
+javascriptを起動するリンクが含まれているとGmailでリンクが削除されてしまうようなので、とりあえずjavascript無しです。<br />
+結果として、現状は範囲選択などは無視した動作となります。<pre class="code"><br />
+package Plagger::Plugin::Widget::Tumblr;<br />
+use strict;<br />
+use base qw( Plagger::Plugin );<br />
+ <br />
+use HTML::Entities;<br />
+use URI;<br />
+use Encode;<br />
+ <br />
+sub register {<br />
+    my($self, $context) = @_;<br />
+    $context-&gt;register_hook(<br />
+        $self,<br />
+        'publish.entry.fixup' =&gt; \&amp;add,<br />
+    );<br />
+}<br />
+ <br />
+sub add {<br />
+    my($self, $context, $args) = @_;<br />
+    $args-&gt;{entry}-&gt;add_widget($self);<br />
+}<br />
+ <br />
+sub html {<br />
+    my($self, $entry) = @_;<br />
+    my $uri = URI-&gt;new('http://www.tumblr.net/share');<br />
+ <br />
+    $uri-&gt;query_form({<br />
+        v =&gt; '2',<br />
+        u =&gt; $entry-&gt;permalink,<br />
+        t =&gt; Encode::encode('utf-8', $entry-&gt;title),<br />
+    });<br />
+    my $url = HTML::Entities::encode($uri-&gt;as_string);<br />
+    return qq(&lt;a href=&quot;$url&quot;&gt;Tumblr&lt;/a&gt;);<br />
+}<br />
+ <br />
+1;<br />
+</pre>

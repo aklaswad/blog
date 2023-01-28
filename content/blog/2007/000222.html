@@ -1,0 +1,92 @@
++++
+mt_entry_id = 222
+date = "2007-09-20T23:50:22+09:00"
+title = "DayLog"
+categories = ["JotLine"]
+
++++
+
+<ins datetime="2008-05-09T22:11:04+09:00">手が回らないため、一時開発を停止しています。ご了承下さい。<br />
+同様の、より完成度の高いプラグインとして、SixApartのMark Paschalが開発した<a href="http://plugins.movabletype.org/action-streams/">Action Streams</a>が公開されていますので、そちらをお使いいただくことをお勧めします。<br />
+</ins><br />
+<br />
+ユーザーが各種ショートメッセージサービスに投稿したメッセージ等を定期的に巡回して収集し、一日分をまとめてMTのエントリーとして投稿します。<br />
+JotLineプラグインと組み合わせて使います。<h2>インストール</h2><br />
+<br />
+JotLine プラグインに同梱されています。<a href="http://blog.aklaswad.com/mtplugins/jotline/">JotLine プラグイン</a>のインストール手順に従ってください。<br />
+<br />
+プラグインのインストールが終了したら、まず、自動収集を行うためにMovable Typeがスケジュールタスクを実行できているか、cronの設定などを確認してください。詳細はMTのマニュアルなどを参考にしてください。<br />
+<br />
+次に、システムメニュー > プラグインから、DayLogプラグイン以下の設定項目の内、必須項目の設定を行ってください。<br />
+また、JotLineプラグインの各サービスの設定も、必要な箇所を埋めておく必要があります。<br />
+<br />
+最後に、設定項目のbody templateをデフォルトのまま使う場合、このページ内の「エントリーの設定」の節を参考にして、スタイルシートを設定して下さい。<br />
+<br />
+<h2>設定</h2><br />
+<br />
+<dl><br />
+    <dt>blog id</dt><br />
+    <dd>収集したメッセージを投稿するブログのIDを数字で指定してください。この設定は必須です。</dd><br />
+    <dt>author id</dt><br />
+    <dd>収集したメッセージを投稿する際のユーザーのIDを数字で指定してください。この設定は必須です。</dd><br />
+    <dt>remove posted jot</dt><br />
+    <dd>ブログ記事の投稿後に、収集したデータを破棄するかが選択できます。開発用途などの特別な理由が無い限りチェックを外さないでください。</dd><br />
+    <dt>clone base entry id</dt><br />
+    <dd>この項目に既存のブログ記事のIDを指定すると、新規に投稿されるブログ記事のカテゴリー付けなどの設定を、指定したブログ記事からコピーします。</dd><br />
+    <dt>title template</dt><br />
+    <dd>新規に投稿するブログ記事のタイトルを指定します。Jot関連のテンプレートタグが利用できます。(その日の一番古いJotのコンテキストが指定されています。)</dd><br />
+    <dt>body template </dt><br />
+    <dd>新規に投稿するブログ記事の本文の表示形式を指定します。Jot関連のテンプレートタグが利用できます。Jotの表示部分は、MTJotsタグで囲む必要があります。この際にはアトリビュートは指定しないでください。</dd><br />
+</dl><br />
+<br />
+<h2>エントリーの設定</h2><br />
+<br />
+body_templateの設定では、MTJot関連のテンプレートタグを利用して、まとめログの表示形式を自由にカスタマイズできます。各テンプレートタグの詳細については、<a href="http://blog.aklaswad.com/mtplugins/jotline/">JotLineプラグイン</a>の説明を参照してください。<br />
+デフォルトのbody_templateの設定では、いくつかの独自のCSSセレクタが指定されています。対応するCSSを、「スタイルシート(メイン)」の末尾などに追加してください。以下、指定するスタイルの一例です。(このサイトで使用しているものです。)<br />
+<br />
+<pre><br />
+.jot-container {<br />
+    width: 100%;<br />
+    float: left;<br />
+}<br />
+p.jot-item {<br />
+    float: left;<br />
+    margin: 0.1em;<br />
+    padding-left: 2.4em;<br />
+}<br />
+p.jot-item-with-embed {<br />
+    width: 320px;<br />
+}<br />
+h4.jot-date {<br />
+    border-bottom: 1px dotted #99bbbb;<br />
+    color: #aaaaaa;<br />
+    margin: 0;<br />
+    font-size: 0.7em;<br />
+}<br />
+h4.jot-date a {<br />
+    color: #0000ff;<br />
+    text-decoration: none;<br />
+}<br />
+.jot-text {<br />
+    margin: 0px;<br />
+}<br />
+.jot-link {<br />
+}<br />
+.jot-tag {<br />
+    margin: 0 0.1em;<br />
+    font-size: 0.8em;<br />
+}<br />
+.jot-tag a {<br />
+    margin: 0 0.2em;<br />
+    text-decoration: none;<br />
+    color: #0000ff;<br />
+}<br />
+.jot-embed {<br />
+    display: block;<br />
+    float: right;<br />
+}<br />
+</pre><br />
+<br />
+<h2>その他</h2><br />
+<br />
+ショートメッセージの言及先リンクがtinyurlだった場合、自動的にオリジナルのURLに変換します。<br />

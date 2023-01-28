@@ -1,0 +1,24 @@
++++
+mt_entry_id = 49
+date = "2006-06-03T18:37:48+09:00"
+title = "MT-3.3-b1"
+categories = []
+
++++
+
+<a href="http://www.sixapart.jp/movabletype/news/2006/06/02-1830.html">ベータが出ていた</a>ので、取り敢えずアップグレードしてみる。<br />
+デザインも問題なく移行できたが、動作を見てみたかったのでデフォルトに戻す。<br />
+<br />
+タギング機能が追加されたのが、目玉かな。<br />
+過去のエントリー数も少なめだったので、一通りタグ付けしてみる。<br />
+すでに全てのエントリーがカテゴリーに分けられているので、<br />
+エントリー一覧からカテゴリーごとにフィルタリングしてビシバシとタグをつけていく。<br />
+なかなか便利。<br />
+「<a href="http://www.sixapart.jp/movabletype/news/2006/05/29-1830.html">Movable Typeの新しいバージョンについて</a>」では、タグクラウドも実現できるように書いてあったので、システムテンプレート中の「検索結果のテンプレート」にあったタギング関係のタグを参考に適当にサイドバーにでっち上げてみる。ぐちゃぐちゃだ。<br />
+うまく調整する方法も用意されているかもしれないが、ドキュメントはまだ出ていないようなので、よく分からん。<br />
+<br />
+<blockquote><br />
+<br />
+&lt;MTTags&gt;&lt;font size="&lt;$MTTagCount$&gt;"&gt;&lt;a href="&lt;$MTTagSearchLink$&gt;"&gt;&lt;$MTTagName&gt; &lt;/a&gt;&lt;/font&gt;, &lt;/MTTags&gt;<br />
+<br />
+</blockquote>

@@ -1,0 +1,122 @@
++++
+mt_entry_id = 380
+date = "2008-02-04T01:30:00+09:00"
+title = "Build Tracer"
+categories = ["mtplugins"]
+
++++
+
+再構築の詳細を追跡、図示するプラグインです。<br />
+<h3>最新版のダウンロード</h3><br />
+<br />
+<ul><br />
+	<li><form mt:asset-id="59" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/BuildTracer0.31.zip">BuildTracer0.31.zip</a></form></li><br />
+</ul><br />
+<br />
+<h3>何をするプラグインか</h3><br />
+<br />
+Movable Type の再構築の動作を表示します。<br />
+表示は、以下のような形で行われます。<br />
+<br />
+<form mt:asset-id="48" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="buildtracer_tracer.png" src="http://blog.aklaswad.com/images/buildtracer_tracer.png" width="550" height="198" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></form><br />
+<br />
+現在の所、以下のようなことが出来ます。<br />
+<br />
+<ul><br />
+	<li>ブロック構造の可視化</li><br />
+	<li>&lt;mt:if&gt;などの判定の確認</li><br />
+	<li>変数の変化の追跡</li><br />
+	<li>処理時間の表示</li><br />
+</ul><br />
+<br />
+<h3>動作環境</h3><br />
+<br />
+このプラグインは、Movable Type 4.1 専用です。<br />
+もしかしてMT4.0xでも動作するかもしれませんが、コードのベースとして4.1のものを利用しているため、トレース結果が信頼できなくなります。<br />
+<br />
+また、ダイナミックパブリッシングを利用している場合も、実際に公開されるブログとトレース結果が異なる場合は考えられます。<br />
+<br />
+ブラウザについて、Firefox での利用をお勧めします。IE7での動作は確認しておりますが、どうもパフォーマンスが良くないようです。IE6では動作しません。<br />
+<br />
+<h3>インストール</h3><br />
+<br />
+パッケージには、「plugins」「mt-static」の二つのディレクトリが含まれています。<br />
+<em>plugins/BuildTracer</em>ディレクトリを、お使いのMTのpluginsディレクトリに、また、<em>mt-static/plugins/BuildTracer</em>ディレクトリを、お使いのMTのmt-static/pluginsディレクトリにそれぞれアップロードしてください。<br />
+<br />
+<h3>利用方法</h3><br />
+<br />
+Build Tracer のトレース画面は、以下の方法で呼び出すことが出来ます。<br />
+<br />
+<h4>Fileinfo一覧から呼び出す</h4><br />
+<br />
+BuildTracerがインストールされると、管理画面の「一覧」メニューの中に「Fileinfo」という項目が追加されます。<br />
+ここから、該当のブログが生成しているファイルのURL一覧を表示できます。<br />
+<br />
+<form mt:asset-id="47" class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="buildtracer_fileinfos.png" src="http://blog.aklaswad.com/images/buildtracer_fileinfos.png" width="550" height="254" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></form><br />
+<br />
+一覧表示から、トレース画面を開きたいファイルを選択してください。<br />
+<br />
+<h4>ブックマークレットから呼び出す</h4><br />
+<br />
+トレース画面の右下のほうにブックマークレットを用意しました。これをブラウザのお気に入りに登録しておけば、実際のブログ画面から直接トレース画面を開くことが出来ます。<br />
+URLのチェックをしていないため、関係ないウェブページから呼び出した場合には変なエラーが表示されます。<br />
+<br />
+<h3>ライセンス</h3><br />
+<br />
+GPLv2<br />
+MIT License (since 20130716)<br />
+<br />
+<h3>既知の問題</h3><br />
+<br />
+<ul><br />
+    <li><del>アーカイブテンプレートのトレース時にstash->templateがチェックされているとエラーが発生してトレースできない。将来のバージョンでインターフェース自体を変更予定です。</del><ins>現在、stashのトレース自体が削除されています。</ins></li><br />
+    <li><br />
+<del><br />
+現在の実装では、トレースを行う際に、実際にファイルを再構築しています。<br />
+そのため、場合によっては実際のブログのファイルが置き換わってしまう場合があります。<br />
+ファイルの内容に変化が無い場合には、基本的に、実際のファイルが書き換えられることはありません。しかし、例えばテンプレート中で&lt;mt:date&gt;タグを利用して最終更新日を表示している場合など、再構築ごとに内容が変化する箇所がある場合、ファイルがトレースを行った時点のものに書き換えられます。<br />また、ダイナミックパブリッシングの動作では、静的ファイルが存在しないことが前提となっているため、上記副作用でファイルが出力された場合、(そのファイルだけが)ダイナミックパブリッシングの対象から外れてしまうということが考えられます。ご注意下さい。<br />
+</del><ins>ver.0.2で対応しました。</ins><br />
+    </li><br />
+</ul><br />
+<br />
+<h3>チェンジログ</h3><br />
+<dl><br />
+<dt>0.31 (20080224)</dt><br />
+<dd><br />
+<ul><br />
+    <li><form mt:asset-id="59" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/BuildTracer0.31.zip">BuildTracer0.31.zip</a></form></li><br />
+    <li>IE7でJSONの読み込みに失敗する問題に対応した</li><br />
+    <li>オートラン機能を追加した</li><br />
+    <li>配列やハッシュの変数をJSONで表示するようにした</li><br />
+    <li>インターフェイスの見た目の改善</li><br />
+    <li>ブックマークレットが表示されていなかった問題を修正</li><br />
+    <li>(内部的な変更)変数の変化をキャッシュするようにした</li><br />
+    <li>(内部的な変更)ファイルを分割した</li><br />
+</ul><br />
+</dd><br />
+<dt>0.3 (20080217)</dt><br />
+<dd><br />
+<ul><br />
+	<li><form mt:asset-id="58" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/BuildTracer0.3.zip">BuildTracer0.3.zip</a></form></li><br />
+    <li><br />
+    <li>インターフェイスを刷新</li><br />
+    <li>機能的にはやや後退(stashの観察が出来なくなったなど)</li><br />
+</ul><br />
+</dd><br />
+<dl><br />
+<dt>0.2 (20080211)</dt><br />
+<dd><br />
+<ul><br />
+	<li><form mt:asset-id="53" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/BuildTracer0.2.zip">BuildTracer0.2.zip</a></form></li><br />
+	<li>トレース実行時にファイルが上書きされる問題に対応</li><br />
+	<li>stashの観察が出来るようにした</li><br />
+</ul><br />
+</dd><br />
+<dt>0.1 (20080204)</dt><br />
+<dd><br />
+<ul><br />
+	<li>最初のリリース</li><br />
+	<li><form mt:asset-id="46" class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://blog.aklaswad.com/mtplugins/BuildTracer0.1.zip">BuildTracer0.1.zip</a></form></li><br />
+</ul><br />
+</dd><br />
+</dl>

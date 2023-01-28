@@ -1,0 +1,39 @@
++++
+mt_entry_id = 25
+date = "2006-03-26T00:33:26+09:00"
+title = "カテゴリー別に文字色を変えてみる"
+categories = []
+
++++
+
+メインページのエントリーについて、所属するカテゴリーによって文字色が変わるようにしてみました。<br />
+<br />
+メインページにズラーっとエントリーが並んでいるときに、それぞれのエントリーが何についての記事なのか、ひと目で区別が付くと楽ですものね。<br />
+ちょっと見た目も華やかになるしー。<br />
+<br />
+個々の色指定ですが、カテゴリーに紐付けられる項目として、各カテゴリーに「カテゴリーの説明」という入力項目があるので、これを流用してみます。<br />
+すでに本来の目的に使っている場合はどうにもなりませんが。<br />
+<br />
+また、全てのカテゴリーにいちいち設定するのは大変なので、最上位の親カテゴリーのみを参照するようにしてみました。下のようなものを「スタイルシート」テンプレートに貼り付ける。<br />
+<br />
+<blockquote><br />
+<br />
+&lt;MTTopLevelCategories&gt;<br />
+&lt;MTIfNonEmpty&nbsp;tag="CategoryDescription"&gt;<br />
+.&lt;$MTCategoryLabel&nbsp;dirify="1"&gt;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;color:&nbsp;&lt;$MTCategoryDescription$&gt;;<br />
+}<br />
+&lt;/MTIfNonEmpty&gt;<br />
+&lt;/MTTopLevelCategories&gt;<br />
+<br />
+</blockquote><br />
+<br />
+管理画面から各カテゴリーの「カテゴリーの説明」に以下のように色を指定する。<br />
+<br />
+<blockquote>#ff0077</blockquote><br />
+<br />
+そして、色を変更したい箇所の適当なdivタグか何かに、以下のようにclass指定を追加してやる。<br />
+<br />
+<blockquote>&lt;div&nbsp;class="hogehoge&nbsp;&lt;MTTopLevelParent&gt;&lt;$MTCategoryLabel　dirify="1"$&gt;&lt;/MTTopLevelParent&gt;"&gt;</blockquote><br />
+<br />
+いかがでしょうか。

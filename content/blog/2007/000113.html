@@ -1,0 +1,57 @@
++++
+mt_entry_id = 113
+date = "2007-06-09T01:03:19+09:00"
+title = "Movable Type 4 のプラグイン作成での新機能"
+categories = []
+
++++
+
+ボチボチとMT4の内部の構造が分かってきたです。<br />
+特に、プラグインはまったく新しい構造が導入されていて、色々と面白いことになっている模様。<br />
+プラグインはイコールComponentで、Registryなのです!(分かってない)<br />
+MT4は、内部的にRegistryと呼ばれる、様々な設定値をひとまとめにする構造を持っています。<br />
+例えば、テンプレートの編集画面に追加された「Insert...」という部分。デフォルトではMTEntriesの挿入が行える機能だけがついていますが、これはRegistryのキー「template_snippets」に「insert_entries」というエントリがひとつだけ入っていて、そのエントリが管理画面に表示されるという仕組みになっています。<br />
+そして、当然のごとくプラグイン側からRegistryのキーやエントリ(実際にはネストしたハッシュリファレンスです)を追加することが出来ます。書き方としてはこんな感じでしょうか<br />
+<br />
+<pre class="code">package MT::Plugin::CommentSnippet;<br />
+ <br />
+use strict;<br />
+use base qw( MT::Plugin );<br />
+ <br />
+my $plugin = new MT::Plugin::CommentSnippet({<br />
+    name =&gt; &quot;CommentSnippet&quot;,<br />
+    version =&gt; '0.1',<br />
+});<br />
+MT-&gt;add_plugin($plugin);<br />
+ <br />
+sub init_registry {<br />
+    my $plugin = shift;<br />
+    $plugin-&gt;registry({<br />
+        'template_snippets' =&gt; {<br />
+            'comments' =&gt; {<br />
+                label   =&gt; 'comments',<br />
+                content =&gt; qq{&lt;MTComments lastn=&quot;10&quot;&gt;&lt;/MTComments&gt;},<br />
+            },<br />
+        },<br />
+    });<br />
+}<br />
+1;</pre><br />
+<br />
+これだけでも、今までのコールバックを利用したりする方法に比べたら楽に感じます。<br />
+しかし、さらに簡単な書き方も出来ます。<br />
+<br />
+<pre class="code">template_snippets:<br />
+    trackbacks:<br />
+        label: tbpings<br />
+        content: &lt;MTPings lastn=&quot;10&quot;&gt;&lt;/MTPings&gt;</pre><br />
+<br />
+はいyaml来ました。yaml。<br />
+pluginsディレクトリ内に適当なディレクトリを作成して、上記のyamlを「config.yaml」という名前で置くだけです。<br />
+これは楽です。<br />
+<br />
+更新Pingサーバーのリストも同様に追加出来るのですが、その場合には追加分の項目の設定値の保存まで自動で面倒を見てくれるので、非常に楽です。素で驚きました。<br />
+<br />
+perlのコンパイル済みのコードリファレンスが要求される機能も多いっぽいので、yamlを書くだけでどこまで複雑な機能の追加が実現できるかは分かりません。実際には、Perlで機能のコア部分を書いて、config.yamlでユーザーがプラグインの機能を拡張していく、その橋渡しとしてRegistryが機能するという形になるのでしょうか。<br />
+いずれにしても、非常に拡張性が高いシステムになっていると感じました。<br />
+<br />
+<ins datetime="2007-06-09T14:25:25+09:00">追記: extrasディレクトリにそのままのサンプルがありましたね。今気がつきました;-)</ins>

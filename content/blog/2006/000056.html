@@ -1,0 +1,39 @@
++++
+mt_entry_id = 56
+date = "2006-07-17T11:31:28+09:00"
+title = "mod_proxy"
+categories = []
+
++++
+
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274065979/blogaklaswadc-22/ref=nosim/" target="_top"><img src="http://images.amazon.com/images/P/4274065979.09._SCMZZZZZZZ_.jpg" alt="ハッカーと画家 コンピュータ時代の創造者たち" /></a>友達に借りた本に、「簡単な道と難しい道があったら、難しいほうを選べ。」とか書いてあった。<br />
+といっても、茫漠とした人生論では無い。単純に技術系ベンチャーでの製品開発の心構えとして、競合に対してアドバンテージを得るために、習得が困難でもより強力な方法を(文中では「プログラム言語を」)選択しろ、ということだ。<br />
+<br />
+最初の2章程は、なんだか、何故学校でオタクがいじめられるのかをひたすら弁解していて、嫌になったが、後半のテクニカルな話になると俄然面白くなってくる。コンピューター言語の歴史みたいなことに興味があって、Lispはどのような経緯で実装されたか、なんて話で興奮できる奇特な人にはお奨め。<br />
+<br />
+現在、我が家のデスクトップ上ではApacheが2つ起動している。<br />
+windows上のapache1.3と、debianで動作しているapache2だ。(ちなみにdebianはVMWareで動いてます。)<br />
+都合上、コンテンツをまとめることは出来ないが、ルータ越しにはどちらかにしかアクセスを振り分けることが出来ない。<br />
+コレを回避するために色々考えてみた。<br />
+考えられる方法はふたつ。<br />
+<br />
+・片方のポートを変更する<br />
+利点 : 設定が簡単。<br />
+欠点 : アドレスがかっこ悪くなる。<br />
+<br />
+・内部proxy + mod_rewriteを使う。<br />
+利点 ; アドレスがスマートになる。<br />
+欠点 : 設定が難しそう。<br />
+<br />
+ということで、本にコロッと影響されて、apacheを弄ることにした。<br />
+apache2のパッケージに全て入っていたので、再コンパイルも必要なし。<br />
+<a href="http://www.sixapart.jp/movabletype/developers/naoya/archives/2004/10/apache_20_mod_p.html">ココ</a>などを参考にして、さくっと設定できました。<br />
+<br />
+<pre class="code"><br />
+#a2enmod proxy<br />
+#a2enmod rewrite<br />
+</pre><br />
+<br />
+で、/etc/apache2/mods-enabled/proxy.confを修正して、RewriteRuleを[P]オプションつきで指定すれば完了。<br />
+<br />
+いやー、apacheって本当に良いものですね。

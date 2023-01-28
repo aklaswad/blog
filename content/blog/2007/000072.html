@@ -1,0 +1,26 @@
++++
+mt_entry_id = 72
+date = "2007-01-06T22:14:53+09:00"
+title = "UbuntuServerにImage::Magickが入らない!"
+categories = []
+
++++
+
+スタート時の状況はこう<br />
+<br />
+<ul><li>aptitude searchではperlmagickが見つからない</li><br />
+<li>cpanからインストールしても動かない</li><br />
+</ul><br />
+以下を行い何とかインストールできた。<br />
+<br />
+<ul><br />
+<li>cpanで入れたImage::Magickを<a href="http://blog.aklaswad.com/2006/000071.html">前回のエントリー</a>の1,2の方法でアンインストール</li><br />
+<li>/etc/apt/sources.listに以下の行を追加<br />
+<pre class="code">deb http://ubuntu.mithril-linux.org/archives/ edgy main universe</pre></li><br />
+<li>aptitudeのパッケージリストを更新<br />
+<pre class="code">sudo aptitude update</pre></li><br />
+<br />
+<li>aptitudeでインストール</li><br />
+</ul><br />
+<br />
+cpanから入れたものが悪さをしていることに気づかず、結構はまった。何してもエラー内容が変わらないんだから、もっと早く気づけよ俺。

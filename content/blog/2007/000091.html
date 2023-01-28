@@ -1,0 +1,37 @@
++++
+mt_entry_id = 91
+date = "2007-03-27T20:29:14+09:00"
+title = "PluginNameをL10Nしてはならぬ"
+categories = []
+
++++
+
+Movable Type のプラグインを作成する場合に、プラグインの管理画面で表示されることを見越して、L10Nに対応した形でプラグインの登録をする場合も多いと思います。<br />
+<br />
+<pre class="code"><br />
+@MT::Plugin::HogeManager::ISA = qw(MT::Plugin);<br />
+my $plugin = new MT::Plugin::HogeManager({<br />
+    name        =&gt; '&lt;MT_TRANS phrase=\'HogeManager\'&gt;',<br />
+    author_name =&gt; '&lt;MT_TRANS phrase=\'aklaswad\'&gt;',<br />
+    l10n_class  =&gt; 'HogeManager::L10N',<br />
+    system_config_template =&gt; 'config.tmpl',<br />
+    settings    =&gt; new MT::PluginSettings([<br />
+        ['moge'],<br />
+    ]),<br />
+});<br />
+MT-&gt;add_plugin($plugin);<br />
+</pre><br />
+<br />
+そして、このプラグインの設定をMT::PluginSettingsを利用してデータベースに保存するとアッー!<br />
+<br />
+<pre class="code"><br />
+mysql&gt; select * from mt_plugindata\G<br />
+*************************** 1. row ***************************<br />
+    plugindata_id: 1<br />
+  plugindata_data: SERG<br />
+   plugindata_key: configuration<br />
+plugindata_plugin: &lt;MT_TRANS phrase='HogeManager'&gt;<br />
+1 row in set (0.00 sec)<br />
+</pre><br />
+<br />
+ということで、どの程度実害があるかは分かりませんがnameはL10Nしないほうが良いようです。

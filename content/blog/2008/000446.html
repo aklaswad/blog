@@ -1,0 +1,54 @@
++++
+mt_entry_id = 446
+date = "2008-10-07T22:51:00+09:00"
+title = "[ActionStreams]ボケて用config.yaml"
+categories = []
+
++++
+
+<a href="http://bokete.jp/">ボケて</a>用のconfig.yamlです。<br />
+<br />
+<ul><br />
+	<li>フィード無いのでscraperでとってきてます。多分寿命は短いと思う。</li><br />
+	<li>scraperのネストの扱いが分からなくてハマった。</li><br />
+	<li>フィードの配信が待ち望まれるところ。</li><br />
+	<li>フィールド追加するより、titleなどの既存のフィールドに入れちまった方が良いのかしら？</li><br />
+</ul><br />
+<pre class="code"><br />
+name: BoketeAS<br />
+id: boketeas<br />
+key: BoketeAS<br />
+author_link: http://blog.aklaswad.com/<br />
+author_name: aklaswad<br />
+description: Adds profile service and activity stream for Bokete.jp<br />
+version: 0.1<br />
+profile_services:<br />
+    bokete:<br />
+        name: Bokete<br />
+        url: http://bokete.jp/user/%s<br />
+        icon: images/bokete.png<br />
+action_streams:<br />
+    bokete:<br />
+        bokes:<br />
+            name: Bokes<br />
+            description: stream you boked<br />
+            fields:<br />
+                - boke<br />
+            html_form: '[_1] boked &lt;a href=&quot;[_2]&quot;&gt;[_3]&lt;/a&gt;'<br />
+            html_params:<br />
+                - url<br />
+                - boke<br />
+            url: 'http://bokete.jp/user/{{ident}}'<br />
+            identifier: boke<br />
+            scraper:<br />
+                foreach: div.odai530<br />
+                get:<br />
+                    boke:<br />
+                        - 'h3'<br />
+                        - TEXT<br />
+                    url:<br />
+                        - '//p[2]/a[position()=last()]'<br />
+                        - @href<br />
+</pre><br />
+<br />
+<ins datetime="2008-10-22T20:57:31+09:00">とっくにフィード吐くようになってるみたいですね。。。そのうち。。。</ins>
