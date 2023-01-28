@@ -2,7 +2,8 @@
 set -ueo pipefail
 
 scriptDir=$(dirname $0)
-file="$scriptDir/draft.md"
+cd "$scriptDir"
+file="./draft.md"
 
 if [ ! -e $file ]; then
   cat >"$file" << EOT
@@ -23,7 +24,7 @@ else
   now=$(date -u "+%Y-%m-%dT%H:%M:%S")
   sed -i -e "s/____DATE____/$now/" "$file"
   year=$(date '+%Y')
-  outdir="$scriptDir/content/blog/$(date '+%Y')"
+  outdir="./content/blog/$(date '+%Y')"
   if [ ! -d "$outdir" ]; then
     mkdir -p "$outdir"
   fi
