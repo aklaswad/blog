@@ -1,19 +1,27 @@
 baseURL: http://example.org/
 languageCode: ja-jp
 title: blog.aklaswad.com
-theme: hugo-theme-tokiwa
+theme: PaperMod
 canonifyurls: true
 UglyURLs: true
 permalinks:
   blog: /:year/:filename
+menu:
+  main:
+  - identifier: archives
+    name: archives
+    url: /archives/
+    weight: -110
 params:
-  env: production
-  description: 帰ってきた。
-  useChineseFonts: false
-
-  footer: |
-    &copy; aklaswad [Github](https://github.com/aklaswad) | [Twitter](https://twitter.com/aklaswad)
-  social:
-    twitter: https://twitter.com/aklaswad
-    github: https://github.com/aklaswad
+  defaultTheme: light
+  disableThemeToggle: true
+  homeInfoParams:
+    Content: 帰ってきた
+  socialIcons:
+    - name: "twitter"
+      url: "https://twitter.com/aklaswad"
+    - name: "github"
+      url: "https://github.com/aklaswad"
+  ShowPostNavLinks: true
+  ShowCodeCopyButtons: true
 
