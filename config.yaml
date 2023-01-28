@@ -7,7 +7,13 @@ UglyURLs: true
 permalinks:
   blog: /:year/:filename
 params:
-  description: A website built through Hugo
+  env: production
+  description: 帰ってきた。
+  useChineseFonts: false
+
   footer: |
     &copy; aklaswad [Github](https://github.com/aklaswad) | [Twitter](https://twitter.com/aklaswad)
+  social:
+    twitter: https://twitter.com/aklaswad
+    github: https://github.com/aklaswad
 
