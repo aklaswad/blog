@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | Pure MTML で NabeAzz</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">Pure MTML で NabeAzz</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2008-04-13T23:30:00&#43;09:00">2008-4-13 23:30</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">以下、解説。
+
+<pre class="code">&lt;mt:ignore&gt;&lt;!-- 単純な線形合同法で乱数を生成。 --&gt;&lt;/mt:ignore&gt;
+&lt;mt:setvarblock name=&quot;seed&quot;&gt;&lt;mt:date format=&quot;%S&quot;&gt;&lt;/mt:setvarblock&gt;
+&lt;mt:setvartemplate name=&quot;rnd&quot;&gt;
+    &lt;mt:getvar setvar=&quot;seed&quot; name=&quot;seed&quot; op=&quot;*&quot; value=&quot;13&quot; /&gt;
+    &lt;mt:getvar setvar=&quot;seed&quot; name=&quot;seed&quot; op=&quot;+&quot; value=&quot;5&quot; /&gt;
+    &lt;mt:getvar setvar=&quot;seed&quot; name=&quot;seed&quot; op=&quot;%&quot; value=&quot;24&quot; /&gt;
+    &lt;mt:getvar name=&quot;seed&quot;&gt;
+&lt;/mt:setvartemplate&gt;</pre>
+
+最初のこのブロックは、mt:setVarTemplateを使ってrndというルーチンを作成しています。
+内容は、線形合同法という非常に素朴な乱数生成ルーチンです。
+
+<a href="http://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95">線形合同法 - Wikipedia</a>
+
+MTMLのみで乱数作れないかと思い立って調べてみたところ、なんだか簡単そうなので試してみました。今回のナベアツ問題なら精度の高い乱数は必要ないので、こんなのでも良いのではないかと思います。上限が24で最大周期も24、という貧弱貧弱なルーチンです。数字を調整すればもう少し良いものになるかもしれません。
+乱数のシード(初期値)の値はmt:date(再構築が実行された時間を取得するタグ)からとっています。
+
+<pre class="code">&lt;mt:ignore&gt;&lt;!-- 配列の初期化はsetvar一発で。 --&gt;&lt;/mt:ignore&gt;
+&lt;mt:setvar name=&quot;aho&quot; value=&quot;www&quot;:&quot;ktkr&quot;:&quot;ぶーん&quot;:&quot;だわよのさ&quot;:&quot;へっぺふむーん&quot;&gt;
+&lt;mt:setvar name=&quot;dog&quot; value=&quot;ダワン&quot;:&quot;キャイーン&quot;:&quot;キャンキャン&quot;:&quot;バウウウ&quot;:&quot;ガルルル&quot;&gt;
+</pre>
+
+あらかじめ配列に、アホ発言と犬発言を準備しておきます。ちょっと変な記法の解説は<a href="http://blog.aklaswad.com/2008/000358.html">こちら</a>。
+
+<pre class="code">&lt;mt:ignore&gt;&lt;!-- 指定された配列からランダムに要素をとってくる。 --&gt;&lt;/mt:ignore&gt;
+&lt;mt:setvartemplate name=&quot;get_suffix&quot;&gt;
+    &lt;mt:setvarblock name=&quot;idx&quot;&gt;&lt;mt:getvar name=&quot;rnd&quot; trim=&quot;1&quot;&gt;&lt;/mt:setvarblock&gt;
+    &lt;mt:setvarblock name=&quot;max&quot;&gt;&lt;mt:getvar name=&quot;$target&quot; function=&quot;count&quot;&gt;&lt;/mt:setvarblock&gt;
+    &lt;mt:getvar setvar=&quot;idx&quot; name=&quot;idx&quot; op=&quot;%&quot; value=&quot;$max&quot;&gt;
+    &lt;mt:getvar name=&quot;$target&quot; index=&quot;$idx&quot;&gt;
+&lt;/mt:setvartemplate&gt;</pre>
+
+ここで、またmt:setVarTemplateを使ってルーチンを作成しています。
+このルーチンでは、「target」という変数に指定された名前の変数から、要素を一つ取り出して出力する、という作業を行っています。
+ポイントはここでしょうか。「mt:getvar name="$target" index="$idx"」。
+MTのテンプレートエンジンでは、タグそのものの処理が行われる前の段階で、モディファイア内の「$」記法の変数の展開が行われます。そのため、一部のタグに対しては、変数の名前を別の変数に入れて渡す、ということが可能となっています。
+この場合では、「target」変数に「aho」または「dog」という文字列を入れておくと、まずテンプレートのパーサーが「$target」を展開してahoなどの文字列に置き換え、それを更にmt:getVarタグが解釈して、aho変数の中身を参照しに行ってくれる、というカラクリです。
+これが出来るのは、モディファイアとして変数名を受け取ることが出来る一部のタグのみですが、応用するとかなりパワフルなことが出来るのではないかと思います。
+
+<pre class="code">&lt;mt:ignore&gt;&lt;!-- 以下、出力用ループ --&gt;&lt;/mt:ignore&gt;
+&lt;ul&gt;
+&lt;mt:for from=&quot;1&quot; to=&quot;40&quot;&gt;
+    &lt;li&gt;
+    &lt;mt:getvar name=&quot;__counter__&quot;&gt;
+    &lt;mt:unless name=&quot;__counter__&quot; op=&quot;%&quot; value=&quot;5&quot;&gt;
+        &lt;mt:setvar name=&quot;target&quot; value=&quot;dog&quot;&gt;
+        &lt;mt:getvar name=&quot;get_suffix&quot;&gt;
+    &lt;/mt:unless&gt;
+    &lt;mt:unless name=&quot;__counter__&quot; op=&quot;%&quot; value=&quot;3&quot;&gt;
+        &lt;mt:setvar name=&quot;target&quot; value=&quot;aho&quot;&gt;
+        &lt;mt:getvar name=&quot;get_suffix&quot;&gt;
+    &lt;mt:elseif name=&quot;__counter__&quot; like=&quot;3&quot;&gt;
+        &lt;mt:setvar name=&quot;target&quot; value=&quot;aho&quot;&gt;
+        &lt;mt:getvar name=&quot;get_suffix&quot;&gt;
+    &lt;/mt:unless&gt;
+    &lt;/li&gt;
+&lt;/mt:for&gt;
+&lt;/ul&gt;</pre>
+
+最後に出力用にループを回しています。条件分岐はそんなに変なことはしてません。testモディファイアを使うともっと短くなるんだろうけど、使い方がわからないので諦めました。
+
+<h3>TechMemo</h3>
+<ul>
+	<li>_math_operationに直接式をかけると良いと思った。op="($aho + $dog) * $rnd"みたいな。駄目なら、配列で渡せるというのはどうだろう。op="+","*" value="$aho","5"のように。</li>
+	<li>配列orハッシュ変数の展開は今のところgetvarの機能となっているが、これはbuild側でやるべきじゃないだろうか。</li>
+	<li>mt:date format="%s"って何で無いんだ?小文字で、0埋め無しの秒を取れると思ってたら取れなかった。ここで一番嵌った。需要が無いから?</li>
+        <li>&lt;mt:getvar setvar="seed" name="seed" op="*" value="13"&gt;ここのモディファイアの並べ方はちょっと悩んだ(動作的には関係ないが、読みやすさの意味で)が、最終的にはc、perl系の言語っぽく並べるのが一番わかり易いと思った。「$seed = $seed * 13」 と書くのと同じ並び。mt:var系列は複雑で把握しきれない。もっと短く書けた気がする。。。</li>
+</ul></div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 139 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2008/000408.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        mt.jsでタブを作る
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2008/000410.html">
+        CustomEditorButton2用の追加プラグイン「EntryUtilButtons」作りました。
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

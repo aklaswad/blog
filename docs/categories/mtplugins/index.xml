@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mtplugins on blog.aklaswad.com</title>
+    <link>http://example.org/categories/mtplugins.html</link>
+    <description>Recent content in mtplugins on blog.aklaswad.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 02 May 2010 23:20:46 +0900</lastBuildDate>
+    
+	<atom:link href="http://example.org/categories/mtplugins/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>TagOverride</title>
+      <link>http://example.org/2010/000471.html</link>
+      <pubDate>Sun, 02 May 2010 23:20:46 +0900</pubDate>
+      
+      <guid>http://example.org/2010/000471.html</guid>
+      <description>
+詳細なドキュメント建設予定地</description>
+    </item>
+    
+    <item>
+      <title>MTML-Twitter-API</title>
+      <link>http://example.org/2010/000470.html</link>
+      <pubDate>Sun, 02 May 2010 23:20:29 +0900</pubDate>
+      
+      <guid>http://example.org/2010/000470.html</guid>
+      <description>
+詳細なドキュメント建設予定地</description>
+    </item>
+    
+    <item>
+      <title>SubPop</title>
+      <link>http://example.org/2010/000469.html</link>
+      <pubDate>Sun, 02 May 2010 23:20:14 +0900</pubDate>
+      
+      <guid>http://example.org/2010/000469.html</guid>
+      <description>
+詳細なドキュメント建設予定地</description>
+    </item>
+    
+    <item>
+      <title>Writting Custom Button Plugins</title>
+      <link>http://example.org/2008/000399.html</link>
+      <pubDate>Sun, 02 Mar 2008 15:38:49 +0900</pubDate>
+      
+      <guid>http://example.org/2008/000399.html</guid>
+      <description>プラグインを作成することで、CustomEditorButton2に任意のボタンを追加できます。
+プラグインは通常の Movable Type のプラグインとして作成します。
+といっても、ボタンの画像と簡単なyamlファイルを用意するだけですので、MTのプラグイン作成の知識はほとんど必要ありません。
+ここでは、ボタンをクリックすると「Hello!」という文字列を追加するボタンを例として、作成の流れを見ていきます。
+まずはyamlファイルの作成から始めましょう。
+
+&lt;h3&gt;yamlファイルを作成する&lt;/h3&gt;
+
+&lt;h4&gt;プラグイン情報を書く&lt;/h4&gt;
+
+適当なテキストエディタで、新規ファイルを作成します。
+最初に書くのは、プラグインとしての情報です。ここで書いた内容が、MTの管理画面のプラグイン一覧に表示されます。
+
+&lt;pre class=&#34;code&#34;&gt;name: Hello Button
+id: Hello Button
+key: HelloButton
+author_link: http://blog.aklaswad.com/
+author_name: Aklaswad
+description: Say hello.
+version: 0.1
+plugin_link: http://blog.aklaswad.com/mtplugins/hellobutton/&lt;/pre&gt;
+
+あちこち省略しても問題ありませんが、せっかくだからきちんと書いておきましょう。
+
+&lt;h4&gt;ボタンを追加する&lt;/h4&gt;
+
+次に、ボタンを追加します。
+
+&lt;pre class=&#34;code&#34;&gt;buttons:
+    hello:
+        image: hello.png
+        title: say hello!
+        code: |
+            function ceb_hello ( text ) {
+                return &#39;Hello! &#39; + text;
+            }&lt;/pre&gt;
+
+一つのプラグインで、複数のボタンを追加することも出来ます。
+
+&lt;h4&gt;ボタンの名前を指定する&lt;/h4&gt;
+
+&lt;pre class=&#34;code&#34;&gt;buttons:
+    hello:&lt;/pre&gt;
+
+この部分です。ここからボタンの指定が続きますよ、という指定の「butons:」の次の行に、半角スペース4つ分字下げしてボタンの名前を指定します。今回は「hello」という名前にします。
+名前には半角スペースなどを含めないようにしてください。
+
+&lt;h4&gt;image: ボタンの画像を指定する&lt;/h4&gt;
+
+用意した画像ファイルのファイル名を指定します。詳しくは後述します。
+
+&lt;h4&gt;title: ボタンの動作の説明を書いておきましょう&lt;/h4&gt;
+
+ボタンの上にマウスのカーソルを置いたときに、ここに指定したものが表示されます。
+
+&lt;h4&gt;code: javascriptでボタンの動作を作る&lt;/h4&gt;
+
+javascriptでコードの動作を指定します。字下げ幅をきちんと守るようにしてください。
+ここからは、少しだけjavascriptの知識が必要となります。
+ボタンがクリックされたときには、先ほど決めたボタンの名前に、「ceb_」という接頭辞をくっつけた
+関数がコールされます。
+この関数に対して、現在エディタ上で選択している文字列が第一引数として渡されます。
+ほとんどの場合、この引数「text」に対して何らかの加工をすることが目的となるでしょう。
+
+加工した結果の文字列を、関数の戻り値として返却してください。エディタの選択部分に挿入されます。
+
+&lt;pre class=&#34;code&#34;&gt;            function ceb_hello ( text ) {
+                return &#39;Hello! &#39; + text;
+            }&lt;/pre&gt;
+
+「code」ブロックには、呼び出される関数以外の関数も記述できます。
+
+&lt;h4&gt;改行して保存する&lt;/h4&gt;
+
+yamlファイルの仕様で、最後の行の後ろに改行が必要です。忘れないようにしてください。
+編集が完了したら、改行コードを「LF」にして保存します。名前は「config.yaml」としてください。
+
+&lt;h3&gt;ボタンの画像を作成する&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;66&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;hello.png&#34; src=&#34;http://blog.aklaswad.com/images/hello.png&#34; width=&#34;22&#34; height=&#34;22&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;画像は22px x 22px の大きさで作成します。画像ファイルの種類は、ブラウザが表示可能な種類なら何でもOKです。
+
+もし、画像を用意するのが面倒なら、単にテキストを表示させることも出来ます。
+「image」は指定せず、代わりに「face_text」という項目に、表示させたいテキストを指定してください。あまり長いと、ボタンからはみ出してしまうので気をつけましょう。
+
+&lt;pre class=&#34;code&#34;&gt;buttons:
+    bye:
+        face_text: bye
+        title: say bye!
+        code: |
+            function ceb_bye ( text ) {
+                return &#39;bye &#39; + text;
+            }&lt;/pre&gt;
+
+&lt;h3&gt;作成したプラグインのインストール&lt;/h3&gt;
+
+MTのpluginsディレクトリに、作成したプラグイン用の名前のディレクトリを作成し、その中に先ほど作成したyamlファイルを「config.yaml」という名前で保存します。
+同様に、MTのmt-staticディレクトリにもpluginsというディレクトリがありますので、その中にプラグインの名前のディレクトリを作成し、画像ファイルを置きます。
+
+ファイルの設置が完了したら、プラグイン一覧画面を開いて、インストールを確認してみましょう。
+
+&lt;form mt:asset-id=&#34;65&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;hello_pluginconfig.png&#34; src=&#34;http://blog.aklaswad.com/images/hello_pluginconfig.png&#34; width=&#34;222&#34; height=&#34;136&#34; class=&#34;mt-image-center&#34; style=&#34;text-align: center; display: block; margin: 0 auto 20px;&#34; /&gt;&lt;/form&gt;
+
+成功です!
+ ･･･もしプラグインが一覧に表示されていない場合は、アップロード先のディレクトリが正しいか見てみましょう。
+また、以下のようなエラーが出て管理画面にアクセスできなくなってしまった場合
+
+&lt;blockquote&gt;Got an error: Error reading /home/foo/public_html/cgi-bin/mt/plugins/HelloButton/config.yaml: Stream does not end with newline character (YAML_PARSE_ERR_NO_FINAL_NEWLINE) at lib/MT/Component.pm line 150.&lt;/blockquote&gt;
+
+yamlファイルの改行コードが間違っている場合や、yaml形式の字下げがおかしくなっている場合、最後の改行が足りない場合が考えられます。修正してみてください。
+
+&lt;form mt:asset-id=&#34;67&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;hello_on_editor.png&#34; src=&#34;http://blog.aklaswad.com/images/hello_on_editor.png&#34; width=&#34;121&#34; height=&#34;67&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;さて、無事にインストールできたら、早速ブログ記事編集画面を開いてみましょう。自動的にボタンが追加されているはずです。&lt;br clear=&#34;both&#34; /&gt;
+
+&lt;h3&gt;作成したプラグインを配布する&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;63&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;hello_directory_tree.png&#34; src=&#34;http://blog.aklaswad.com/images/hello_directory_tree.png&#34; width=&#34;167&#34; height=&#34;140&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;作成したプラグインを配布する場合、MTの一般的なディレクトリ構成に併せてパッケージングしましょう。画像のようになると思います。&lt;br clear=&#34;both&#34; /&gt;
+
+完成したプラグインはこちらになります。
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;68&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/HelloButton.zip&#34;&gt;HelloButton.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;その他、細かい仕様&lt;/h3&gt;
+
+&lt;h4&gt;コールバックに渡される引数&lt;/h4&gt;
+選択文字列「text」のあとに、ヘルパーオブジェクトが渡されます。
+
+&lt;pre class=&#34;code&#34;&gt;function ceb_foo(text, args) {
+    //do something
+}&lt;/pre&gt;
+
+このヘルパーオブジェクトから、いくつかのプロパティやメソッドを利用できます。
+現在用意されているのは以下の物です。
+
+&lt;dl&gt;
+&lt;dt&gt;innerHTML()&lt;/dt&gt;
+&lt;dd&gt;選択範囲をHTML文字列で返します。
+第一引数の「text」では、エディタがiframeで表示されているときも、見えている文字列の取得になりますが、innerHTML()を利用すると、iframeでの選択範囲のマークアップを含めた内容をHTMLで取得することが出来ます。
+&lt;/dd&gt;
+&lt;dt&gt;iframe&lt;/dt&gt;
+&lt;dd&gt;エディタがiframeで表示されているかをbool値で確認できます。&lt;/dd&gt;
+&lt;dt&gt;editor&lt;/dt&gt;
+&lt;dd&gt;MT.App.editorオブジェクトの参照を取得できます。&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h4&gt;コールバックの戻り値について&lt;/h4&gt;
+コールバック関数が未定義値を返却した場合、CustomEditorButtonは、エディタに対して一切の変更を加えません。</description>
+    </item>
+    
+    <item>
+      <title>CustomEditorButton2</title>
+      <link>http://example.org/2008/000397.html</link>
+      <pubDate>Sun, 02 Mar 2008 15:00:00 +0900</pubDate>
+      
+      <guid>http://example.org/2008/000397.html</guid>
+      <description>&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;
+        &lt;form mt:asset-id=&#34;89&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/CustomEditorButton2_0_3.zip&#34;&gt;CustomEditorButton2_0_3.zip&lt;/a&gt;&lt;/form&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;使い方&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;64&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;ceb_screen1.png&#34; src=&#34;http://blog.aklaswad.com/images/ceb_screen1.png&#34; width=&#34;149&#34; height=&#34;188&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;インストールが成功すると、自動的にブログ記事編集画面にボタンが追加されます。MTのデフォルトのボタンと同様に、エディタで範囲選択をした状態でボタンをクリックしてください。&lt;br clear=&#34;both&#34; /&gt;
+
+&lt;h4&gt;ボタンの並び順を変更する&lt;/h4&gt;
+
+カスタムボタンは、ドラッグ&amp;ドロップで簡単に並び替えることが出来ます。
+&lt;del datetime=&#34;2008-08-21T02:29:15+09:00&#34;&gt;今のところ、見た目ドラッグしている感じが無いのでわかりづらいかもしれませんが、本当に変更できます。&lt;/del&gt;
+
+&lt;form mt:asset-id=&#34;61&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;save_pref.png&#34; src=&#34;http://blog.aklaswad.com/images/save_pref.png&#34; width=&#34;22&#34; height=&#34;22&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;並び順を変更したら、右端のフロッピーディスクのアイコンをクリックしてください。変更結果が保存され、次回に編集画面を開いたときにもこの並び順で作業を再開できます。&lt;br clear=&#34;both&#34; /&gt;
+
+&lt;form mt:asset-id=&#34;70&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;ceb_box.png&#34; src=&#34;http://blog.aklaswad.com/images/ceb_box.png&#34; width=&#34;22&#34; height=&#34;22&#34; class=&#34;mt-image-left&#34; style=&#34;float: left; margin: 0 20px 20px 0;&#34; /&gt;&lt;/form&gt;「ポケット」をクリックすると、ポケットが開き、格納されたボタンを表示できます。使いたいボタンをドラッグして、現在使用中のボタンの列に並べてあげてください。当面使わないボタンなどは、「ポケット」にしまっておくことも出来ます。ボタンを「ポケット」にしまいたいときは、「ポケット」ボタンの上か、開いたポケットにドラッグしてください。&lt;br clear=&#34;both&#34; /&gt;
+
+&lt;h4&gt;ボタンを追加する&lt;/h4&gt;
+
+CustomEditorButton2用のプラグインを追加することで、新しいボタンをインストールすることが出来ます。自分でもポリポリ頑張って作っていきたいと思います。
+
+プラグインの作成は、なるべく簡単に出来るようにしてあります。皆さんも挑戦してみてください。
+作成方法は、以下のページにまとめてあります。
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/writting-custom-button-plugins.html&#34;&gt;blog.aklaswad.com: Writting Custom Button Plugins&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;公開されているボタン追加プラグイン&lt;/h3&gt;
+以下のサイトでも、CustomEditorButton2で利用可能な追加ボタンプラグインが公開されています。ありがとうございます。
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&#34;http://isly.sub.jp/kodaruma/2008/04/customeditorbutton2.html&#34;&gt;こだるま日和 - CustomEditorButton2 用のフォント色指定ボタンを作ってみた&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&#34;http://www.tinybeans.net/blog/movabletypeplugin/ceb2-plusutility.html&#34;&gt;かたつむりくんのWWW | CEB2_plusUtility&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;http://www.markdiary.com/archives/2008/05-06154648.php&#34;&gt;maRkのMyOwn - Custom Editor Buttonで記事作成の効率アップ&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;http://ke-i-s.com/archives/2008/08/06-091214.php&#34;&gt;Pure Kei - PLUGINS（Custom Editor Button 2）&lt;/a&gt; 20080821追加 トラックバックありがとうございます!&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&#34;http://www.apstars.com/blog/211movable_type4/mt41_21.php&#34;&gt;MT4.1：CustomEditorButton2 プラグイン&lt;/a&gt; via &lt;a href=&#34;http://www.apstars.com/blog/&#34;&gt;Under the Bridge&lt;/a&gt; 掲載忘れてました。超サンクス＞＜&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&#34;http://blog.net-arcadia.net/plug-in/amazon-quick-link.php&#34;&gt;Amazonクイックリンク用ボタンwith CEB２ - ネット×PC＝Web交差点&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;必要環境&lt;/h3&gt;
+
+MT4.1 以降専用です。MT3.xではまったく動きません。
+MT4.0については、今のところ検証してません。一通りの機能追加が終わってから検証したいと思います。
+
+&lt;h3&gt;ブラウザ&lt;/h3&gt;
+
+&lt;ins datetime=&#34;2008-03-12T23:46:41+09:00&#34;&gt;Firefox2およびInternetExplorer7で動作します。&lt;/ins&gt;
+&lt;del datetime=&#34;2008-03-12T22:43:52+09:00&#34;&gt;基本的にFirefoxでの利用を想定しています。
+現時点では、IEでの動作は見ていません。一通りの機能追加が終わってから検証します。
+IE7では動くと思いますが、IE6はかなり危ないと思います。&lt;/del&gt;
+IE6で動かなくても、多分直しません。
+
+&lt;h3&gt;ライセンス&lt;/h3&gt;
+
+GPLv2
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+
+&lt;dl&gt;
+    &lt;dt&gt;0.3(20080821)&lt;/dt&gt;
+    &lt;dd&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;form mt:asset-id=&#34;89&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/CustomEditorButton2_0_3.zip&#34;&gt;CustomEditorButton2_0_3.zip&lt;/a&gt;&lt;/form&gt;
+        &lt;/li&gt;
+        &lt;li&gt;MT4.2に対応した&lt;/li&gt;
+        &lt;li&gt;デフォルトのボタンを、同梱の別プラグインに移動した&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/dd&gt;
+    &lt;dt&gt;0.21(20080312)&lt;/dt&gt;
+    &lt;dd&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;form mt:asset-id=&#34;71&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/CustomEditorButton2.0.21.zip&#34;&gt;CustomEditorButton2.0.21.zip&lt;/a&gt;&lt;/form&gt;
+        &lt;/li&gt;
+        &lt;li&gt;IE7に対応した&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/dd&gt;
+    &lt;dt&gt;0.2(20080309)&lt;/dt&gt;
+    &lt;dd&gt;
+    &lt;ul&gt;
+        &lt;li&gt;&lt;form mt:asset-id=&#34;69&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/CustomEditorButton2.0.2.zip&#34;&gt;CustomEditorButton2.0.2.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+	&lt;li&gt;利用頻度の低いボタンを退避させる「ポケット」を追加した&lt;/li&gt;
+	&lt;li&gt;ボタンのドラッグ時などの見た目の改善&lt;/li&gt;
+	&lt;li&gt;画像を用意しなくてもボタンを作成できるようにした&lt;/li&gt;
+	&lt;li&gt;ボタン作成時に利用可能なオプション引数を追加&lt;/li&gt;
+	&lt;li&gt;コールバックの戻り値の処理の拡張&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/dd&gt;
+    &lt;dt&gt;0.1 (20080302)&lt;/dt&gt;
+    &lt;dd&gt;
+    &lt;ul&gt;
+        &lt;li&gt;最初のリリース&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;62&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/CustomEditorButton2.0.1.zip&#34;&gt;CustomEditorButton2.0.1.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/dd&gt;
+&lt;/dl&gt;</description>
+    </item>
+    
+    <item>
+      <title>HatenaBookmarkAS</title>
+      <link>http://example.org/2008/000388.html</link>
+      <pubDate>Fri, 08 Feb 2008 23:47:45 +0900</pubDate>
+      
+      <guid>http://example.org/2008/000388.html</guid>
+      <description>
+ActionStreamプラグインに、はてなブックマークのプロファイルを追加するプラグインです。
+
+&lt;a href=&#34;http://bulknews.net/me/&#34;&gt;miyagawaさんのActionStreams&lt;/a&gt;を見るとわかるように、他にも実装はあるようですが、とりあえず公開しておきます。
+
+ActionStreamsはプラグイン側で、収集する情報やフィールドを自由に追加できるので、それぞれの実装で個性が出ると面白いのではないかと思います。
+自分の場合は、はてぶのコメントとタグも収集できるようにしてみました。
+
+&lt;h3&gt;ダウンロード&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;51&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/HatenaBookmarkAS0.1.zip&#34;&gt;HatenaBookmarkAS0.1.zip&lt;/a&gt;&lt;/form&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>Build Tracer</title>
+      <link>http://example.org/2008/000380.html</link>
+      <pubDate>Mon, 04 Feb 2008 01:30:00 +0900</pubDate>
+      
+      <guid>http://example.org/2008/000380.html</guid>
+      <description>&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;59&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/BuildTracer0.31.zip&#34;&gt;BuildTracer0.31.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;何をするプラグインか&lt;/h3&gt;
+
+Movable Type の再構築の動作を表示します。
+表示は、以下のような形で行われます。
+
+&lt;form mt:asset-id=&#34;48&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;buildtracer_tracer.png&#34; src=&#34;http://blog.aklaswad.com/images/buildtracer_tracer.png&#34; width=&#34;550&#34; height=&#34;198&#34; class=&#34;mt-image-center&#34; style=&#34;text-align: center; display: block; margin: 0 auto 20px;&#34; /&gt;&lt;/form&gt;
+
+現在の所、以下のようなことが出来ます。
+
+&lt;ul&gt;
+	&lt;li&gt;ブロック構造の可視化&lt;/li&gt;
+	&lt;li&gt;&amp;lt;mt:if&amp;gt;などの判定の確認&lt;/li&gt;
+	&lt;li&gt;変数の変化の追跡&lt;/li&gt;
+	&lt;li&gt;処理時間の表示&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;動作環境&lt;/h3&gt;
+
+このプラグインは、Movable Type 4.1 専用です。
+もしかしてMT4.0xでも動作するかもしれませんが、コードのベースとして4.1のものを利用しているため、トレース結果が信頼できなくなります。
+
+また、ダイナミックパブリッシングを利用している場合も、実際に公開されるブログとトレース結果が異なる場合は考えられます。
+
+ブラウザについて、Firefox での利用をお勧めします。IE7での動作は確認しておりますが、どうもパフォーマンスが良くないようです。IE6では動作しません。
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+
+パッケージには、「plugins」「mt-static」の二つのディレクトリが含まれています。
+&lt;em&gt;plugins/BuildTracer&lt;/em&gt;ディレクトリを、お使いのMTのpluginsディレクトリに、また、&lt;em&gt;mt-static/plugins/BuildTracer&lt;/em&gt;ディレクトリを、お使いのMTのmt-static/pluginsディレクトリにそれぞれアップロードしてください。
+
+&lt;h3&gt;利用方法&lt;/h3&gt;
+
+Build Tracer のトレース画面は、以下の方法で呼び出すことが出来ます。
+
+&lt;h4&gt;Fileinfo一覧から呼び出す&lt;/h4&gt;
+
+BuildTracerがインストールされると、管理画面の「一覧」メニューの中に「Fileinfo」という項目が追加されます。
+ここから、該当のブログが生成しているファイルのURL一覧を表示できます。
+
+&lt;form mt:asset-id=&#34;47&#34; class=&#34;mt-enclosure mt-enclosure-image&#34; style=&#34;display: inline;&#34;&gt;&lt;img alt=&#34;buildtracer_fileinfos.png&#34; src=&#34;http://blog.aklaswad.com/images/buildtracer_fileinfos.png&#34; width=&#34;550&#34; height=&#34;254&#34; class=&#34;mt-image-center&#34; style=&#34;text-align: center; display: block; margin: 0 auto 20px;&#34; /&gt;&lt;/form&gt;
+
+一覧表示から、トレース画面を開きたいファイルを選択してください。
+
+&lt;h4&gt;ブックマークレットから呼び出す&lt;/h4&gt;
+
+トレース画面の右下のほうにブックマークレットを用意しました。これをブラウザのお気に入りに登録しておけば、実際のブログ画面から直接トレース画面を開くことが出来ます。
+URLのチェックをしていないため、関係ないウェブページから呼び出した場合には変なエラーが表示されます。
+
+&lt;h3&gt;ライセンス&lt;/h3&gt;
+
+GPLv2
+MIT License (since 20130716)
+
+&lt;h3&gt;既知の問題&lt;/h3&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;&lt;del&gt;アーカイブテンプレートのトレース時にstash-&gt;templateがチェックされているとエラーが発生してトレースできない。将来のバージョンでインターフェース自体を変更予定です。&lt;/del&gt;&lt;ins&gt;現在、stashのトレース自体が削除されています。&lt;/ins&gt;&lt;/li&gt;
+    &lt;li&gt;
+&lt;del&gt;
+現在の実装では、トレースを行う際に、実際にファイルを再構築しています。
+そのため、場合によっては実際のブログのファイルが置き換わってしまう場合があります。
+ファイルの内容に変化が無い場合には、基本的に、実際のファイルが書き換えられることはありません。しかし、例えばテンプレート中で&amp;lt;mt:date&amp;gt;タグを利用して最終更新日を表示している場合など、再構築ごとに内容が変化する箇所がある場合、ファイルがトレースを行った時点のものに書き換えられます。&lt;br /&gt;また、ダイナミックパブリッシングの動作では、静的ファイルが存在しないことが前提となっているため、上記副作用でファイルが出力された場合、(そのファイルだけが)ダイナミックパブリッシングの対象から外れてしまうということが考えられます。ご注意下さい。
+&lt;/del&gt;&lt;ins&gt;ver.0.2で対応しました。&lt;/ins&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+&lt;dl&gt;
+&lt;dt&gt;0.31 (20080224)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;form mt:asset-id=&#34;59&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/BuildTracer0.31.zip&#34;&gt;BuildTracer0.31.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+    &lt;li&gt;IE7でJSONの読み込みに失敗する問題に対応した&lt;/li&gt;
+    &lt;li&gt;オートラン機能を追加した&lt;/li&gt;
+    &lt;li&gt;配列やハッシュの変数をJSONで表示するようにした&lt;/li&gt;
+    &lt;li&gt;インターフェイスの見た目の改善&lt;/li&gt;
+    &lt;li&gt;ブックマークレットが表示されていなかった問題を修正&lt;/li&gt;
+    &lt;li&gt;(内部的な変更)変数の変化をキャッシュするようにした&lt;/li&gt;
+    &lt;li&gt;(内部的な変更)ファイルを分割した&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.3 (20080217)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;58&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/BuildTracer0.3.zip&#34;&gt;BuildTracer0.3.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+    &lt;li&gt;
+    &lt;li&gt;インターフェイスを刷新&lt;/li&gt;
+    &lt;li&gt;機能的にはやや後退(stashの観察が出来なくなったなど)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dl&gt;
+&lt;dt&gt;0.2 (20080211)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;53&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/BuildTracer0.2.zip&#34;&gt;BuildTracer0.2.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+	&lt;li&gt;トレース実行時にファイルが上書きされる問題に対応&lt;/li&gt;
+	&lt;li&gt;stashの観察が出来るようにした&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.1 (20080204)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;最初のリリース&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;46&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/BuildTracer0.1.zip&#34;&gt;BuildTracer0.1.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;</description>
+    </item>
+    
+    <item>
+      <title>AssetThumbnailPlus</title>
+      <link>http://example.org/2008/000372.html</link>
+      <pubDate>Mon, 28 Jan 2008 22:04:17 +0900</pubDate>
+      
+      <guid>http://example.org/2008/000372.html</guid>
+      <description>
+「MTAssetThumbnailLink」「MTAssetThumbnailURL」のテンプレートタグが生成するサムネイルは、基本的に元画像の縦横比を維持した形で出力されます。これを、不要な部分をトリムして、正方形にするモディファイア「square」を追加するプラグインです。
+
+ちょっと名前が大袈裟ですが、ほんとにそれだけの小さなプラグインです。
+
+&lt;h3&gt;動作条件&lt;/h3&gt;
+
+MT4.1でしか動作確認していません。多分MT4.0以上で動きます。
+通常のパブリッシングでは、MTが利用できる画像ライブラリ(ImageMagickかNetPBM)が必要になります。ひょっとしたらNetPBMでは動かないかもしれません。何かありましたらご報告下さい。
+ダイナミックパブリッシングで利用する場合、phpのGDライブラリが必要となります。
+
+&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;43&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/AssetThumbnailPlus.0.1.zip&#34;&gt;AssetThumbnailPlus.0.1.zip&lt;/a&gt;&lt;/form&gt;
+
+&lt;h3&gt;動作&lt;/h3&gt;
+
+テンプレートタグ「MTAssetThumbnailLink」「MTAssetThumbnailURL」でモディファイア「square」が有効になります。
+「square=&#34;1&#34;」を指定すると、モディファイア「width」または「height」で指定したサイズにリサイズした後、さらに正方形になるように中央部分を残して余計な箇所をカットします。
+「square」を指定しない場合や、「square=&#34;0&#34;」とした場合は、MT標準と同じ動作になります。
+
+&lt;h3&gt;ライセンス&lt;/h3&gt;
+
+GPLです。デュアルライセンスではありません。ご注意下さい。</description>
+    </item>
+    
+    <item>
+      <title>TagMan</title>
+      <link>http://example.org/2007/000300.html</link>
+      <pubDate>Fri, 07 Dec 2007 01:44:48 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000300.html</guid>
+      <description>&lt;h3&gt;インストール&lt;/h3&gt;
+
+解凍して出てきたファイル中から、「plugins/TagMan」を、お使いのmtのpluginsディレクトリにアップロードしてください。
+
+&lt;h3&gt;動作環境&lt;/h3&gt;
+
+MT4で動作します。MT3.x以前のバージョンでは動きません。
+
+&lt;h3&gt;設定&lt;/h3&gt;
+
+特になし。
+
+&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;33&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/TagMan0.1.zip&#34;&gt;TagMan0.1.zip&lt;/a&gt;&lt;/form&gt;
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+&lt;dt&gt;0.1 (20071206)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;最初のリリース&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;33&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/TagMan0.1.zip&#34;&gt;TagMan0.1.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;</description>
+    </item>
+    
+    <item>
+      <title>Movabug</title>
+      <link>http://example.org/2007/000213.html</link>
+      <pubDate>Sun, 26 Aug 2007 23:37:22 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000213.html</guid>
+      <description>&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;28&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/Movabug0.2.zip&#34;&gt;Movabug0.2.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;動作環境&lt;/h3&gt;
+
+このプラグインは、Movable Type 4.0 以降専用です。
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+
+ダウンロードしたファイルを解凍したら、&lt;em&gt;plugins&lt;/em&gt;ディレクトリの中の&lt;em&gt;Movabug&lt;/em&gt; ディレクトリを、お使いの MovableTypeの「plugins」ディレクトリにアップロードしてください。
+
+&lt;h3&gt;機能&lt;/h3&gt;
+
+現在のところ、基本機能にはすべて、画面上部の「movabug」メニューバーからアクセスします。
+
+&lt;form mt:asset-id=&#34;26&#34; class=&#34;mt-enclosure mt-enclosure-image&#34;&gt;&lt;img alt=&#34;movabug_screen.png&#34; src=&#34;http://blog.aklaswad.com/images/movabug_screen.png&#34; width=&#34;480&#34; height=&#34;183&#34; class=&#34;mt-image-center&#34; style=&#34;text-align: center; display: block; margin: 0 auto 20px;&#34;/&gt;&lt;/form&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;display ids&lt;/dt&gt;
+&lt;dd&gt;
+管理画面のテンプレートで使用されているid属性を実際の管理画面上に表示します。(MovableTypeのテンプレートエンジンが利用する属性で、実際に出力されるHTMLのid属性とは異なります。)transformerプラグインの作成などに役に立つかと思います。&lt;br /&gt;
+クリックする毎に非表示、その場に表示(absolute)、並べて表示(relative)3つの状態を順に遷移します。「position: absolute」としてオーバーレイっぽく表示させると、複数の要素が重なってしまって見えない場合があったので、とりあえずこんなになりました。
+&lt;/dd&gt;
+&lt;dt&gt;display classes&lt;/dt&gt;
+&lt;dd&gt;
+管理画面のテンプレートで使用されているclass属性を実際の管理画面上に表示します。
+クリックする毎に非表示、その場に表示(absolute)、並べて表示(relative)3つの状態を順に遷移します。
+現在のテンプレートではあまり多くは使われていないようです。ダッシュボードウィジェットやインフォメーション表示などで確認できますね。
+&lt;/dd&gt;
+&lt;dt&gt;run tasks&lt;/dt&gt;
+&lt;dd&gt;
+クリックするとスケジュールタスクを実行します。
+&lt;/dd&gt;
+&lt;dt&gt;force tasks&lt;/dt&gt;
+&lt;dd&gt;
+スケジュールタスクは、負荷軽減のため?それぞれのタスクに実行間隔が設けられています。例えば日時指定投稿では、前回の実行から1分以内に再度実行しても、日時指定の状態となっているブログ記事があるか確認すらせずに終了します。(ちなみに、日時指定投稿の実行間隔はmt-config.cgiにFuturePostFrequencyというディレクティブを書くと変更できるっぽいです。未確認。)&lt;br /&gt;
+これが古いスパムコメントの削除等のタスクになると、12時間ごとにしか動きません。これではテストの度に徹夜作業になってしまいますね。&lt;br /&gt;
+force tasksでは、MT::Sessionに記録されているスケジュールタスク関連のレコードをいったん削除してからスケジュールタスクを実行することで、強制的にスケジュールタスクを実行させています。
+&lt;/dd&gt;
+&lt;dt&gt;run jobs&lt;/dt&gt;
+&lt;dd&gt;
+TheSchwartzを利用したジョブキューを実行します。(0.2から)
+&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+&lt;dl&gt;
+&lt;dt&gt;0.2 (20070828)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;28&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/Movabug0.2.zip&#34;&gt;Movabug0.2.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+	&lt;li&gt;TheSchwartzを実行する「run jobs」モードを追加した&lt;/li&gt;
+	&lt;li&gt;「run tasks」「force tasks」「run jobs」実行時にスプラッシュ画面にログが表示されるようにした&lt;/li&gt;
+	&lt;li&gt;cookieを利用して画面遷移時に「display ids」「display classes」の状態が維持されるようにした&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.1 (20070826)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;27&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/Movabug0.1.zip&#34;&gt;Movabug0.1.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+	&lt;li&gt;最初の公開&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/dd&gt;</description>
+    </item>
+    
+    <item>
+      <title>TaggingHelper</title>
+      <link>http://example.org/2007/000209.html</link>
+      <pubDate>Wed, 22 Aug 2007 22:41:14 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000209.html</guid>
+      <description>&lt;h3&gt;インストール&lt;/h3&gt;
+
+解凍して出てきた中から、「plugins/TaggingHelper」ディレクトリを、お使いのMTのpluginsディレクトリ内にアップロードしてください。
+
+&lt;h3&gt;動作環境&lt;/h3&gt;
+
+MT3.3とMT4のどちらでも動作します。
+当たり前ですが、MT3.2以前ではMTにタグ機能が無いため、動きません。
+&lt;del datetime=&#34;2008-05-29T16:23:05+09:00&#34;&gt;動作検証は基本的にFirefox2.0でしか行っていません。
+IE6でも最低限の動作は確認しましたが、それ以外のブラウザでは確認してません。&lt;/del&gt;
+Firefox 2.0, Firefox 3.0, IE7 で動作確認を行っています。
+
+&lt;h3&gt;設定&lt;/h3&gt;
+
+特になし。
+
+&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+&lt;form mt:asset-id=&#34;82&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/TaggingHelper.0.3.zip&#34;&gt;TaggingHelper.0.3.zip&lt;/a&gt;&lt;/form&gt;
+
+&lt;h3&gt;既知の問題点&lt;/h3&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;del datetime=&#34;2008-05-29T16:25:24+09:00&#34;&gt;シングルクオートを含むタグをクリックするとjavascriptエラーが発生して動作しない(Trackback(774)さんにご報告いただきました)&lt;/del&gt;&lt;ins datetime=&#34;2008-05-29T16:26:10+09:00&#34;&gt;0.3で修正しました。&lt;/ins&gt;&lt;/li&gt;
+	&lt;li&gt;Safari で「過去のタグ」リンクをクリックしても、タグクラウドが生成されない(Hiromi さんにご報告いただきました)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;0.3 (20080529)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;タグ一覧を、使われている頻度順で表示するモードを追加した。&lt;/li&gt;
+	&lt;li&gt;本文に含まれる文言のタグを抽出して表示するモードを追加した。&lt;/li&gt;
+	&lt;li&gt;シングルクオートを含むタグが扱えない問題に対応した。指摘してくれたTrackback(774)さんありがとうございます。&lt;/li&gt;
+        &lt;li&gt;タグの途中で改行してしまう問題に対応した。&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;82&#34; class=&#34;mt-enclosure mt-enclosure-file&#34; style=&#34;display: inline;&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/TaggingHelper.0.3.zip&#34;&gt;TaggingHelper.0.3.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.21 (20070822)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;IEでクリックごとにダイアログが表示されていた問題を修正&lt;/li&gt;
+        &lt;li&gt;見た目を少し変更&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;29&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/TaggingHelper0.21.zip&#34;&gt;TaggingHelper0.21.zip&lt;/a&gt;&lt;/form&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.2 (20070822)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;3.3のtransformerに対応&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;23&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/TaggingHelper0.2.zip&#34;&gt;TaggingHelper0.2.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;0.1 (20070822)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;最初のリリース&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;22&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/TaggingHelper0.1.zip&#34;&gt;TaggingHelper0.1.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;</description>
+    </item>
+    
+    <item>
+      <title>Favicon Manager</title>
+      <link>http://example.org/2007/000198.html</link>
+      <pubDate>Sun, 12 Aug 2007 16:35:11 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000198.html</guid>
+      <description>&lt;h3&gt;ダウンロード&lt;/h3&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;35&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/FaviconManager2.01.zip&#34;&gt;FaviconManager2.01.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;動作環境&lt;/h3&gt;
+
+このプラグインは、Movable Type 4.0 以降専用です。
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+
+ダウンロードしたファイルを解凍したら、&lt;em&gt;plugins&lt;/em&gt;ディレクトリの中の&lt;em&gt;FaviconManager/&lt;/em&gt; ディレクトリを、お使いの MovableTypeの「plugins」ディレクトリにアップロードしてください。
+
+&lt;h3&gt;設定方法&lt;/h3&gt;
+
+&lt;h4&gt;ブログにFaviconを設定する&lt;/h4&gt;
+
+&lt;ol&gt;
+	&lt;li&gt;ブログセレクタ(管理画面左上のあれ)から、設定したいブログを選択する&lt;/li&gt;
+	&lt;li&gt;&lt;em&gt;設定&lt;/em&gt; &gt; &lt;em&gt;プラグイン&lt;/em&gt;をクリックしてプラグインの設定画面を開く&lt;/li&gt;
+	&lt;li&gt;&lt;em&gt;FaviconManager&lt;/em&gt;の&lt;em&gt;設定&lt;/em&gt;タブを開く&lt;/li&gt;
+	&lt;li&gt;Favicon画像ファイルのURLアドレスか、ファイルのID(後述)を&lt;em&gt;blog favicon url&lt;/em&gt;の欄に入力する&lt;/li&gt;
+	&lt;li&gt;保存をクリックし、ブログを再構築する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4&gt;管理画面にFaviconを設定する&lt;/h4&gt;
+
+殆どの手順は、上の「ブログにFaviconを設定する」と同じです。最初のブログセレクタで&lt;em&gt;システムメニュー&lt;/em&gt;を選択するか、画面右上から&lt;em&gt;システムメニュー&lt;/em&gt; &gt; &lt;em&gt;プラグイン&lt;/em&gt;と進んで、システムレベルで同様の作業を行ってください。管理画面のFaviconについては、再構築は必要ありません。
+
+&lt;h4&gt;asset ID&lt;/h4&gt;
+
+MT4のファイルアップロード機能を利用してアップロードした画像をFaviconに利用する場合、URLの代わりにその画像ファイルのAsset IDを以下のように指定できます。
+
+&lt;blockquote&gt;asset:42&lt;/blockquote&gt;
+
+Asset IDの調べ方は、今のところちょっとよい方法が思い浮かばないので、宿題とさせてください。
+
+&lt;h3&gt;チェンジログ&lt;/h3&gt;
+&lt;dl&gt;
+&lt;dt&gt;2.01 (20071208)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+        &lt;li&gt;URLが未設定のブログの再構築で警告が出ていた問題を修正&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;35&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/download/FaviconManager2.01.zip&#34;&gt;FaviconManager2.01.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;2.0 (20070812)&lt;/dt&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+	&lt;li&gt;最初のリリース&lt;/li&gt;
+	&lt;li&gt;&lt;form mt:asset-id=&#34;20&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/release/faviconmanager_2_0.zip&#34;&gt;faviconmanager_2_0.zip&lt;/a&gt;&lt;/form&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;</description>
+    </item>
+    
+    <item>
+      <title>CustomEditorButton</title>
+      <link>http://example.org/2007/000196.html</link>
+      <pubDate>Sat, 11 Aug 2007 12:19:34 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000196.html</guid>
+      <description>&lt;h3&gt;動作環境&lt;/h3&gt;
+
+Movable Type 3.3 専用のプラグインです。他のバージョンでは動作しません。
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+ファイルをダウンロード、解凍したら、お使いのMovable Typeのディレクトリに上書きする形でアップロードしてください。「mt-static」を移動している場合や、上書きが不安な場合は、以下の2箇所にファイルをアップロードしてください。
+&lt;ul&gt;&lt;li&gt;解凍したディレクトリの「plugins/CustomEditorButton」を、お使いのMovable Typeの「plugins」ディレクトリに&lt;/li&gt;&lt;li&gt;解凍したディレクトリの「mt-static/plugins/CustomEditorButton」を、お使いのMovable Typeの「mt-static/plugins」ディレクトリに&lt;/li&gt;&lt;/ul&gt;
+
+&lt;h3&gt;ボタンの作成&lt;/h3&gt;
+
+新規にボタンを追加する場合、以下の項目を設定します。
+
+&lt;ul&gt;
+    &lt;li&gt;name: ボタンの名前です。&lt;/li&gt;
+    &lt;li&gt;表示文字: ボタンの表示に使用される文字を指定します。ボタンの表示用の画像が設定されている場合は、この項目は使用されません。&lt;/li&gt;&lt;li&gt;画像へのURL: ボタンのイメージに画像を使用する場合、アップロードした画像のurlをここに指定してください。現在の仕様では、ボタン外側の枠は自動的に提供されます。ボタンの中身だけの画像を用意してください。&lt;/li&gt;
+    &lt;li&gt;説明: ボタンの説明を入力します。&lt;/li&gt;
+    &lt;li&gt;コード: 後述のように、ボタンの動作をjavascriptで記述してください。&lt;/li&gt;&lt;/ul&gt;
+
+&lt;h3&gt;コード&lt;/h3&gt;
+
+javascriptでボタンの動作を定義します。
+ここに書かれたjavascriptのコードは、関数の中に自動的に展開されるので、必要な動作の内容だけを記述するだけですみます。
+現在の仕様では、エディター画面で範囲選択がされている場合にのみ、選択範囲が「str」という変数に代入されて、このコードが実行されます。
+str変数に処理結果を代入することで、選択範囲に処理が反映されます。
+例えば、選択範囲を「div」タグで囲む場合は、以下の一行をコード欄に入力します。
+&lt;pre class=&#34;code&#34;&gt;str = &#39;&amp;lt;div&amp;gt;&#39; + str + &#39;&amp;lt;/div&amp;gt;&#39;;&lt;/pre&gt;
+
+なお、別途宣言済みの変数「txt」に値を代入すると、textareaの全体をtxtで置き換えます。
+
+&lt;h3&gt;個人用の設定&lt;/h3&gt;
+
+&lt;img alt=&#34;CustomEditorButton_fig3.png&#34; src=&#34;http://blog.aklaswad.com/CustomEditorButton_fig3.png&#34; width=&#34;263&#34; height=&#34;60&#34; class=&#34;mt-image-center&#34; style=&#34;text-align: center; display: block; margin: 0 auto 20px;&#34;/&gt;
+
+各投稿者は、システムにインストールされているボタンの中から、好きなものを選択して使用できます。
+画面の右上のログアウトの隣に、「My Button」メニューが追加されていますので、クリックして個人のボタン設定画面にすすんでください。
+画面上段が、現在利用する設定となっているボタンの一覧です。利用したいボタンが下段にある場合、ドラッグ&amp;ドロップで上段に放り込んでください。並び順もそのまま適用されます。
+
+&lt;h3&gt;最新版のダウンロード&lt;/h3&gt;
+
+CustomEditorButton 0.23
+&lt;a href=&#34;http://blog.aklaswad.com/CustomEditorButton_20070227.tar.gz&#34;&gt;CustomEditorButton_20070227.tar.gz&lt;/a&gt;
+&lt;a href=&#34;http://blog.aklaswad.com/CustomEditorButton_20070227.zip&#34;&gt;CustomEditorButton_20070227.zip&lt;/a&gt;
+
+
+
+
+</description>
+    </item>
+    
+    <item>
+      <title>TimeType</title>
+      <link>http://example.org/2007/000134.html</link>
+      <pubDate>Tue, 19 Jun 2007 23:37:29 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000134.html</guid>
+      <description>&lt;h3&gt;必要環境&lt;/h3&gt;
+
+TimeTypeの動作には以下の環境が必要です。
+
+&lt;ul&gt;
+	&lt;li&gt;Perl5.8.1以上&lt;/li&gt;
+	&lt;li&gt;MovableType3.3以上&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+
+解凍して出てきたpluginsディレクトリ内の「TimeType」ディレクトリをまるごと、インストールされているMovableTypeの「plugins」ディレクトリにアップロードしてください。
+
+&lt;h3&gt;初期設定&lt;/h3&gt;
+
+インストール後、システムメニュー &gt; プラグイン から、システムレベルで設定を行う必要があります。TimeTypeを探して「設定を表示」から設定画面を開いてください。
+以下の3項目は必須となります。
+
+&lt;dl&gt;
+&lt;dt&gt;Timelog BlogID&lt;/dt&gt;
+&lt;dd&gt;Timelogの一日分のメモを投稿する先のブログのIDを数字で指定します&lt;/dd&gt;
+&lt;dt&gt;Timelog username&lt;/dt&gt;
+&lt;dd&gt;Timelogでのユーザー名を指定します&lt;/dd&gt;
+&lt;dt&gt;Timelog password&lt;/dt&gt;
+&lt;dd&gt;Timelogへのログインに利用するパスワードを指定します&lt;/dd&gt;
+&lt;/dl&gt;
+
+なお、この設定を行った時にMovableTypeにログインしていたユーザーが、以降自動投稿を行う際のユーザーとなります。必要な場合にはログインユーザーを変更して設定を行ってください。
+
+&lt;h3&gt;スケジュールタスクの設定&lt;/h3&gt;
+
+TimeTypeはMovableTypeのスケジュールタスク機能を利用しているため、cronなどのosの自動実行機能を利用するか、ログフィードを取得するなどの方法で、MovableTypeのタスクが定期的に実行されるように設定する必要があります。詳しくは&lt;a href=&#34;http://www.sixapart.jp/movabletype/manual/3.3/02_system_admin_guide/installation/schedule_task_framework.html&#34;&gt;MovableTypeのマニュアル&lt;/a&gt;を確認してください。
+
+&lt;h3&gt;実際の動作の概要&lt;/h3&gt;
+
+スケジュールタスクによってTimeTypeが起動されると、TimeTypeは前回投稿が行われた日付と現在の日付が異なっているか確認します。
+異なっていた場合には、Timelogからメモを取得し、エントリーを投稿します。
+そして、現在の日付を保存して終了します。
+
+&lt;h3&gt;チェンジログと最新版のダウンロード&lt;/h3&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;20070619 &lt;span mt:asset-id=&#34;1&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/release/TimeType0.2.zip&#34;&gt;TimeType0.2.zip&lt;/a&gt;&lt;/span&gt;
+	&lt;ul&gt;
+		&lt;li&gt;テンプレートエンジンをHTML::Templateに変更&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;/li&gt;
+        &lt;li&gt;20070703 &lt;span mt:asset-id=&#34;4&#34; class=&#34;mt-enclosure mt-enclosure-file&#34;&gt;&lt;a href=&#34;http://blog.aklaswad.com/mtplugins/release/TimeType0.3.zip&#34;&gt;TimeType0.3.zip&lt;/a&gt;&lt;/span&gt;
+        &lt;ul&gt;
+            &lt;li&gt;自動投稿のエントリーの諸設定を、特定のエントリーの設定のクローンとして設定できるようにしてみた。設定のクローン元となる任意のエントリーのentry_idを、プラグインの設定画面から指定してください。カテゴリー、公開設定、改行設定、キーワード、コメントの許可、トラックバックの許可、の設定内容がクローン元エントリーからコピーされて、投稿されます。&lt;/li&gt;
+            &lt;li&gt;メモ中のhttpから始まる文字列にリンクが張られるようにした。参考: &lt;a href=&#34;http://www.din.or.jp/~ohzaki/perl.htm#URI&#34;&gt;http://www.din.or.jp/~ohzaki/perl.htm#URI&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;ブックマークにコメントをつけられるようにした。Timelogのブックマークレットでは、ブックマーク元のページのタイトルがメモに追加されますが、それ以降に、連続した半角スペースか、連続したセミコロン「;」を記入すると、以降がメモとして扱われます。&lt;/li&gt;
+        &lt;/ul&gt;
+&lt;/ul&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>IndexContext</title>
+      <link>http://example.org/2007/000127.html</link>
+      <pubDate>Sun, 17 Jun 2007 01:51:21 +0900</pubDate>
+      
+      <guid>http://example.org/2007/000127.html</guid>
+      <description>&lt;h3&gt;対応するMovable Typeバージョン&lt;/h3&gt;
+特に制限はありません。
+簡単にテストした範囲では、MT4でもそのまま動作します。
+
+&lt;h3&gt;ダウンロード&lt;/h3&gt;
+以下のリンクからダウンロードできます。
+&lt;ul&gt;&lt;li&gt;&lt;a href=&#34;http://blog.aklaswad.com/indexcontext.zip&#34;&gt;indexcontext.zip&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+
+&lt;h3&gt;インストール&lt;/h3&gt;
+zipを解凍して出てくる「indexcontext.pl」ファイルをpluginsディレクトリにアップロードしてください。
+
+&lt;h3&gt;機能&lt;/h3&gt;
+以下のタグが利用可能になります。
+
+&lt;dl&gt;&lt;dt&gt;&amp;lt;MTIndexContext&amp;gt;&lt;/dt&gt;
+&lt;dd&gt;一時的にテンプレートのコンテキストをインデックステンプレートと同じ振る舞いにするコンテナタグです。&lt;/dd&gt;&lt;/dl&gt;
+
+&lt;h3&gt;特記事項&lt;/h3&gt;
+&lt;a href=&#34;http://www.antimon2.atnifty.com/&#34;&gt;あんちもん2.Lab&lt;/a&gt;さんによるダイナミック・パブリッシング版が公開されています。あんちもん2さん、ありがとうございます。
+&lt;ul&gt;&lt;li&gt;&lt;a href=&#34;http://www.antimon2.atnifty.com/2007/03/indexcontext4d.html&#34;&gt;あんちもん2.Lab: ダイナミック・パブリッシング対応　indexcontext プラグイン&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+
+&lt;h3&gt;TechMemo&lt;/h3&gt;
+&lt;ul&gt;
+	&lt;li&gt;MT4で多用されているSetVarなどの変数設定も同時にクリアされてしまうため、MT4で大きなブロックを括ると収集がつかなくなるかもしれません。ピンポイントで利用したほうが無難かと思われます。&lt;/li&gt;
+	&lt;li&gt;基本的に、このタグで囲んだ箇所の出力結果は同じになる(はず)ので、つまり、全てのテンプレートで同じものを無駄に再構築していることになります。大規模なサイト構築では、SSIやPHPによるインクルードを利用する場合に比べて、再構築時の負荷の原因となることが考えられます。(スタティックで再構築する場合です。)&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

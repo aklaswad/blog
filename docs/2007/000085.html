@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | transformerの使い方</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">transformerの使い方</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2007-03-05T21:41:17&#43;09:00">2007-3-5 21:41</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text"><h3>3つのコールバック</h3>
+主に以下のコールバックを利用することで、管理画面の変更が行えます。
+<ul><li>AppTemplateSource</li>
+<li>AppTemplateParam</li>
+<li>AppTemplateOutput</li></ul>
+
+それぞれのコールバックでは、実行されるタイミング、および渡される引数が異なるため、目的に応じて使い分けます。引数などの詳細は<a href="http://www.sixapart.jp/movabletype/manual/object_reference/archives/mt_app.html">Movable Type オブジェクト・リファレンス - MT::App</a>の「コールバック」の項を参照してください。
+
+Movable Typeの管理画面は、<a href="http://search.cpan.org/~samtregar/HTML-Template/">HTML::Templateモジュール</a>を利用して出力されています。ある程度踏み込んだ作業を行う場合、HTML::Templateモジュールについての知識も必要になるでしょう。
+
+<h3>AppTemplateSource</h3>
+管理画面のテンプレートを直接変更することが出来ます。実行されるのはHTML::Templateがテンプレートタグのパースを行う前なので、単純な文字列置換のほかにも、HTML::Templateのタグを直接書き換えることも可能です。
+
+TMPL_INCLUDEで読み込まれるテンプレートについては、注意が必要です。AppTemplateSourceコールバックの実行ルーチンは、HTML::Templateのfilterとして登録されるので、TMPL_INCLUDEによって新たにテンプレートが読み込まれる都度、実行されます。
+
+<a href="http://perldoc.jp/docs/modules/HTML-Template-2.6/HTML/Template.pod">HTML::Template - CGI スクリプトから HTML テンプレートを使うための Perl モジュール</a>
+<blockquote>
+
+filter - このオプションはテンプレートファイルに対するフィルタを指定します。フィルタは HTML::Template がテンプレートファイルを読み込んだ後、テンプレートタグのパーズを開始する前に呼び出されるサブルーチンです。
+
+(中略)
+
+指定されたフィルタは TMPL_INCLUDE でファイルが読み込まれる度にメインのテンプレートファイルと同様に適用されます。
+
+</blockquote>
+
+しかし、filter内でコールバックの判定と実行が行われるため、variant(ポイント以降の部分。この場合はファイル名)が指定されているコールバックは、その段階で「今回実行する必要がないコールバック」と判定されてしまい実行されません。その結果、たとえば
+<pre class="code">MT-&gt;add_callback('MT::App::CMS::AppTemplateSource.list_blog', 9, $plugin, \&transform_routine);</pre>として登録したコードは、list_blog.tmplファイル内部でインクルードされるheader.tmplに対しては実行されません。header.tmplのインクルードの際にコールバックされるのは、AppTemplateSource.headerに登録したコールバックや、variant無しでAppTemplateSourceに登録したコールバックです。
+この仕様により、list_blog画面でのみheaderのテンプレートに変更を加える、ということは実現が難しくなっています。もしHTML::Templateによるテンプレートの展開が終了した後でも実現可能な作業ならば、迷わず「AppTemplateOutput」を使うべきでしょう。
+
+
+管理画面の全てのページにスタイルシートやjavascriptを追加する場合にも、このコールバックを利用するとちょっと便利です。headerテンプレートには「&lt;MT_HEAD:STYLE&gt;」「&lt;MT_HEAD:SCRIPT&gt;」という、スタイルシートとjavascriptをhead要素内に追加するためのプレースホルダーが用意されています。具体的には、以下のサブルーチンを呼び出すことで、これらプレースホルダーの位置に任意の内容を挿入出来ます。
+
+<dl><dt>tmpl_prepend</dt>
+<dd><pre class="code">tmpl_prepend($tmpl, $section, $id, $content);</pre>プレースホルダーの先頭に$contentで指定した文字列を追加します。</dd>
+<dt>tmpl_replace</dt>
+<dd><pre class="code">tmpl_replace($tmpl, $section, $id, $content);</pre>プレースホルダー全体を$contentで指定した文字列で置き換えます。</dd>
+<dt>tmpl_append</dt>
+<dd><pre class="code">tmpl_prepend($tmpl, $section, $id, $content);</pre>プレースホルダーの先頭に$contentで指定した文字列を追加します。</dd>
+<dt>tmpl_select</dt>
+<dd><pre class="code">tmpl_select($tmpl, $section, $id);</pre>プレースホルダーの現在の内容を返します。</dd></dl>
+
+$tmplには、テンプレートの内容へのリファレンスを指定する必要があります(AppTemplateSourceから渡される$tmpl変数をそのまま渡せばよいです)。
+
+$sectionと$idの組み合わせによってターゲットとなるプレースホルダーを指定します。mt-3.34では、$sectionに文字列「HEAD」、$idには文字列「STYLE」または「SCRIPT」という組み合わせが利用可能です。他には、やはりheaderテンプレートで「TOPNAV」「BLOGMENU」という組み合わせも利用できそうです(未確認)。将来的には、他にもプレースホルダーが追加されるのかもしれません。
+
+例えば、管理画面の背景に何らかの画像を表示させたい場合、次のようなコードになります。
+
+<pre class="code">MT-&gt;add_callback('MT::App::CMS::AppTemplateSource', 9, $plugin, \&amp;change_background);
+ 
+sub change_background {
+    my ($eh, $app, $tmpl) = @_;
+    my $contents = 'body { background-image: url(http://www.example.com/some_image.gif); }';
+    $app-&gt;tmpl_append( $tmpl, 'HEAD', 'STYLE', $contents);
+}</pre>
+
+なお、最終出力に対してカスタマイズを行うAppTemplateOutputでは、プレースホルダーがすでにテンプレートから削除されているため、これらのサブルーチンは利用できません。
+
+<h3>AppTemplateParam</h3>
+HTML::Templateに渡されるパラメータに対して、追加や変更を行うことが出来ます。
+
+<img alt="whatisthequicksearch.png" src="http://blog.aklaswad.com/whatisthequicksearch.png" width="358" height="144" />
+
+<br clear="both" />
+
+例えば、管理画面の右上にあるクイックサーチ部分はパラメータで表示、非表示を切り替えているため、以下のようなコードで表示を抑制することが出来ます。
+
+<pre class="code">MT-&gt;add_callback('MT::App::CMS::AppTemplateParam', 9, $plugin, sub{ $_[2]-&gt;{quick_search} = 0 });</pre>
+
+とはいえ、既存のパラメータについては、あまり多くの変更の余地は無いかもしれません。このコールバックは、（AppTemplateSourceコールバックと組み合わせて、）プラグインで独自にHTML::Templateのタグを追加する場合などに、より大きな威力を発揮するでしょう。
+
+<h3>AppTemplateOutput</h3>
+最終的に出力されるHTMLに対して変更を行うことが出来ます。HTML::Templateのタグはすべて展開済みとなっているため、正規表現による置換を行う場合には注意が必要です。</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 103 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2007/000087.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        Movable Typeのエントリー投稿画面の叩き方
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2007/000088.html">
+        mt-view.cgiを使ってみる
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

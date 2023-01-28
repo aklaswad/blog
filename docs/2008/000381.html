@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | Action Streams!</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">Action Streams!</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2008-02-02T11:22:32&#43;09:00">2008-2-2 11:22</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">
+SixApartから登場した新しいプラグイン、Action Streams がステキすぎます。
+
+<ul>
+	<li><a href="http://plugins.movabletype.org/action-streams/">Action Streams | Plugin Directory | movabletype.org</a></li>
+	<li><a href="http://www.sixapart.jp/pressroom/2008/01/mtaction_stream.html">Six Apart - 広報ブログ: 自分の行動履歴を自分で管理できるMTプラグイン「Action Streams」</a></li>
+	<li><a href="http://www.goodpic.com/mt/archives2/2008/02/action_stream_m.html">Action Stream をインストール : MTで、FlickrやTwitterなど色々なサービスの更新状況を表示：Goodpic</a></li>
+</ul>
+
+自分もいくつか似た様なものを作っていましたが、こっちのほうがよさそうですね。
+
+さて、<a href="http://blog.aklaswad.com/actionstreams/">早速導入してみた</a>のですが、導入に関して何箇所かつまずいたところがあったので、注意点をまとめておきます。
+
+<h3>文字コードは UTF-8 で!</h3>
+
+現在のバージョンでは文字コードの変換を行ってくれないようです。このブログは euc-jp で公開していたのですが、見事に取得したActionが文字化けしてくれました。
+多分何も文字コードを操作していないと思うのですが、twitterやvoxに日本語をポストしている場合はutf-8で返ってくるようですので、MT側もutf-8なら問題ないようです。
+文字コードが異なる状態でActionStreamsが動作してしまった場合、文字化けした状態のActionやタグが登録されてしまい、後の作業での障害になる場合があります。特に文字化けしたタグは削除することが容易ではないので、必ず事前に、導入する MT の文字コードがutf-8であることを確認しましょう。
+
+<del>
+自分の場合は、かねてからutf-8にしたいと考えていたので、無理やり文字コードを変更しました。こちらの記事が参考になりました。</del>
+<ins>追記: あー、どうもあちこちおかしいと思ったら、Storableされてるメタデータやプラグインデータがぶっ壊れたかも。ふむう。DBのダンプをnkfではダメみたい。なにか違うやり方を考えないと。</ins>
+
+<ul>
+	<li><a href="http://yusukebe.com/tech/archives/20070829/002145.html">sqliteのdbの文字コードを変換する (Yusukebe::Tech)</a></li>
+</ul>
+
+<h3>テンプレートセットを適用するときはユーザーの言語設定を英語に!</h3>
+
+ActionStreamsプラグインは、専用のテンプレートセットを提供してくれます。が。こちらもローカライズが一部問題あるようです。
+以下の手順で、テンプレートが中途半端に日本語化されないようにしましょう。
+
+<ol>
+	<li>プロフィール画面を開く。管理画面右上の「こんにちは(ログイン名)さん」から開けます。</li>
+	<li>使用言語を英語にして保存</li>
+	<li>テンプレートセット「ActionStream」を使って新規ブログを作成</li>
+</ol>
+
+テンプレートセットの適用後は、言語設定を日本語に戻してしまっても問題ありません。
+
+<h3>Actionが少ないと寂しい!</h3>
+
+えー。
+･･････頑張ってついったりヴぉくすったりします。
+
+
+ではでは。</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 49 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2008/000379.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        [error] mod_mime_magic: can&#39;t read `***.cgi&#39; は多分無視して構わない気がします。
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2008/000382.html">
+        ActionStreamsではてなブックマーク
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

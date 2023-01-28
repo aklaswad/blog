@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | MT4Beta : ExtensibleArchivesを作成してみた</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">MT4Beta : ExtensibleArchivesを作成してみた</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2007-06-24T23:10:40&#43;09:00">2007-6-24 23:10</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">まず、そもそもExtensibleArchivesとは何か、について説明してみます。
+
+MTでは、いわゆる過去ログのことを、Archiveと呼びます。
+Archiveは、ブログに存在するエントリーを、特定のルールに従っていくつかのグループにまとめ、各グループ毎に一つのファイルに出力するという形で実現されています。
+
+例えば、月別アーカイブでは、2007年5月に投稿されたエントリーを集めたグループ、2007年6月に投稿されたエントリーを集めたグループ、といった形にエントリーがグループ分けされます。そして、それらグループをテンプレート(MT3.3のデフォルトでは日別テンプレート)にしたがって整形して、それぞれのファイルに出力します。ファイルは、組み合わせられたグループの数だけ出力されることになります。
+
+同様にカテゴリーアーカイブでは、hogeカテゴリーに属するエントリーのグループ、mogeカテゴリーに属するエントリーのグループといったグループ分けを行い、それぞれのグループごとにカテゴリーテンプレートで整形してファイルに出力する、という具合です。
+
+今までのMTでも、好きなグループ分けのルールを、好きなテンプレートと組み合わせて好きなファイルパスに出力させる事が出来る、自由度の高いシステムが採用されていました。(アーカイブ・マッピング)
+しかし、その中心となるグループ分けのルールそのものは、システムに組み込みの5種類(多分)のみで、本体を改造しない限りは拡張ができませんでした。
+
+今回MT4で追加されたExtensibleArchives機能は、このグループ分けのルールそのものをプラグインを導入することで拡張可能にするものです。
+これによって、今までは出来なかったエントリーの投稿者別のアーカイブ等が作成できるようになりました。投稿者別アーカイブは現在のベータ版のデフォルトのプラグインとして同梱されていますね。
+
+実際にプラグインをどうやって作成すればよいのか、コードとニラメッコしながら、早速、一つプラグインを作ってみました。何箇所か未解決の問題があるのですが、その辺りはMT4のリリースを待って修正したいと思います。
+
+今回は、各エントリーのタイトルの頭文字を基準に、英和辞書風にグループ分けする「DictionaryArchive」を追加するプラグインを試作してみました。
+まず、MT4のプラグインではお決まりのregistryに、サブルーチンを設定していきます。
+
+sub init_registry {
+    my $plugin = shift;
+    $plugin->registry({
+        archive_types => {
+        'Dictionary' =>
+        ArchiveType(
+            name => 'MyNameIsDictionary',
+            archive_label => \&dictionary_archive_label,
+            archive_file => \&dictionary_archive_file,
+            archive_title => \&dictionary_archive_title,
+            archive_group_iter => \&dictionary_group_iter,
+            archive_group_entries => \&dictionary_group_entries,
+            default_archive_templates => [
+                ArchiveFileTemplate(label => 'headletter_group.html',
+                                    template => '%a/%f',
+                                    default => 1),
+            ],
+            dynamic_support => 0,
+            author_based => 1,
+        ),
+    }});
+}
+
+ArchiveTypeサブルーチンに必要なパラメータを引渡し、新しいArchiveTypeオブジェクトを作成してregistryに登録します。
+
+name
+ちょっとどこで使われるのか分かりませんでした。
+
+archive_label
+アーカイブを管理画面から指定するような場合に表示される文字列です。文字列を返すサブルーチンのリファレンスを指定するようです。
+
+archive_file
+アーカイブを構築する際のファイル名を決定するサブルーチンのリファレンスを指定します。
+
+archive_title
+個々のアーカイブ・ページのタイトルを決定するサブルーチンのリファレンスを指定します。
+
+archive_group_iter
+このアーカイブの各ページの情報を順に返すイテレータとして動作するクロージャを返すサブルーチンのリファレンスを指定します。ああややこしい。
+
+archive_group_entries
+個々のページで表示するべきエントリーのオブジェクトの配列を返すサブルーチンのリファレンスを指定します。
+
+default_archive_templates
+アーカイブ・マッピング画面で表示されるデフォルトのファイルパス生成ルールを指定します。
+
+author_based
+真を指定すると、author archiveとしての振る舞いをします。他にdate_based、category_based、entry_basedを指定できます。重複しても構いません。
+
+後は、よく分からないので省略。
+archive_labelは静的な文字列を返すだけなので置いといて、ここまでで4つ、サブルーチンのリファレンスを指定しました。この4つのサブルーチンが、アーカイブの振る舞いを決定することになります。他はおまけです。
+
+
+では、この4つのサブルーチンが、どのようなタイミングでどのように呼び出され、そして何を行えばよいのか見ていきます。
+
+これらのサブルーチン群は、大きく以下のふたつのケースで呼び出されます。
+
+アーカイブページを再構築する場合
+インデックステンプレートなど、アーカイブ以外の箇所で「MTArchive*」タグを使って参照される場合
+
+まず、アーカイブページを再構築する場合ですが、最初にMTは、再構築の対象となる
+
+
+MTArchivePrevious/MTArchiveNextの出力をコントロール出来ない
+</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 92 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2007/000149.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        MT4Beta : TimeTypeの投稿を別ブログにして新機能のaggregationを使って引っ張ってみた
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2007/000157.html">
+        MT4Beta : ExtensibleArchivesを作成してみた雑感
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

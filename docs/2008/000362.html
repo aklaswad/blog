@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | MTのテンプレートタグで素数判定をやってみた。</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">MTのテンプレートタグで素数判定をやってみた。</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2008-01-20T15:50:00&#43;09:00">2008-1-20 15:50</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">
+MT4.1ではopモディファイアが導入されて、かなりプログラムチックなことが出来るようになっています。
+そこで、なにかMTでやる意味のまったくない作業をテンプレートで作ってみたくなり、とりあえず素数判定を行うテンプレートを書いてみました。
+
+現在のMTのテンプレートエンジンでは、MTForなどのループから任意のタイミングで抜け出すことが出来ないため、MTSetVarTemplateを再帰的に呼び出すことでループの代用をしています。
+そのため、大きな数の判定を行うと馬鹿みたいにメモリを喰いまくります・・・
+速度を度外視してアルゴリズムを簡潔にした事もあいまって、実用には耐えられない出来になってしまいました。
+家のローカル環境では、大体1000くらいの数までなら耐えられますが、それ以上の素数を判定しようとすると戻ってこなくなります。
+まあ、こんなことも出来る、というサンプルになればと思い公開してみます。
+
+<pre class="code">
+&lt;mt:ignore&gt; #setvartemplateを使って関数定義 &lt;/mt:ignore&gt;
+&lt;mt:setvartemplate name="is_prime"&gt;
+    &lt;mt:if name="num" op="%" value="$check"&gt;
+        &lt;mt:ignore&gt; #試し割りで余りが出た場合&lt;/mt:ignore&gt;
+        &lt;mt:setvar name="check" op="++"&gt;
+        &lt;mt:if name="num" eq="$check"&gt;
+            &lt;mt:getvar name="num"&gt; は素数だった!
+        &lt;mt:else&gt;
+            &lt;mt:ignore&gt; #再帰!!&lt;/mt:ignore&gt;
+            &lt;mt:getvar name="is_prime"&gt;
+        &lt;/mt:if&gt;
+    &lt;mt:else&gt;
+        &lt;mt:ignore&gt; #試し割りで割り切れた場合&lt;/mt:ignore&gt;
+        &lt;mt:getvar name="num"&gt; は &lt;mt:getvar name="check"&gt; で割り切れたので素数じゃなかった!
+    &lt;/mt:if&gt;
+&lt;/mt:setvartemplate&gt;
+ 
+&lt;mt:ignore&gt; #ここに判定したい数字を指定 &lt;/mt:ignore&gt;
+&lt;mt:setvar name="num" value="71"&gt;
+ 
+&lt;mt:ignore&gt; #チェック用変数の初期化。変更不可!&lt;/mt:ignore&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+ 
+&lt;mt:ignore&gt;
+    #setvartemplateで設定したテンプレートを呼び出す。
+    #ついでに余分な空白を削除。 
+&lt;/mt:ignore&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:ignore&gt; #続けていくつか試してみる。 &lt;/mt:ignore&gt;
+ 
+&lt;mt:setvar name="num" value="109"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:setvar name="num" value="111"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+ 
+&lt;mt:setvar name="num" value="113"&gt;
+&lt;mt:setvar name="check" value="2"&gt;
+&lt;mt:getvar name="is_prime" regex_replace="/(^\s*|\s*$)/mg":""&gt;
+</pre>
+
+実行結果は以下のようになりました。
+
+<blockquote>
+
+71 は素数だった!
+109 は素数だった!
+111 は 3 で割り切れたので素数じゃなかった!
+113 は素数だった!
+
+</blockquote>
+</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 103 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2008/000357.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        regex_replaceの話
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2008/000364.html">
+        映画「アース」を見てきました。
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

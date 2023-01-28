@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | アーカイブ一覧をAjaxでツリー展開するカスタマイズ</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">アーカイブ一覧をAjaxでツリー展開するカスタマイズ</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2010-05-05T01:17:43&#43;09:00">2010-5-5 01:17</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">基本的な考え方としては、MT側であらかじめ、ツリー展開する中身の部分だけを出力するためのアーカイブを作成し、静的なHTMLファイル群として出力しておき、リストの項目のクリック時に出力されたファイルを動的にロードして表示する、という仕組みです。
+以下のような手順で作業を行いました。
+
+<h3>ボックスの内側を表示する軽量なテンプレートを作る</h3>
+簡素なブログ記事一覧をHTMLとして表示するようなテンプレートを、ブログ記事リストのアーカイブテンプレートとして作成します。この部分が、ツリー展開時に中身として表示されます。
+
+<pre class="code">&lt;mt:entries&gt;
+    &lt;mt:if __first__&gt;&lt;ul&gt;&lt;/mt:if&gt;
+        &lt;li&gt;&lt;a href=&quot;&lt;mt:entryPermalink&gt;&quot;&gt;&lt;mt:entryTitle&gt;&lt;/a&gt;&lt;p&gt;&lt;mt:entryBody remove_html=&quot;1&quot; trim_to=&quot;40&quot;&gt;...&lt;/p&gt;&lt;/li&gt;
+    &lt;mt:if __last__&gt;&lt;/ul&gt;&lt;/mt:if&gt;
+&lt;/mt:entries&gt;</pre>
+これだけを、テンプレートの内容として保存します。
+
+<h3>アーカイブマッピングを設定する</h3>
+
+作成したアーカイブテンプレートに、以下のようにマッピングを作成します。「skelton」の部分は何でも構いません。
+<pre class="code">%y/%m/skelton.html</pre>
+これで、ツリー表示の内側部分を、月ごとに独立したHTMLファイルとして出力できます。マッピングの保存後、再構築しておきましょう。
+
+<h3>アーカイブページでAjaxでの読み込みを行う</h3>
+
+まず、jQueryをロードするためのコードを、Archive Indexテンプレートのhead部分に追加します。
+<pre class="code">&lt;script src=&quot;&lt;mt:StaticWebPath&gt;jquery/jquery.js&quot;&gt;&lt;/script&gt;
+</pre>
+今回は手抜きをしてMT5に同梱されているjQueryをロードしましたが、テーマに同梱する場合等を考えて、jQueryライブラリはブログディレクトリにアップロードし、それを読み込むようにした方がベターだと思います。
+
+次に、リストの項目表示部分に「load-skelton」というクラスの指定を追加します。
+<pre class="code">&lt;li class=&quot;load-skelton&quot; url=&quot;&lt;$mt:ArchiveLink$&gt;skelton.html&quot;&gt;&lt;$mt:ArchiveTitle$&gt;&lt;/li&gt;
+</pre>
+
+そして、load-skeltonクラスの要素をclickした時に、先ほど作成した展開用テンプレートを読み込む動作を指定するためのjQueryのイベントを設定します。今回は、以下のようなコードを&lt;/body&gt;タグの直前に追加しました。
+
+<pre class="code">&lt;script type=&quot;text/javascript&quot;&gt;
+$('.load-skelton').click(function(){
+    var toggle = $(this).attr('opened');
+    if ( toggle &gt; 0 ) {
+        $(this).find('.preview-box').remove();
+        $(this).removeAttr('opened');
+    }
+    else {
+        var url = $(this).attr('url');
+        $(this).append($('&lt;div&gt;').addClass('preview-box').load(url));
+        $(this).attr('opened', 1);
+    }
+});
+&lt;/script&gt;</pre>
+
+<h3>まとめ</h3>
+カスタマイズは以上です。
+肝は、MTのアーカイブを利用して事前に短い静的HTMLファイルを出力しておく事によって、ツリーの展開を動的に、かつ軽快に動作させることが簡単に実現できるという点だと思います。いやあ、MTって本当に便利ですね。enjoy!</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 62 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2010/000472.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        MT5にアップグレードした
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2010/000476.html">
+        MTからOAuthを使うプラグイン作ってます。
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

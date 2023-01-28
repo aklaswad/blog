@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | 外側から作っていこう</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">外側から作っていこう</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2006-05-01T18:14:54&#43;09:00">2006-5-1 18:14</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">
+<a href="http://blog.aklaswad.com/img/web_access_iTunes_capture_01.png"><img alt="web_access_iTunes_capture_01.png" src="http://blog.aklaswad.com/img/web_access_iTunes_capture_01-thumb.png" width="256" height="140" /></a>サーバーマシンで動いているiTunesを、外部からリモート操作しようという試みについて。とりあえず動いてはいるので、また、非常に限定された用途しかないから、としばらく放置していましたが、HTMLやJavaScriptの練習に良いかな、と思い直し、この二週間ほど見た目を中心にこつこつと作っております。
+JavaScriptに取り組むのはほぼ初めてです。仕様がいまいち統一されておらず、色々となんだかメンドクサイですが、簡単に動きのあるものが作れて、楽しくもあります。
+将来的にはXMLRPCなぞ受け入れるようにして、目指せAjaxってか。
+(関係ないですが、Ajaxはアヤックスと読みたいなあ。エイジャックスなんて田舎風の読み方は、俺の身体に流れるオランダ人の血が許しません(流れてないけど)(オランダだって田舎か)。)
+
+まだ公開できる段階ではないので、とりあえずスクリーンショットだけ。WebからiTunesにAccessできるということで、Web Access iTunes、略してWAiTってか。
+Playlistを取得〜曲を選んで再生〜イントロを飛ばして〜ボリューム絞って〜といった基本部分は動きます。検索はまだ動きません。プレイリストの作成や編集などは、実装するかわかりません。
+
+技術的にいま行き詰っているのは、ライブラリ全体のような、膨大な量のリストをどう処理するか、という点。
+一気に転送するのはまず無理。nページ中mページ目、なんて感じに細切れにして送るしかないのだが、そうするとややこしくなってくるのが、クライアントごとの検索、ソートの結果。これらをどこかに保持しておく必要がある気がするのだが。
+・サーバー側で保持する。その場合、セッション管理などして上手くやる必要があるかも。
+・その都度検索する。検索は良いとしても、ソートはオリジナルの並び順を維持したまま、複雑なソートを実施というのは難しそうだ。
+・とりあえず複数のクライアントがアクセスする可能性は忘れて、サーバー側のデータを直接弄ってしまう。
+・そもそもソートのやり方がわからない。
+
+うーん。先は長い。</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 15 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2006/000038.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        viva oolong 3
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2006/000040.html">
+        大掃除作戦:初日
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

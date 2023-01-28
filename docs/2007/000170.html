@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | MT4Beta : DashboardWidgetを作ってみた。はてブの新着を表示するよ。</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">MT4Beta : DashboardWidgetを作ってみた。はてブの新着を表示するよ。</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2007-07-11T02:10:00&#43;09:00">2007-7-11 02:10</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">
+<ins datetime="2008-05-09T22:11:04+09:00">
+このプラグインは、MT4.0での新機能のサンプルとして作成したものです。機能/性能的に実用に耐えるものではありません。あらかじめご了承下さい。
+</ins>
+
+mt4をインストールして、一番最初に目に飛び込んでくる新機能といえば、ダッシュボード上に並んだウィジェットではないでしょうか。
+これももちろんプラグインで追加出来ます。出来るはずです。作りました。作ってみました。
+
+<span mt:asset-id="11" class="mt-enclosure mt-enclosure-file"><a href="http://blog.aklaswad.com/mtplugins/release/HatenaBookmarkWidget0.1.zip">HatenaBookmarkWidget0.1.zip</a></span>
+
+<span mt:asset-id="9" class="mt-enclosure mt-enclosure-image"><a href="http://blog.aklaswad.com/images/HatenaBookmarkWidgetScreen01.png"><img alt="" src="http://blog.aklaswad.com/assets_c/9.5115f590dd5d87e9621ec6b8334b940c5ffc39a3.png" width="160" height="120" class="mt-image-left" style="float: left; margin: 0 20px 20px 0;"/></a></span>今回の題材は、はてなブックマークでの、該当のブログ全体での被ブックマークを、タグやコメントも含めて最新20件(かな?）管理画面のダッシュボードにウィジェットとして表示するプラグインです。なんだかはてブのプラグインばかり作っているような気もしますが、気のせいでしょう。
+
+<br clear="all" />
+やっぱり肝はレジストリでしょうか。諸情報をレジストリに追加することで動作します。
+
+<pre class="code">
+sub init_registry { 
+    my $plugin = shift;
+    $plugin-&gt;registry({
+        applications =&gt; {
+            'cms' =&gt; {
+                widgets =&gt; {
+                    'HatenaBookmark' =&gt; {
+                        label =&gt; 'HatenaBookmark',
+                        template =&gt; 'tmpl/widget.tmpl',
+                        handler =&gt; \&amp;_widget_handler,
+                        set =&gt; 'sidebar',
+                        singular =&gt; 1,
+                        condition =&gt; sub {
+                            my ($page, $scope) = @_;
+                            return $page eq 'dashboard' &amp;&amp; $scope !~ /system/;
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+</pre>
+
+大体、見たままで分かるかと思います。
+setは、「main」「sidebar」が指定できるようです。画面の右側に表示するか左側に表示するか、ですね。
+singularは、複数同時に表示可能とするか否か、です。
+conditionには、現在のページでwidgetを利用可能とするかを判定するサブルーチンのリファレンスを指定します。サブルーチンは、引数として与えられた条件を元に、現在の画面でwidgetを表示するか否か、をブール値で返却します。
+
+今回は、無駄に張り切ってややこしい処理をするものを作りましたが、簡単なメッセージ表示などのプラグインなら<a href="http://blog.aklaswad.com/2007/000113.html">config.yaml</a>一発で出来そうです。
+
+このプラグインはとりあえずの実験用なので、当面ベータ版扱いとしてください。そのうちキャッシュ機能や新着判定機能などをつけてきちんとしたものにするかもしれません。
+
+<ins datetime="2007-07-11T16:37:40+09:00">追記: 公開からわずか半日後、はてなの障害?の巻き添えで管理画面が開けなくなる事態が発生。これは、このプラグインのテストにはてなが全力で協力してくれたと考える。</ins></div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 73 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2007/000169.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        FaviconManager2 : FaviconManagerをMT4に対応させたよ
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2007/000173.html">
+        MT4Beta : ページ一覧を作成してみた
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

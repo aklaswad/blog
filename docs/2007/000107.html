@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | 複数ブログのトラックバックURLを、ブログごとの独自ドメインで公開する方法</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">複数ブログのトラックバックURLを、ブログごとの独自ドメインで公開する方法</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2007-05-30T00:30:00&#43;09:00">2007-5-30 00:30</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">例として、XREAでのユーザー名が「chicken」として、現在以下のURLで、インストールしたMTの管理画面にアクセスしているものとします。
+
+<pre class="code">http://www.chicken.com/cgi-bin/mt/mt.cgi</pre>
+
+すると、MTをインストールしたディレクトリのサーバー内でのパスは以下のようになるかと思います。
+
+<pre class="code">/virtual/chicken/public_html/cgi-bin/mt/</pre>
+
+そして、同じMT上で新しく作るブログを、独自ドメインを利用した以下のURLで公開するとしましょう。
+
+<pre class="code">http://blog.thecat.net/</pre>
+
+上記がサイトURLなら、サイト・パスは以下のサーバー内のパスを指定することになると思います。
+
+<pre class="code">/virtual/chicken/public_html/blog.thecat.net/</pre>
+
+目的は、「/virtual/chicken/public_html/cgi-bin/mt/」以下に設置されているCGIスクリプトに、「http://blog.thecat.net/」以下のアドレスでアクセスできるようにすることです。さらに、MTの仕様上の要求から、ホスト名以下のパスが同一である必要があります。
+つまり、
+「http://www.chicken.com/cgi-bin/mt/」
+と、
+「http://blog.thecat.net/cgi-bin/mt/」
+のふたつのURLで、どちらにアクセスしても同じCGIファイルが公開されていれば良いわけです。
+今回はシンボリック・リンクを使ってみます。(自分がお借りしてるs160サーバーで動作確認したところでは、幸いApacheの設定でのFollowSymLinkが有効になっているようでした。)
+
+あらかじめ、FTPクライアントなどで「/virtual/chicken/public_html/blog.thecat.net/cgi-bin」ディレクトリを作成しておきます。中身は空っぽでよいです。
+次にXREAのサイト内のコントロール・パネルから「ホスト情報登録」を選択して許可を得た上で、SSHでログインしてください。
+作成した「/virtual/chicken/public_html/blog.thecat.net/cgi-bin」ディレクトリに移動します。
+
+<pre class="code">cd /virtual/chicken/public_html/blog.thecat.net/cgi-bin</pre>
+
+そして、シンボリックリンクによって「/virtual/chicken/public_html/blog.thecat.net/cgi-bin/mt」へのアクセスが、MTのインストールディレクトリに繋がるように、以下のコマンドを実行してシンボリックリンクを作成します。
+
+<pre class="code">ln -s /virtual/chicken/public_html/cgi-bin/mt mt</pre>
+
+確認のため、ブラウザで「http://blog.thecat.net/cgi-bin/mt/mt.cgi」にアクセスしてみて、管理画面が表示されれば成功です。
+
+
+第二段階です。目的のブログで、ブログ独自のホスト名でCGIを公開するために、mt-config.cgiの以下の箇所を書き換えます。現在のCGIPath
+
+<pre class="code">CGIPath http://www.chicken.com/cgi-bin/mt/</pre>
+
+を、ホスト名を省略した以下の形に書き換えてアップロードしてください。
+
+<pre class="code">CGIPath /cgi-bin/mt/</pre>
+
+最後に、目的のブログを再構築すれば完成です。
+念のため、再構築したブログのエントリーアーカイブに移動して、トラックバックURLを確認してください。
+
+<pre class="code">http://blog.thecat.net/cgi-bin/mt/mt-tb.cgi/1</pre>
+
+上記のように、独自ドメインに変わっているでしょうか。変わっていたら、このURLをブラウザのアドレス欄にコピペして、CGIに実際にアクセスできるか確認してください。
+
+<pre class="code">
+&lt;response&gt;
+&lt;error&gt;1&lt;/error&gt;
+&lt;message&gt;トラックバックの送信は、HTTP POSTメソッドを使う必要があります。&lt;/message&gt;
+&lt;/response&gt;
+</pre>
+
+こんな感じのXMLでのエラーが表示されれば、CGIにアクセスできている証拠です。大成功です!
+お疲れ様でした!</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 43 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2007/000106.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        ラーメンデータベースが素晴らしい件について
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2007/000108.html">
+        ダイナミックあげるよ
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>

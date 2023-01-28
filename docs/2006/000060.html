@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>blog.aklaswad.com  | TagCloudPlus</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1">
+	<meta name="generator" content="Hugo 0.110.0">
+	
+	
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+	
+
+	
+	
+	<link href="/dist/app.css" rel="stylesheet">
+	
+
+	
+
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	<script>
+		(function (u, c) {
+			var d = document,
+				t = 'script',
+				o = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			o.src = u;
+			if (c) {
+				o.addEventListener('load', function (e) {
+					c(e);
+				});
+			}
+			s.parentNode.insertBefore(o, s);
+		})('http:\/\/example.org\/lib\/pangu.min.js', function () {
+			pangu.spacingPage();
+		});
+	</script>
+	
+	
+	
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans">
+	<div class="p-6 sm:p-10 md:p-16 flex flex-wrap">
+		<header class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-1 md:order-1 max-w-2xl">
+			<div
+				class="z-50 bg-gray-100 bg-opacity-75 bg-opacity-custom lg:min-w-0.7 max-w-xl md:float-right md:text-right leading-loose tracking-tight md:sticky md:top-0 pt-2">
+				
+<div>
+	<h2>
+		<a href="http://example.org/" title="blog.aklaswad.com" class="heading font-cursive icon">blog.aklaswad.com</a>
+	</h2>
+</div>
+<h1 class="pt-2">TagCloudPlus</h1>
+
+<div class="flex flex-wrap justify-end pt-2 "><div class="md:flex-grow-0 font-light">
+	
+	
+	
+	
+
+	
+
+	
+</div><time class="text-eucalyptus-500 md:text-right md:flex-grow font-light pl-4"
+		datetime="2006-07-29T17:33:02&#43;09:00">2006-7-29 17:33</time>
+</div>
+
+<hr />
+
+
+			</div>
+		</header>
+		<main role="main" class="w-full md:w-3/5 xl:w-1/2 max-w-3xl order-2 md:order-2 min-h-70vh pt-2 pb-4">
+			
+
+<article>
+	<section class="mx-auto content">
+		<div class="c-rich-text">使い方<br />
+・使いたいブログのテンプレート編集画面で「テンプレート・モジュール」を開く<br />
+・「モジュールを新規作成」をクリック<br />
+・テンプレート名に「Widget: タグ クラウド プラス」を入力(名前は何でも良いのですが、「Widget: 」の部分を変えると動きません)<br />
+・モジュールの内容に以下のコードを貼り付けて「保存」<br />
+
+<pre class="code">
+&lt;!-- 
+name: TagCloudPlus
+author: Akira Sawada
+version: 0.3
+--&gt;
+
+&lt;div class="module-tagcloud module"&gt;
+    &lt;h2 class="module-header"&gt;Tag cloud Plus&lt;/h2&gt;
+    &lt;div class="module-content" id="tag_cloud_plus_info"&gt;
+    &lt;/div&gt;
+    &lt;div class="module-content"&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeDown()"&gt; &lt;&lt; &lt;/a&gt;
+        size : &lt;span id="tag_cloud_plus_size_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeUp()"&gt; &gt;&gt; &lt;/a&gt;&lt;br /&gt;
+
+        &lt;a href="javascript:void(0)" onclick="sizeBaseDown()"&gt; &lt;&lt; &lt;/a&gt;
+        basesize : &lt;span id="tag_cloud_plus_size_base_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="sizeBaseUp()"&gt; &gt;&gt; &lt;/a&gt;&lt;br /&gt;
+
+        &lt;a href="javascript:void(0)" onclick="colorDown()"&gt; &lt;&lt; &lt;/a&gt;
+        color : &lt;span id="tag_cloud_plus_color_info"&gt;&lt;/span&gt;
+        &lt;a href="javascript:void(0)" onclick="colorUp()"&gt; &gt;&gt; &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="module-content"&gt;
+        &lt;ul class="module-list" id="tag_cloud_plus_list"&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+
+var sizeWeight = 8;
+var sizeBase = 12;
+var colorWeight = 8;
+var rankMax = 64;
+
+var tcpTags =
+[
+&lt;MTTags&gt;
+    {
+        "name" : "&lt;$MTTagName$&gt;",
+        "rank" : "&lt;$MTTagRank max="64"$&gt;",
+        "link" : "&lt;$MTTagSearchLink$&gt;",
+    },
+&lt;/MTTags&gt;
+];
+
+function buildCloud(){
+    document.getElementById('tag_cloud_plus_list').innerHTML = "";
+    for(var i in tcpTags){
+        var tag = String();
+        tag = '&lt;li class="module-list-item" style=" font-size : '
+            + rank2FontSize(tcpTags[i].rank) + ';"&gt;&lt;a href="'
+            + tcpTags[i].link + '" style=" color : '
+            + rank2Color(tcpTags[i].rank) + ';"&gt;'
+            + tcpTags[i].name + '&lt;/a&gt;&lt;/li&gt;\n'; /*need this \n but i don't know why.*/
+        document.getElementById('tag_cloud_plus_list').innerHTML += tag;
+
+    }
+    document.getElementById('tag_cloud_plus_size_info').innerHTML = sizeWeight;
+    document.getElementById('tag_cloud_plus_size_base_info').innerHTML = sizeBase;
+    document.getElementById('tag_cloud_plus_color_info').innerHTML = colorWeight;
+}
+
+function rank2Color(rank)
+{
+    var col = Math.round((rank - rankMax / 2) * colorWeight / 4 + 128);
+    col = col &gt; 255 ? 255 : col;
+    col = col &lt; 0 ? 0 : col;
+    return 'rgb(' + col + ',' + col + ',' + col + ')';
+}
+
+function rank2FontSize(rank)
+{
+    return Math.round((1 - rank / rankMax ) * sizeWeight + sizeBase) + "px";
+}
+
+function sizeUp()
+{
+    sizeWeight += 1;
+    buildCloud();
+}
+
+function sizeDown()
+{
+    sizeWeight -= 1;
+    buildCloud();
+}
+function sizeBaseUp()
+{
+    sizeBase += 1;
+    buildCloud();
+}
+
+function sizeBaseDown()
+{
+    sizeBase -= 1;
+    buildCloud();
+}
+function colorUp()
+{
+    colorWeight += 1;
+    buildCloud();
+}
+
+function colorDown()
+{
+    colorWeight -= 1;
+    buildCloud();
+}
+
+/*at first we must build tag cloud*/
+buildCloud();
+
+&lt;/script&gt;
+</pre>
+
+IEでは動かないみたいなので、そのうち直します。</div>
+	</section>
+
+
+</article>
+
+		</main>
+		<div class="w-full h-0 flex-none order-3"></div>
+		<aside role="contentinfo"
+			class="w-full md:w-2/5 xl:w-1/2 md:pr-12 lg:pr-20 xl:pr-24 order-4 md:order-3 md:sticky md:bottom-0 self-end max-w-2xl">
+			<div class="md:float-right md:text-right leading-loose tracking-tight md:mb-2">
+				
+	<div class="md:max-w-xs  flex flex-col md:items-end">
+	<ul class="font-serif flex-grow-0 flex justify-between flex-wrap md:flex-col">
+	
+	
+</ul>
+	
+
+<div class="flex flex-wrap-reverse md:justify-end content-end md:content-start justify-start items-start   max-h-16">
+	
+</div>
+	<div class="text-sm text-gray-500 leading-tight a-gray">
+		
+		<br />
+		Built with Hugo and theme <a href="https://github.com/heyeshuang/hugo-theme-tokiwa">Tokiwa</a>. 310 words in this page.
+	</div>
+</div>
+
+			</div>
+		</aside>
+		<footer class="w-full md:w-3/5 xl:w-1/2 order-3 max-w-3xl md:order-4 pt-2">
+			
+<hr class="double-line" />
+<div class="flex flex-wrap justify-between pb-2 leading-loose font-serif">
+    
+    <a class="flex-grow-0" href="/2006/000058.html">
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" /></svg>
+        StyleRepositoryToolKit
+    </a>
+    
+    
+    <a class="flex-grow-0" href="/2006/000062.html">
+        色々弄った
+        <svg class="fill-current inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+            height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" /></svg></a>
+    
+</div>
+<div >
+
+
+
+</div>
+<hr />
+<div class="pb-2">
+    
+</div>
+<hr />
+
+		</footer>
+		
+
+<script src="/dist/app.js"></script>
+
+
+	</div>
+</body>
+
+</html>
